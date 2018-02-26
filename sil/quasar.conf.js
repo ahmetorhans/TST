@@ -31,7 +31,7 @@ module.exports = function (ctx) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
+      
           exclude: /(node_modules|quasar)/
         })
       }
@@ -57,7 +57,12 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
-        'QItemSide'
+        'QItemSide',
+        'QInput',
+        'QCard',
+        'QTable'
+     
+
       ],
       directives: [
         'Ripple'
