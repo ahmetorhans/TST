@@ -4,7 +4,8 @@
 /www/node_modules
 /api/vendor
 /api/.env
-/sil/
+/sil
+/sil/api
 
 
 .idea
