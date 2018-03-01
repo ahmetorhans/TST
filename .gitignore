@@ -4,7 +4,7 @@
 /www/node_modules
 /api/vendor
 /api/.env
-/sil
+/xsil
 
 .idea
 .vscode
