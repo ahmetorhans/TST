@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use JWTAuth;
+use Storage;
+
+
 class HomeController extends Controller
 {
     /**
@@ -13,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-       // $this->middleware('auth');
+      //  $this->middleware('auth');
     }
 
     /**
@@ -23,9 +25,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (! $user = JWTAuth::parseToken()->authenticate()) {
-			return response()->json(['user_not_found'], 404);
-		}
-        
+        return view('home');
+    }
+
+    public function upload(Request $request){
+        $path = Storage::putFile('upload', $request->file('file'));  
+
+        return response()->json(array('status'=>true,'file'=>$path));
     }
 }
