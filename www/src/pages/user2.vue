@@ -1,6 +1,6 @@
 <template>
-  <q-page v-if="guard.giris">
-   <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'550px'}">
+  <q-page>
+   <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'500px'}">
      <q-modal-layout>
         
         <q-toolbar slot="header">
@@ -45,9 +45,9 @@
                 {{currentUser.photo}}
                </q-field>
              
-             
-
-              
+              <q-field>
+                <q-btn color="primary" @click="submit">Kaydet</q-btn>
+              </q-field>
 
               <q-field>
            
@@ -71,13 +71,11 @@
                  </table>
              
               </q-field>
-
-               <q-field class="fip">
-                 <q-btn color="primary" @click="submit">Kaydet</q-btn>
-                 <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentUser.id)">sil</q-btn>
-              </q-field>
         </div>
- </q-modal-layout>
+
+          
+
+      </q-modal-layout>
      
     </q-modal>
   
@@ -86,7 +84,7 @@
         
           <q-toolbar slot="header" color="dark">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
-           <q-btn v-if="guard.yeni" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
+           <q-btn flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
             
           </q-toolbar>
         
@@ -134,8 +132,8 @@ import notify from "./notify";
 export default {
   data() {
     return {
-      //file upload
-      url: this.apiUrl + "upload",
+      //file upload 
+      url: this.apiUrl +"upload",
       headers: {
         Authorization:
           "Bearer " + localStorage.getItem("vue-authenticate.vueauth_token")
@@ -146,8 +144,8 @@ export default {
 
       //tüm kullanıcılar
       users: [],
-
-      //upload varsa submit etme, önce uploadları gönder
+     
+     //upload varsa submit etme, önce uploadları gönder
       uploadVar: false,
 
       //kullanıcı ara.
@@ -160,10 +158,8 @@ export default {
 
       //detay kullanıcı
       currentUser: {},
-
+      
       yetkiler: {},
-
-      guard: {},
 
       selectOptions: [
         { label: "Yönetici", value: "admin" },
@@ -175,20 +171,6 @@ export default {
 
   created() {
     this.getUserList();
-    axios
-      .get(this.apiUrl + "yetkiler?bolum=kullanici")
-      .then(response => {
-        if (response.data.role == "super") {
-          response.data.giris = "1";
-          response.data.yeni = "1";
-          response.data.duzelt = "1";
-          response.data.sil = "1";
-        }
-        this.guard = response.data;
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
   },
 
   watch: {
@@ -200,33 +182,6 @@ export default {
   },
 
   methods: {
-    sil(id) {
-      this.$q
-        .dialog({
-          title: "Kullanıcı Sil",
-          message: "Kullanıcı Silinsin mi?",
-          ok: "Evet",
-          cancel: "Hayır"
-        })
-        .then(() => {
-          axios
-            .get(this.apiUrl + "sil?id=" + id)
-            .then(response => {
-              if (response.data.status === true){
-                 let index = this.users.findIndex(x => x.id === id);
-               
-                 this.users.splice(index,1);
-                 console.log(this.users)
-                 notify(response.data.msg);
-              } 
-              else notify(response.data.msg,true);
-            })
-            .catch(e => {
-              this.errors.push(e);
-            });
-        });
-    },
-
     //kullanıcıları getir..
     getUserList() {
       axios
@@ -269,9 +224,7 @@ export default {
 
     //kullanıcı seçilince index den mevcut değerleri currentuser'a at..
     rowClick(id) {
-      if (this.guard.duzelt == 0) {
-        return;
-      }
+
       //id'den users'daki indexi bul..
       let index = this.users.findIndex(x => x.id === id);
 
@@ -331,6 +284,7 @@ export default {
   },
 
   computed: {
+    
     isAuthenticated() {
       return this.$store.getters.isAuthenticated;
     },

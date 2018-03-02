@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/kullanicilar',
-    component: () => import('layouts/default'), meta: { requiresAuth: true }, 
+     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
     children: [
       { path: '', component: () => import('pages/user') }
     ]

@@ -69,13 +69,14 @@ module.exports = function (ctx) {
         'QCardMedia',
         'QCardSeparator',
         'QCardActions',
-        'QAlert'
+        'QAlert',
+        'QCheckbox',
       ],
       directives: [
         'Ripple'
       ],
       plugins: [
-        'Notify'
+        'Notify','Dialog'
       ]
     },
     // animations: 'all' --- includes all animations

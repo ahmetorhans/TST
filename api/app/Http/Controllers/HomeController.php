@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Storage;
+use App\User;
 
 
 class HomeController extends Controller
@@ -28,9 +29,9 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function upload(Request $request){
-        $path = Storage::putFile('upload', $request->file('file'));  
-
-        return response()->json(array('status'=>true,'file'=>$path));
+    public function test(){
+        $comments = User::with('yetkiler')->find(18);
+         print_r($comments->toArray());
+        
     }
 }
