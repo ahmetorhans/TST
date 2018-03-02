@@ -12,11 +12,13 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('upload', 'HomeController@upload');
+
 Route::post('auth/login', 'Authentication@login');
-Route::get('userList', 'Authentication@userList');
+
 
 Route::group(['middleware' => 'jwt.auth'], function () {
-    Route::get('user', 'HomeController@index');
-    Route::post('register', 'Authentication@register');
+    Route::get('userList', 'Users@listUser');
+    Route::post('register', 'Users@newUser');
+    Route::post('upload', 'Upload@uploadFile');
+    
 });

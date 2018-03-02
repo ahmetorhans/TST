@@ -4,7 +4,8 @@ module.exports = function (ctx) {
   return {
     plugins: [
       'i18n',
-      'axios'
+      'axios',
+      'auth'
     ],
     css: [
       'app.styl'

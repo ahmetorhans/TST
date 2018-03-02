@@ -38,6 +38,7 @@
                     auto-expand
                     @uploaded="postUpload"
                     @finish="finishUpload"
+                    :headers="headers"
                     ref="uploader"
                   /> 
                  <!-- <img :src="`http://localhost:8000/files/${currentUser.photo}`" style="width:80px;" class="shadow-1"/>-->
@@ -107,10 +108,14 @@ import axios from "axios";
 import store from '../store'
 import notify from "./notify";
 
+
 export default {
   data() {
     return {
       url: "http://127.0.0.1:8000/api/upload",
+      headers :{
+        'Authorization': 'Bearer ' + localStorage.getItem('vue-authenticate.vueauth_token')
+      },
       userModal: false,
       users: [],
       uploadVar: false,
@@ -128,6 +133,7 @@ export default {
 
   created() {
     this.getUserList();
+
 
   },
   watch: {
@@ -148,14 +154,12 @@ export default {
       this.$store.dispatch('login', { user });
       console.log(this.$store.getters.isAuthenticated)
       console.log(this.$store.state.auth.isAuthenticated)
-      
-
-     
+   
     },
     getUserList() {
-      console.log("getUserList");
+      alert(this.deger); 
       axios
-        .get("http://localhost:8000/api/userList")
+        .get(this.apiUrl + "userList")
         .then(response => {
           this.users = response.data;
           console.log(response.data);

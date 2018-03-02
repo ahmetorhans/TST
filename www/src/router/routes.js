@@ -14,11 +14,11 @@ export default [
       { path: '', component: () => import('pages/user') }
     ]
   },
-  { // Always leave this as last one
+  { 
     path: '/login',
     component: () => import('pages/login')
   },
-  { // Always leave this as last one
+  { 
     path: '*',
     component: () => import('pages/404')
   }

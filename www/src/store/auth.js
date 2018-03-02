@@ -19,17 +19,14 @@ export default ({
           if (state.isAuthenticated===true){
             return true;
           }
-          
-        
         return vueAuth.isAuthenticated()
-        
-        
       }
     },
   
    
     mutations: {
       isAuthenticated (state, payload) {
+        console.log("mutatio");
         state.isAuthenticated = payload.isAuthenticated
       }
     },
@@ -38,12 +35,21 @@ export default ({
   
      
       login (context, payload) {
+      
+ 
         
-        vueAuth.login(payload.user, payload.requestOptions).then((response) => {
-          context.commit('isAuthenticated', {
-            isAuthenticated: vueAuth.isAuthenticated()
+        return new Promise((resolve, reject) => {
+          vueAuth.login(payload.user, payload.requestOptions).then((response) => {
+         
+            context.commit('isAuthenticated', {
+              isAuthenticated: vueAuth.isAuthenticated()
+              
+            })
+            resolve(response.data); 
           })
         })
+        
+        
   
       }
     }
