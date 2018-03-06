@@ -11,10 +11,20 @@
           <q-icon name="menu" />
         </q-btn>
 
-        <q-toolbar-title>
+       <q-toolbar-title>
           Canon Denizli
           <div slot="subtitle">Servis Takip v0.1</div>
         </q-toolbar-title>
+
+        <q-btn 
+          flat
+          dense
+          round
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        >
+          <q-icon name="timeline" />
+        </q-btn>
+
       </q-toolbar>
     </q-layout-header>
 
@@ -53,6 +63,38 @@
       </q-list>
     </q-layout-drawer>
 
+
+    <q-layout-drawer
+      side="right"
+      v-model="rightDrawerOpen"
+      content-class="bg-grey-2"
+     
+    >
+      <q-list
+        no-border
+        link
+        inset-delimiter
+      >
+        <q-list-header>Raporlar</q-list-header>
+          <q-item to="/raporlar/servis">
+          <q-item-main label="Servis Listesi" />
+          </q-item>
+          <q-item to="/raporlar/cari">
+            <q-item-main label="Cariye Göre liste" />
+          </q-item>
+        <q-item>
+          <q-item-main label="Bekleyen Servisler" />
+          </q-item>
+          <q-item>
+          <q-item-main label="Tamamlanan Servisler" />
+          </q-item>
+          <q-item>
+          <q-item-main label="Cihazlar" />
+          </q-item>
+        
+      </q-list>
+    </q-layout-drawer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -66,7 +108,8 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: false
+      leftDrawerOpen: false,
+      rightDrawerOpen: true,
     }
   },
   methods: {

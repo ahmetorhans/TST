@@ -41,9 +41,11 @@ class Users extends Controller
 
         //password değerini şifrelememiz gerekiyor. Laravel auth işlemlerinde default olarak bcrypt ile şifrelenmiş değere bakıyor
         $sonuc['password'] = bcrypt($sonuc['password']);
+        
 
         //kullanıcımızı oluşturalım.
         $user = User::create($sonuc);
+        
         $user = $user->toArray();
 
         $yetkiler = Request::input('yetkiler');
@@ -104,6 +106,8 @@ class Users extends Controller
         }
          */
 
+        $input['role'] = ($user['role'] = 'super') ? $input['role']='super' : $input['role']; 
+
         $user->fill($input)->save();
 
         //kullanıcımızı oluşturalım.
@@ -118,7 +122,7 @@ class Users extends Controller
     public function listUser()
     {
 
-        $users = User::orderBy('id', 'DESC')->with('yetkiler')->get();
+        $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->with('yetkiler')->get();
         return response()->json($users);
 
     }
@@ -147,11 +151,11 @@ class Users extends Controller
             }
 
         }
-        $yetki = \App\Yetkidefault::all();
+        $yetki = \App\Yetkidefault::orderBy('id', 'DESC')->get();
         return response()->json($yetki);
     }
 
-    public function sil()
+    public function deleteUser()
     {
         $id = Request::input('id');
 
@@ -172,15 +176,18 @@ class Users extends Controller
 
     public function yetki()
     {
+       // $this->yetkiDefault();
 
         $bolum = Request::input('bolum');
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
-        $yetkiler = Yetki::
-            leftJoin('users', 'yetkis.user_id', '=', 'users.id')
-            ->where('user_id', '=', $user['id'])
-            ->where('bolum', '=', $bolum)
+        $yetkiler = User::
+            leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
+            ->where('users.id', '=', $user['id'])
+            ->where('yetkis.bolum', '=', $bolum)
             ->first(['role', 'giris', 'bolum', 'bolumAdi', 'yeni', 'duzelt', 'sil']);
+
+            
         return response()->json($yetkiler);
 
     }

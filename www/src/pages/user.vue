@@ -1,9 +1,9 @@
 <template>
   <q-page v-if="guard.giris">
-   <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'550px'}">
+   <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'600px'}">
      <q-modal-layout>
         
-        <q-toolbar slot="header">
+        <q-toolbar slot="header" color="secondary">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
            <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
@@ -55,7 +55,7 @@
                  <table>
                    <tr width="98%">
                      <td width="40%"></td>
-                     <td width="18%">Giriş</td>
+                     <td width="20%">Giriş</td>
                      <td width="18%">Yeni</td>
                      <td width="18%">Düzelt</td>
                      <td width="18%">Sil</td>
@@ -71,10 +71,10 @@
                  </table>
              
               </q-field>
-
+              <br /><br />
                <q-field class="fip">
-                 <q-btn color="primary" @click="submit">Kaydet</q-btn>
-                 <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentUser.id)">sil</q-btn>
+                 <q-btn color="secondary" @click="submit">Kaydet</q-btn>
+                 <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
               </q-field>
         </div>
  </q-modal-layout>
@@ -84,7 +84,7 @@
     <div class="row q-pa-sm" >
        <div class="col-xs-12 col-md-12" >
         
-          <q-toolbar slot="header" color="dark">
+          <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
            <q-btn v-if="guard.yeni" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
             
@@ -93,13 +93,13 @@
         <q-search
           v-model="filterText"
           :debounce="600"
-          placeholder="Kullanıcı Ara"
+          placeholder="Adı veya eposta adresine göre ara"
           icon="search"
           float-label="Ara"
         />
         <q-list highlight inset-separator>
           <q-item  v-for="item of filteredData" :key="item.id">
-           <q-item-side left icon="person_pin" />
+           <q-item-side left icon="face" />
             <q-item-main
               :label=item.name
               label-lines="1"
@@ -131,7 +131,7 @@ import axios from "axios";
 import store from "../store";
 import notify from "./notify";
 
-export default {
+const module = {
   data() {
     return {
       //file upload
@@ -167,28 +167,15 @@ export default {
 
       selectOptions: [
         { label: "Yönetici", value: "admin" },
-        { label: "Servis Kullanıcısı", value: "user" },
-        { label: "Operator", value: "opr" }
+        { label: "Kullanıcı", value: "user" }
+        
       ]
     };
   },
 
   created() {
     this.getUserList();
-    axios
-      .get(this.apiUrl + "yetkiler?bolum=kullanici")
-      .then(response => {
-        if (response.data.role == "super") {
-          response.data.giris = "1";
-          response.data.yeni = "1";
-          response.data.duzelt = "1";
-          response.data.sil = "1";
-        }
-        this.guard = response.data;
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
+    this.getRole();
   },
 
   watch: {
@@ -200,6 +187,23 @@ export default {
   },
 
   methods: {
+    getRole() {
+      axios
+        .get(this.apiUrl + "yetkiler?bolum=kullanici")
+        .then(response => {
+          console.log(response.data);
+          if (response.data.role == "super") {
+            response.data.giris = "1";
+            response.data.yeni = "1";
+            response.data.duzelt = "1";
+            response.data.sil = "1";
+          }
+          this.guard = response.data;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
     sil(id) {
       this.$q
         .dialog({
@@ -210,16 +214,15 @@ export default {
         })
         .then(() => {
           axios
-            .get(this.apiUrl + "sil?id=" + id)
+            .get(this.apiUrl + "deleteUser?id=" + id)
             .then(response => {
-              if (response.data.status === true){
-                 let index = this.users.findIndex(x => x.id === id);
-               
-                 this.users.splice(index,1);
-                 console.log(this.users)
-                 notify(response.data.msg);
-              } 
-              else notify(response.data.msg,true);
+              if (response.data.status === true) {
+                let index = this.users.findIndex(x => x.id === id);
+
+                this.users.splice(index, 1);
+                this.userModal = false;
+                notify(response.data.msg);
+              } else notify(response.data.msg, true);
             })
             .catch(e => {
               this.errors.push(e);
@@ -283,6 +286,8 @@ export default {
         this.yetkiler = this.users[index].yetkiler;
       else this.yetkiler = this.defaultYetkiler();
 
+      console.log(this.yetkiler);
+
       this.errors = {};
 
       this.userModal = true;
@@ -303,7 +308,7 @@ export default {
       //currentuser'a yetkileri ata..
       this.currentUser.yetkiler = this.yetkiler;
       axios
-        .post("http://localhost:8000/api/register", this.currentUser)
+        .post(this.apiUrl+"register", this.currentUser)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;
@@ -321,6 +326,8 @@ export default {
 
             this.userModal = false;
 
+            this.getRole();
+
             notify(res.data.msg);
           }
         })
@@ -337,14 +344,16 @@ export default {
     //kullanıcı listesindan ara..
     filteredData() {
       if (!this.filterText) return this.users;
-      let searchText = this.filterText.toLowerCase();
+      let searchText = this.filterText.toLocaleLowerCase('tr-TR');
       return this.users.filter(p => {
         return (
-          p.name.toLowerCase().includes(searchText) ||
-          p.email.toLowerCase().includes(searchText)
+         p.name!==null ? p.name.toLocaleLowerCase('tr-TR').includes(searchText) :'' ||
+         p.email!==null ? p.email.toLocaleLowerCase('tr-TR').includes(searchText) :''
         );
       });
     }
   }
 };
+
+export default module;
 </script>

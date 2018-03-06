@@ -39,6 +39,7 @@ module.exports = function (ctx) {
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
+      i18n: 'tr',
       components: [
         'QLayout',
         'QLayoutHeader',
@@ -51,9 +52,13 @@ module.exports = function (ctx) {
         'QIcon',
         'QList',
         'QListHeader',
+
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemSeparator',
+        'QItemTile',
+
         'QInput',
         'QCard',
         'QTable',
@@ -71,6 +76,14 @@ module.exports = function (ctx) {
         'QCardActions',
         'QAlert',
         'QCheckbox',
+        'QTabs',
+        'QTab',
+        'QTabPane',
+        'QRouteTab',
+
+        'QAutocomplete',
+
+        'QAjaxBar'
       ],
       directives: [
         'Ripple'

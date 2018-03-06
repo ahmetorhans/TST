@@ -30,8 +30,8 @@ class HomeController extends Controller
     }
 
     public function test(){
-        $comments = User::with('yetkiler')->find(18);
-         print_r($comments->toArray());
+        $users = User::orderBy('id', 'DESC')->where('musteri','1')->with('cariler')->get();
+        print_r($users->toArray());
         
     }
 }

@@ -2,9 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './routes'
 import store from '../store'
+import VueFilter from 'vue-filter';
+import config from '../config';
+Vue.use(VueFilter); 
 Vue.use(VueRouter);
 
-Vue.prototype.apiUrl ='http://localhost:8000/api/';
+Vue.prototype.apiUrl = config.apiUrl;
+
 
 const Router = new VueRouter({
 

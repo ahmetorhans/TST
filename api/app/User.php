@@ -30,4 +30,8 @@ class User extends Authenticatable
     public function yetkiler(){
         return $this->hasMany('App\Yetki');
     }
+
+    public function cariler(){
+        return $this->hasOne('App\Cari');
+    }
 }
