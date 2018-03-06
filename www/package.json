@@ -23,7 +23,7 @@
     "electron-debug": "1.4.0",
     "electron-devtools-installer": "2.2.1",
     "electron-packager": "9.1.0",
-    "quasar-cli": "0.15.4"
+    "quasar-cli": "0.15.2"
   },
   "engines": {
     "node": ">= 8.9.0",
