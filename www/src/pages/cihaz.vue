@@ -322,7 +322,7 @@ const module = {
 
       axios.get(this.apiUrl + "getCihaz/" + id).then(response => {
         this.currentCihaz = response.data;
-     });
+      });
 
       /*
    

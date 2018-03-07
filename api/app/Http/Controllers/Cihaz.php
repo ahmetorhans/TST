@@ -76,11 +76,16 @@ class Cihaz extends Controller
         $cihaz = \App\Cihaz::
              leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
             ->orderBy('cihazs.id', 'DESC')
-            ->get(['cihazs.id','cihazs.adi','marka','model','serino','cihazs.aciklama','barkod','sayac','caris.adi as cariAdi','caris.id as cari_id']);
+            ->get(['cihazs.id','cihazs.adi','marka','model','serino','cihazs.aciklama','caris.adi as cariAdi']);
       
 
         return response()->json($cihaz);
 
+    }
+
+    public function getCihaz($id){
+        $cihaz = \App\Cihaz::find($id);
+        return response()->json($cihaz);
     }
 
     public function deleteCihaz()

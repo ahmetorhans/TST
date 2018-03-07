@@ -5,6 +5,7 @@
 /api/vendor
 /api/.env
 /xsil
+/dist
 
 .idea
 .vscode

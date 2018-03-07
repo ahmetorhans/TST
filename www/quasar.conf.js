@@ -39,7 +39,7 @@ module.exports = function (ctx) {
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
-      i18n: 'tr',
+      i18n: 'en-us',
       components: [
         'QLayout',
         'QLayoutHeader',

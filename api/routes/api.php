@@ -28,11 +28,16 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('upload', 'Upload@uploadFile');
 
     Route::get('listCari', 'Cari@listCari');
+    Route::get('listShortCari', 'Cari@listShortCari');
+    Route::get('getCari/{id}', 'Cari@getCari');
     Route::post('newCari', 'Cari@newCari');
     Route::get('deleteCari', 'Cari@deleteCari');
 
     Route::get('listCihaz', 'Cihaz@listCihaz');
     Route::post('newCihaz', 'Cihaz@newCihaz');
     Route::get('deleteCihaz', 'Cihaz@deleteCihaz');
+    Route::get('getCihaz/{id}', 'Cihaz@getCihaz');
+
+
     
 });

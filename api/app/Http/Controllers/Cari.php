@@ -24,7 +24,7 @@ class Cari extends Controller
         }
 
         //kullanıcı kaydı açılacak  mı?
-        if (!empty(Request::input('email')) && !empty(Request::input('password')) ) {
+        if (!empty(Request::input('email')) && !empty(Request::input('password'))) {
             $validator = Validator::make(Request::all(), [
                 'adi' => 'required|min:3',
                 'email' => 'required|email|unique:users',
@@ -42,7 +42,7 @@ class Cari extends Controller
         }
 
         //email ve password varsa yeni kullanıcı aç
-        if (!empty(Request::input('email')) && !empty(Request::input('password')) ) {
+        if (!empty(Request::input('email')) && !empty(Request::input('password'))) {
 
             $sonuc['password'] = bcrypt($sonuc['password']);
 
@@ -112,7 +112,7 @@ class Cari extends Controller
         } else {
             //user kaydı yok..
             //login ol seçilmişsee.
-            if (!empty(Request::input('email')) && !empty(Request::input('password')) ) {
+            if (!empty(Request::input('email')) && !empty(Request::input('password'))) {
                 $validator = Validator::make(Request::all(), [
                     'adi' => 'required|min:3,',
                     'email' => 'required|email|unique:users',
@@ -148,31 +148,46 @@ class Cari extends Controller
         $cari = \App\Cari::
             leftJoin('users', 'caris.user_id', '=', 'users.id')
             ->orderBy('caris.id', 'asc')
-            ->take(5000)
-            ->get(['caris.id', 'adi', 'adres', 'telefon', 'email', 'vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login']);
+            ->get(['caris.id', 'adi',  'yetkili']);
 
+        return response()->json($cari);
+
+    }
+    public function getCari($id)
+    {
+        $cari = \App\Cari::
+            leftJoin('users', 'caris.user_id', '=', 'users.id')
+            ->orderBy('caris.id', 'asc')
+            ->where('caris.id',$id)
+            ->first(['caris.id', 'adi', 'adres', 'telefon', 'email', 'vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login']);
 
         return response()->json($cari);
 
     }
 
-   
+    public function listShortCari()
+    {
+        $cari = \App\Cari::
+            orderBy('id', 'asc')
+            ->get(['id', 'adi']);
+
+        return response()->json($cari);
+
+    }
 
     public function deleteCari()
     {
         $id = Request::input('id');
-   
+
         $cari = \App\Cari::find($id);
         $cari->delete();
 
-        
-        if ($cari->user_id){
+        if ($cari->user_id) {
             $user = \App\User::find($cari->user_id);
             $user->delete();
         }
-        
-           
-                return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi'));
+
+        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi'));
 
     }
 
