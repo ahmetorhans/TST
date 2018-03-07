@@ -7,7 +7,7 @@
 
 <script>
 
-
+console.log("noteoo");
 
 export default {
   name: 'App'
