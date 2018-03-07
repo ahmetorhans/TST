@@ -28,7 +28,7 @@
         link
         inset-delimiter
       >
-        <q-list-header>Nazmi Kor</q-list-header>
+        <q-list-header>...</q-list-header>
          <q-item to="/servisler" class="qitemH">
             <q-item-side icon="store" /> 
             <q-item-main label="Servis"  />
@@ -37,7 +37,7 @@
             <q-item-side icon="recent actors" /> 
             <q-item-main label="Cari"  />
         </q-item>
-        <q-item to="/raporlar" class="qitemH">
+        <q-item to="/raporlar/servis" class="qitemH">
             <q-item-side icon="timeline" /> 
             <q-item-main label="Rapor"  />
         </q-item>

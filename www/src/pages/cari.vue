@@ -107,7 +107,7 @@
   
     <div class="row q-pa-sm" >
        <div class="col-xs-12 col-md-12" >
-        {{ $route.params.cari }}
+       
           <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
          <q-btn v-if="guard.yeni" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
@@ -124,7 +124,7 @@
         
         
         <q-list highlight inset-separator>
-          <q-item  v-for="item of filteredData.slice(0,300)" :key="item.id">
+          <q-item  v-for="item of filteredData.slice(0,100)" :key="item.id">
               <q-item-side left icon="person_pin" />
 
              
@@ -269,10 +269,11 @@ const module = {
         .get(this.apiUrl + "listCari")
         .then(response => {
           this.cariler = response.data;
-          console.log(response.data);
+          
           if (this.$route.params.cari) {
             this.rowClick(parseInt(this.$route.params.cari));
           }
+            console.log(response.data);
         })
         .catch(e => {
           this.errors.push(e);
@@ -318,8 +319,12 @@ const module = {
       let index = this.cariler.findIndex(x => x.id === id);
 
       this.id = index;
-
-      this.currentCari = Object.assign({}, this.cariler[index]);
+    
+     // this.currentCari = Object.assign({}, this.cariler[index]);
+      axios.get(this.apiUrl + "getCari/" + id).then(response => {
+        this.currentCari = response.data;
+      
+      });
 
       this.errors = {};
 

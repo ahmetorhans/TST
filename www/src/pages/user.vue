@@ -174,8 +174,10 @@ const module = {
   },
 
   created() {
-    this.getUserList();
+    
     this.getRole();
+    this.getUserList();
+    
   },
 
   watch: {

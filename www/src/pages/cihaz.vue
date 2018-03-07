@@ -8,9 +8,6 @@
            <q-btn flat round dense @click="modal = false" wait-for-ripple icon="close" />
        
         </q-toolbar>
-       
-          
-        
               <div class="layout-padding">
          
                 <div class="row"> 
@@ -152,6 +149,8 @@ const module = {
       //tıklanınca alınan index değer. users[index]
       id: "",
 
+      index:'',
+
       errors: {},
 
       //detay
@@ -173,9 +172,9 @@ const module = {
   },
 
   created() {
-    //cari liste..
-    this.getList();
     this.getRole();
+
+    this.getList();
   },
 
   watch: {
@@ -187,17 +186,15 @@ const module = {
   },
 
   methods: {
+    //autocompolete için..
     searched(terms, done) {
-     
       if (this.cariList.length == 0) {
         axios
-          .get(this.apiUrl + "listCari")
+          .get(this.apiUrl + "listShortCari")
           .then(response => {
+            console.log(response.data)
             this.cariList = response.data;
-           
-         
-              this.autocomplete(terms, done);
-           
+            this.autocomplete(terms, done);
           })
           .catch(e => {
             console.log(e);
@@ -207,6 +204,7 @@ const module = {
       }
     },
 
+    //from searched..
     autocomplete(terms, done) {
       let searchText = this.currentCihaz.cariAdi.toLocaleLowerCase("tr-TR");
 
@@ -225,6 +223,7 @@ const module = {
       return done(arr);
     },
 
+    //autocomplete seçilen..
     selected(item) {
       this.currentCihaz.cariAdi = item.label;
       this.currentCihaz.cari_id = item.value;
@@ -272,7 +271,7 @@ const module = {
             });
         });
     },
-
+    //Tüm Liste..
     getList() {
       axios
         .get(this.apiUrl + "listCihaz")
@@ -316,13 +315,20 @@ const module = {
       if (this.guard.duzelt == 0) {
         return;
       }
+      
       //id'den users'daki indexi bul..
       let index = this.cihazlar.findIndex(x => x.id === id);
-
       this.id = index;
 
-      this.currentCihaz = Object.assign({}, this.cihazlar[index]);
+      axios.get(this.apiUrl + "getCihaz/" + id).then(response => {
+        this.currentCihaz = response.data;
+     });
 
+      /*
+   
+
+      this.currentCihaz = Object.assign({}, this.cihazlar[index]);
+      */
       this.errors = {};
 
       this.modal = true;
@@ -336,7 +342,7 @@ const module = {
       //currentCihaz'a yetkileri ata..
       this.currentCihaz.yetkiler = this.yetkiler;
       axios
-        .post(this.apiUrl+"newCihaz", this.currentCihaz)
+        .post(this.apiUrl + "newCihaz", this.currentCihaz)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;
@@ -372,24 +378,20 @@ const module = {
     },
     //kullanıcı listesindan ara..
     filteredData() {
-     
-     
       if (!this.filterText) return this.cihazlar;
 
       let searchText = this.filterText.toLocaleLowerCase("tr-TR");
-         
+
       return this.cihazlar.filter(p => {
-        p.serino===null ?  p.serino='' : p.serino;
-        p.barkod===null ? p.barkod='' : p.barkod;
-        p.cariAdi===null ? p.cariAdi='' : p.cariAdi;
+        p.serino === null ? (p.serino = "") : p.serino;
+        p.barkod === null ? (p.barkod = "") : p.barkod;
+        p.cariAdi === null ? (p.cariAdi = "") : p.cariAdi;
 
         return (
-          p.serino.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 || 
-          p.barkod.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 || 
-          p.cariAdi.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1  
- 
-        )
-         
+          p.serino.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 ||
+          p.barkod.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 ||
+          p.cariAdi.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1
+        );
       });
     }
   }
