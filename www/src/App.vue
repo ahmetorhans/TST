@@ -9,6 +9,8 @@
 
 console.log("noteoo");
 
+console.log("1")
+
 export default {
   name: 'App'
 }
