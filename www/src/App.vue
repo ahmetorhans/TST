@@ -7,7 +7,8 @@
 
 <script>
 
-
+console.log("nc");
+alert("asd")
 
 export default {
   name: 'App'
