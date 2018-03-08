@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { Platform } from 'quasar'
 
 
 export default {
