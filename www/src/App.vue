@@ -7,7 +7,7 @@
 
 <script>
 import { Platform } from 'quasar'
-
+console.log("v0.4")
 
 export default {
   name: 'App'
