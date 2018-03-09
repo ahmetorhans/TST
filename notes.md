@@ -1,5 +1,6 @@
 git remote local karşılaştır..<br />
-#git diff @{upstream}<br />
+#git diff @{upstream}
+<br />
 
 <br /><br />
 remote add user pass<br />
