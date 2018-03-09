@@ -1,0 +1,16 @@
+.quasar
+.DS_Store
+.thumbs.db
+/www/node_modules
+/api/vendor
+/api/.env
+/xsil
+/dist
+
+
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
