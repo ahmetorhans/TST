@@ -242,7 +242,9 @@ const module = {
           this.guard = response.data;
         })
         .catch(e => {
-          this.errors.push(e);
+          console.log(e)
+         
+          
         });
     },
 
