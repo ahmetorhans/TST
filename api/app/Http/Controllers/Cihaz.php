@@ -92,9 +92,7 @@ class Cihaz extends Controller
     {
         $cihaz = \App\Cihaz::find( Request::input('id'));
         $cihaz->delete();
-
-
-        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi'));
+        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi','id'=> $cihaz->id));
 
     }
 
