@@ -84,15 +84,15 @@ class Cihaz extends Controller
     }
 
     public function getCihaz($id){
-        $cihaz = \App\Cihaz::find($id);
-        return response()->json($cihaz);
+       
+        return response()->json(\App\Cihaz::find($id));
     }
 
     public function deleteCihaz()
     {
         $cihaz = \App\Cihaz::find( Request::input('id'));
         $cihaz->delete();
-        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi','id'=> $cihaz->id));
+        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi','id'=>  $cihaz->id));
 
     }
 
