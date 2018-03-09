@@ -90,9 +90,10 @@ class Cihaz extends Controller
 
     public function deleteCihaz()
     {
-        $id = Request::input('id');
+        $cihazId = Request::input('id');
 
-        $cihaz = \App\Cihaz::find($id);
+        $cihaz = \App\Cihaz::find($cihazId);
+        
         $cihaz->delete();
 
 
