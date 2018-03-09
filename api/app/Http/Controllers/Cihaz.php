@@ -87,7 +87,11 @@ class Cihaz extends Controller
        
         return response()->json(\App\Cihaz::find($id));
     }
-
+    /**
+     * Delete
+     *
+     * @return json array
+     */
     public function deleteCihaz()
     {
             
