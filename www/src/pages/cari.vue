@@ -241,6 +241,8 @@ const module = {
       axios
         .get(this.apiUrl + "yetkiler?bolum=cari")
         .then(response => {
+          console.log(response.status)
+          
           if (response.data.role == "super") {
             response.data.giris = "1";
             response.data.yeni = "1";
@@ -250,7 +252,8 @@ const module = {
           this.guard = response.data;
         })
         .catch(e => {
-          this.errors.push(e);
+         
+            console.log(e)
         });
     },
     sil(id) {
