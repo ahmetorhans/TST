@@ -24,6 +24,15 @@ export default [
     ]
   },
   {
+    path: '/servisler/:servis*',
+     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
+    children: [
+ 
+      { path: '', component: () => import('pages/servis') }
+      
+    ]
+  },
+  {
     path: '/cihazlar',
      component: () => import('layouts/default'), meta: { requiresAuth: true }, 
     children: [

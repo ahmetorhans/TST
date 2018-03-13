@@ -4,10 +4,7 @@
 /www/node_modules
 /api/vendor
 /api/.env
-/xsil
-/dist
-
-
+/www/dist
 .idea
 .vscode
 *.suo

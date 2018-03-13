@@ -127,6 +127,14 @@ class Users extends Controller
 
     }
 
+    public function listeleTeknisyen()
+    {
+
+        $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->get(['id as value','name as label']);
+        return response()->json($users);
+
+    }
+
     public function yetkiDefault()
     {
 

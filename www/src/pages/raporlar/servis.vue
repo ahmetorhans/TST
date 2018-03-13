@@ -33,7 +33,7 @@
                 </q-tr>
             </q-table>
 
-            <q-btn @click="okey">Okey</q-btn>
+            
                 
         </div>
     </div>

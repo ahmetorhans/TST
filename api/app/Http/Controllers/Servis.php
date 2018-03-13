@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use Request;
 use Validator;
 
-class Cihaz extends Controller
+class Servis extends Controller
 {
     /**
      * Ekle
@@ -45,7 +44,7 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function updateCihaz ()
+    public function updateCihaz()
     {
 
         $cihaz = \App\Cihaz::find(Request::input('id'));
@@ -71,42 +70,22 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function listCihaz()
+    public function listServis()
     {
-        $cihaz = \App\Cihaz::
-             leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
-            ->orderBy('cihazs.id', 'DESC')
-            ->get(['cihazs.id','cihazs.adi','marka','model','serino','cihazs.aciklama','caris.adi as cariAdi','barkod']);
-      
+        $servisler = \App\Servis::
+            leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
+            ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
+            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu']);
 
-        return response()->json($cihaz);
-
+        return response()->json($servisler);
     }
 
-    public function getCihaz($id){
-       
-        return response()->json(\App\Cihaz::find($id));
-    }
-
-    public function listShortCihaz()
+    public function getServis($id)
     {
-        $cihaz = \App\Cihaz::
-            orderBy('id', 'asc')
-            ->get(['id', 'adi','marka','model','serino']);
 
-        return response()->json($cihaz);
+        $servisler = \App\Servis::find($id);
 
-    }
-
-    public function listShortCihazId($id)
-    {
-        $cihaz = \App\Cihaz::
-            orderBy('id', 'asc')
-            ->where('cari_id',$id)
-            ->get(['id', 'adi','marka','model','serino','aciklama']);
-
-        return response()->json($cihaz);
-
+        return response()->json(array('cari' => $servisler->getCari, 'cihaz' => $servisler->getCihaz, 'servis' => $servisler));
     }
     /**
      * Delete
@@ -115,11 +94,11 @@ class Cihaz extends Controller
      */
     public function deleteCihaz()
     {
-            
+
         $cihaz = \App\Cihaz::find(Request::input('id'));
 
         $cihaz->delete();
-        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi','id'=>  $cihaz->id));
+        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi', 'id' => $cihaz->id));
 
     }
 

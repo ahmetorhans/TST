@@ -1,6 +1,6 @@
 <template>
   <q-page v-if="guard.giris">
-   <q-modal  v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'99vh'}">
+   <q-modal  v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'90vh'}">
      <q-modal-layout>
         
         <q-toolbar slot="header" color="secondary">
@@ -9,8 +9,8 @@
        
         </q-toolbar>
               <div class="layout-padding">
-         
                 <div class="row"> 
+                  
                   <div class="col-sm-10">
                       <q-field label="Firma Adı" :label-width="3" >
                             <q-search v-model="currentCihaz.cariAdi" placeholder="Firma Seçin..">
@@ -18,9 +18,11 @@
                             </q-search>
                           <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
                       </q-field>
+                      
                       <q-field label="Cihaz Adı" :label-width="3" class="fip">
                           <q-input v-model="currentCihaz.adi"  />
                       </q-field>
+                      
                       <q-field label="Marka" :label-width="3" class="fip">
                           <q-input v-model="currentCihaz.marka"  />
                       </q-field>
@@ -28,38 +30,66 @@
                       <q-field label="Model" :label-width="3" class="fip">
                           <q-input v-model="currentCihaz.model"  />
                       </q-field>
+                    
                       <q-field label="Serino" :label-width="3" class="fip">
                           <q-input v-model="currentCihaz.serino"  />
                       </q-field>
+                      <q-field label="Barkod" :label-width="3" class="fip">
+                          <q-input v-model="currentCihaz.barkod"  />
+                      </q-field>
                       
-                        <div class="col-sm-6">
-                              <q-field label="Barkod" :label-width="3" class="fip">
-                                  <q-input v-model="currentCihaz.barkod"  />
-                              </q-field>
-                        </div>
-                        <div class="col-sm-6">
-                              <q-field label="Sayaç" :label-width="3" class="fip">
-                                  <q-input v-model="currentCihaz.sayac"  />
-                              </q-field>
-                        </div>
- 
-                     <q-field label="Açıklama" :label-width="3" class="fip">
+                      <q-field label="Sayaç" :label-width="3" class="fip">
+                          <q-input v-model="currentCihaz.sayac"  />
+                      </q-field>
+
+                      <q-field label="Açıklama" :label-width="3" class="fip">
                           <q-input  type="textarea" v-model="currentCihaz.aciklama"  />
                       </q-field>
-           
-                    <br />
+                    
+                      <q-field label="Cihaz Fatura No" :label-width="3" class="fip">
+                          <q-input v-model="currentCihaz.garantiFatura"  />
+                      </q-field>
+                     
+                     <div class="row">
+                            <div class="col-sm-6 q-pr-sm">
+                                <q-field label="Garanti Bitiş Tarihi" :label-width="6" class="fip">
+                                  <q-datetime v-model="currentCihaz.garantiTarih" type="date" />
+                                </q-field>
+                            </div>
+                            <div class="col-sm-6 q-pr-sm">
+                              <q-field label="Garanti Süresi" :label-width="6" class="fip">
+                                  <q-input v-model="currentCihaz.garantiSure" type="number" suffix="Yıl"  />
+                              </q-field>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 q-pr-sm">
+                              <q-field label="Alış Fiyatı" :label-width="6" class="fip">
+                                <q-input v-model="currentCihaz.fiyatAlis" type="number" suffix="TL" />
+                              </q-field>
+                            </div>
+                            <div class="col-sm-6 q-pr-sm">
+                              <q-field label="Satış Fiyatı" :label-width="6" class="fip">
+                                <q-input v-model="currentCihaz.fiyatSatis"  type="number" suffix="TL"/>
+                              </q-field>
+                            </div>
+                        </div>
+                      
+                      
+                      <br />
+
                       <q-field class="fip">
                         <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
                         <span v-if="currentCihaz.id">
                             <q-btn align="right"  icon="delete" v-if="guard.sil" color="negative" @click="sil(currentCihaz.id)"></q-btn>
                         </span>
                       </q-field>
-                </div>
-                
+                  </div>
+                  <div class="col-sm-2">
+                  </div>
               </div> 
-              
             </div>
-  
  </q-modal-layout>
 </q-modal>
   
@@ -74,16 +104,34 @@
         <q-search
           v-model="filterText"
           :debounce="600"
-          placeholder="Seri no veya barkod"
+          placeholder="Seri No, Barkod, Cari Adı"
           icon="search"
           float-label="Ara"
         />  
 
         <q-list highlight inset-separator>
+          <q-item class="desktop-only">
+                   <q-item-side left />
+                    <q-item-main
+                    label-lines="1"
+                    sublabel-lines="1"
+                    dense
+                  
+                    > 
+                    <q-item-tile sublabel>
+                        <div class="row">
+                            <div class="col-md-1 listCol desktop-only" >Cihaz No </div>
+                            <div class="col-md-2 listCol">Marka / Model </div>
+                            <div class="col-md-2 listCol">Serino </div>
+                            <div class="col-md-5 listCol">Açıklama </div>
+                            <div class="col-md-2 listCol">Firma </div>
+                            
+                        </div>
+                        </q-item-tile>
+                </q-item-main>
+            </q-item>
             <q-item  v-for="item of filteredData.slice(0,300)" :key="item.id">
-               
               <q-item-side left icon="devices" />
-
                 <q-item-main
                   :label=item.adi
                   label-lines="1"
@@ -91,12 +139,18 @@
                   dense
                   @click.native="rowClick(item.id)"
                 > 
-                
-                <q-item-tile sublabel>{{item.marka}}  {{item.model}} </q-item-tile>
-                <q-item-tile sublabel>{{item.aciklama}}</q-item-tile>
-                <q-item-tile sublabel class="mobile-only"> {{item.cariAdi}}</q-item-tile>
+                <q-item-tile sublabel>
+                    <div class="row">
+                        <div class="col-md-1 listCol desktop-only">{{item.id}} </div>
+                        <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
+                        <div class="col-md-2 listCol">{{item.serino}} </div>
+                        <div class="col-md-5 listCol">{{item.aciklama}} </div>
+                          <div class="col-md-2 listCol">{{item.cariAdi}} </div>
+                    </div>
+                </q-item-tile>
+               
               </q-item-main>
-              <q-item-side class="desktop-only" right  @click.native="rowClick(item.id)" >{{item.cariAdi}}</q-item-side>
+              
             </q-item>
         </q-list>
     
@@ -149,7 +203,7 @@ const module = {
       //tıklanınca alınan index değer. users[index]
       id: "",
 
-      index:'',
+      index: "",
 
       errors: {},
 
@@ -192,7 +246,7 @@ const module = {
         axios
           .get(this.apiUrl + "listShortCari")
           .then(response => {
-            console.log(response.data)
+            console.log(response.data);
             this.cariList = response.data;
             this.autocomplete(terms, done);
           })
@@ -242,9 +296,7 @@ const module = {
           this.guard = response.data;
         })
         .catch(e => {
-          console.log(e)
-         
-          
+          console.log(e);
         });
     },
 
@@ -314,8 +366,6 @@ const module = {
 
     //kullanıcı seçilince index den mevcut değerleri currentCihaz'a at..
     rowClick(id) {
-     
-      
       //id'den users'daki indexi bul..
       let index = this.cihazlar.findIndex(x => x.id === id);
       this.id = index;
@@ -393,6 +443,8 @@ const module = {
       if (!this.filterText) return this.cihazlar;
 
       let searchText = this.filterText.toLocaleLowerCase("tr-TR");
+
+      console.log(this.cihazlar)
 
       return this.cihazlar.filter(p => {
         p.serino === null ? (p.serino = "") : p.serino;

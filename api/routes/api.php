@@ -19,6 +19,7 @@ Route::get('test', 'HomeController@test');
 
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('userList', 'Users@listUser');
+    Route::get('listeleTeknisyen', 'Users@listeleTeknisyen');
     Route::post('register', 'Users@newUser');
     Route::get('yetkiler', 'Users@yetki');
 
@@ -37,6 +38,14 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('newCihaz', 'Cihaz@newCihaz');
     Route::get('deleteCihaz', 'Cihaz@deleteCihaz');
     Route::get('getCihaz/{id}', 'Cihaz@getCihaz');
+    Route::get('listShortCihaz', 'Cihaz@listShortCihaz');
+    Route::get('listShortCihazId/{id}', 'Cihaz@listShortCihazId');
+
+    Route::get('listServis', 'Servis@listServis');
+    Route::post('newServis', 'Servis@newServis');
+    Route::get('deleteServis', 'Servis@deleteServis');
+    Route::get('getServis/{id}', 'Servis@getServis');
+    
 
 
     

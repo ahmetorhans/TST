@@ -22,7 +22,7 @@ class CreateCarisTable extends Migration
             $table->string('vergiNo',50)->nullable();
             $table->string('vergiDairesi',50)->nullable();
             $table->text('aciklama')->nullable();
-            $table->boolean('durum')->nullable();
+            $table->string('durum',1)->nullable();
             $table->string('eposta',100)->nullable();
             $table->integer('user_id')->nullable();
             $table->boolean('login')->nullable();

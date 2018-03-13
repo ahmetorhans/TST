@@ -50,7 +50,10 @@
         <q-item to="/raporlar" class="qitemH">
             <q-item-side icon="timeline" /> 
             <q-item-main label="Rapor"  />
+            
         </q-item>
+       
+            
           <q-item to="/cihazlar" class="qitemH">
             <q-item-side icon="devices" /> 
             <q-item-main label="Cihazlar"  />
@@ -70,29 +73,7 @@
       content-class="bg-grey-2"
      
     >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
-        <q-list-header>Raporlar</q-list-header>
-          <q-item to="/raporlar/servis">
-          <q-item-main label="Servis Listesi" />
-          </q-item>
-          <q-item to="/raporlar/cari">
-            <q-item-main label="Cariye Göre liste" />
-          </q-item>
-        <q-item>
-          <q-item-main label="Bekleyen Servisler" />
-          </q-item>
-          <q-item>
-          <q-item-main label="Tamamlanan Servisler" />
-          </q-item>
-          <q-item>
-          <q-item-main label="Cihazlar" />
-          </q-item>
-        
-      </q-list>
+      <rapor-item />
     </q-layout-drawer>
 
     <q-page-container>
@@ -103,17 +84,20 @@
 
 <script>
 import { openURL } from 'quasar'
-
+import raporItem from '../pages/raporlar/raporItem'
 export default {
   name: 'LayoutDefault',
   data () {
     return {
-      leftDrawerOpen: false,
-      rightDrawerOpen: true,
+      leftDrawerOpen: true,
+      rightDrawerOpen: false,
     }
   },
   methods: {
     openURL
+  },
+  components:{
+    raporItem
   }
 }
 </script>

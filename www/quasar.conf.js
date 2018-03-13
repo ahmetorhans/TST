@@ -80,11 +80,9 @@ module.exports = function (ctx) {
         'QTab',
         'QTabPane',
         'QRouteTab',
-
         'QAutocomplete',
-
         'QAjaxBar',
-        
+        'QDatetime',
         'QBtnToggle'
       ],
       directives: [

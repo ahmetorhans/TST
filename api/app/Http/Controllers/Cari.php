@@ -24,6 +24,8 @@ class Cari extends Controller
             return $this->updateCari();
         }
 
+        
+
         //kullanıcı kaydı açılacak  mı?
         if (!empty(Request::input('email')) && !empty(Request::input('password'))) {
             $validator = Validator::make(Request::all(), [
@@ -149,7 +151,7 @@ class Cari extends Controller
         $cari = \App\Cari::
             leftJoin('users', 'caris.user_id', '=', 'users.id')
             ->orderBy('caris.id', 'asc')
-            ->get(['caris.id', 'adi',  'yetkili']);
+            ->get(['caris.id', 'adi',  'yetkili','adres','telefon']);
 
         return response()->json($cari);
 
@@ -160,7 +162,7 @@ class Cari extends Controller
             leftJoin('users', 'caris.user_id', '=', 'users.id')
             ->orderBy('caris.id', 'asc')
             ->where('caris.id',$id)
-            ->first(['caris.id', 'adi', 'adres', 'telefon', 'email', 'vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login','turu']);
+            ->first(['caris.id', 'adi', 'adres', 'telefon', 'email', 'eposta','vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login','turu']);
 
         return response()->json($cari);
 
@@ -170,7 +172,7 @@ class Cari extends Controller
     {
         $cari = \App\Cari::
             orderBy('id', 'asc')
-            ->get(['id', 'adi']);
+            ->get(['id', 'adi','telefon','yetkili']);
 
         return response()->json($cari);
 

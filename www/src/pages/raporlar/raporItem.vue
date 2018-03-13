@@ -20,3 +20,12 @@
 </q-list>
 </div>
 </template>
+<script>
+export default {
+  data(){
+    return{
+      title:'Raporlar'
+    }
+  }
+}  
+</script>

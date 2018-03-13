@@ -7,14 +7,7 @@
           <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
            <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
-        <q-tabs color="faded" inverted v-model="selectedTab">
-          
-        <q-tab default slot="title" name="tab-1"  label="Bilgiler" />
-         <q-tab v-if="currentCari.id" slot="title" name="tab-2"  label="Servisler" />
-         <q-tab v-if="currentCari.id" slot="title" name="tab-3"  label="Cihazlar" />
-           
-          
-          <q-tab-pane name="tab-1">
+        
               <div class="layout-padding">
          
                 <div class="row"> 
@@ -48,55 +41,43 @@
                       <q-field label="Telefon" :label-width="3" class="fip">
                           <q-input v-model="currentCari.telefon"  />
                       </q-field>
-                      
                         <div class="col-sm-6">
-                             
                               <q-field label="Vergi no" :label-width="3" class="fip">
                                   <q-input v-model="currentCari.vergiNo"  />
                               </q-field>
-                              
-                              
                         </div>
                         <div class="col-sm-6" v-if="currentCari.turu=='kurum'">
                               <q-field label="Vergi Dairesi" :label-width="3" class="fip">
                                   <q-input v-model="currentCari.vergiDairesi"  />
                               </q-field>
                         </div>
-                      
-                        
-                        
-                      
                         <q-field label="Açıklama" :label-width="3" class="fip">
                           <q-input  type="textarea" v-model="currentCari.aciklama"  />
                       </q-field>
-
                       <q-field label="Durum" :label-width="3"  class="fip">
-                        <q-select
-                            v-model="currentCari.durum"
-                            radio
-                            :options="selectOptions"
-                          />
+                          <q-select
+                              v-model="currentCari.durum"
+                              radio
+                              :options="selectOptions"
+                            />
                       </q-field>
+                      <br />
                       
-                    
-                    <br />
+                      <q-card flat >
+                          <q-card-title>
+                            Giriş bilgileri
+                          </q-card-title> 
+                          <q-card-main>
+                          <q-field label="Eposta Adresi" :label-width="3" class="fip" >
+                                <q-input v-model="currentCari.email" :class="{'has-error': errors.email}" />
+                                  <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
+                            </q-field>
 
-                      <q-card >
-                      <q-card-title>
-                        Giriş bilgileri
-                      </q-card-title> 
-                      
-                        <q-card-main>
-                        <q-field label="Eposta Adresi" :label-width="3" class="fip" >
-                              <q-input v-model="currentCari.email" :class="{'has-error': errors.email}" />
-                                <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
-                          </q-field>
-
-                          <q-field label="Parola" :label-width="3" class="fip">
-                              <q-input  v-model="currentCari.password" type="password" :class="{'has-error': errors.password}" />
-                              <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
-                          </q-field>
-                        </q-card-main>
+                            <q-field label="Parola" :label-width="3" class="fip">
+                                <q-input  v-model="currentCari.password" type="password" :class="{'has-error': errors.password}" />
+                                <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
+                            </q-field>
+                          </q-card-main>
                       </q-card>   
               
                       <q-field class="fip">
@@ -111,12 +92,7 @@
               
             </div>
 
-          </q-tab-pane>
-          <q-tab-pane name="tab-2">Tab Two</q-tab-pane>
-          <q-tab-pane name="tab-3">Tab Three</q-tab-pane>
          
-        </q-tabs>
-        
  </q-modal-layout>
      
     </q-modal>

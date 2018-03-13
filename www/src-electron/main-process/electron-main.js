@@ -1,17 +1,5 @@
 
 
-require('electron-debug')({ showDevTools: true })
-
-require('electron').app.on('ready', () => {
-  let installExtension = require('electron-devtools-installer')
-  installExtension.default(installExtension.VUEJS_DEVTOOLS)
-    .then(() => {})
-    .catch(err => {
-      console.log('Unable to install `vue-devtools`: \n', err)
-    })
-})
-
-
 import { app, BrowserWindow } from 'electron'
 
 /**
@@ -31,6 +19,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 600,
+    
     webPreferences: {
       webSecurity: false,
       allowRunningInsecureContent: true
