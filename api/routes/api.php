@@ -41,10 +41,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('listShortCihaz', 'Cihaz@listShortCihaz');
     Route::get('listShortCihazId/{id}', 'Cihaz@listShortCihazId');
 
-    Route::get('listServis', 'Servis@listServis');
-    Route::post('newServis', 'Servis@newServis');
-    Route::get('deleteServis', 'Servis@deleteServis');
-    Route::get('getServis/{id}', 'Servis@getServis');
+    Route::get('listServis', 'Servis@listeServis');
+    Route::post('newServis', 'Servis@yeniServis');
+    Route::get('deleteServis', 'Servis@silServis');
+    Route::get('getServis/{id}', 'Servis@getirServis');
     
 
 

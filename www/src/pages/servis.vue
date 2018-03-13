@@ -49,9 +49,9 @@
                                         <q-select
                                             v-model="currentServis.teknisyen"
                                             radio
-                                            :display-value="id"
                                             :options="teknisyen"
                                         />
+                                       
                                     </q-field>
                                     
                                     <div class="row">
@@ -62,13 +62,12 @@
                                         </div>
                                         <div class="col-sm-6 q-pl-md">
                                             <q-field label="Fatura Kesildi mi" :label-width="6" class="fip">
-                                                <q-checkbox v-model="currentServis.fatura" :true-value="1" :false-value="0" />
+                                                <q-checkbox v-model="currentServis.fatura" true-value="1" false-value="0" />
                                             </q-field>  
                                         </div>
                                     </div>
                                     
-                                    
-                                    
+                                 
                                     <q-field label="Ek Parça" :label-width="3" class="fip">
                                         <q-input v-model="currentServis.ekParca"  />
                                     </q-field>
@@ -77,7 +76,7 @@
                                     </q-field>
                                     <q-field class="fip">
                                         <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                                        <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
+                                        <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
                                     </q-field>
                                 </div>
                         </div>
@@ -298,6 +297,8 @@ const module = {
 
     this.getList();
 
+    this.getTeknisyen();
+
     window.addEventListener("keydown", this.fnkey);
   },
 
@@ -312,10 +313,11 @@ const module = {
     cihazList
   },
   methods: {
-
-    getIslemDurumu(id){
+    getIslemDurumu(id) {
+      if (id) {
         let index = this.islemDurumu.findIndex(x => x.value === id);
         return this.islemDurumu[index].label;
+      }
     },
     //f10 basınca liste aç.
     fnkey(event) {
@@ -396,7 +398,6 @@ const module = {
 
     cihazKaydet() {
       this.currentCihaz.cari_id = this.currentServis.cari_id;
-      console.log(this.currentCihaz);
       axios
         .post(this.apiUrl + "newCihaz", this.currentCihaz)
         .then(res => {
@@ -420,7 +421,6 @@ const module = {
         axios
           .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
           .then(response => {
-            console.log(response.data);
             this.cihazList = response.data;
             this.cihazAraComplete(terms, done);
           })
@@ -435,8 +435,6 @@ const module = {
     cihazAraComplete(terms, done) {
       let searchText = this.currentServis.cihazAdi.toLocaleLowerCase("tr-TR");
       let sonuc = [];
-
-      console.log(this.cihazList);
 
       let ver = this.cihazList.filter(p => {
         p.adi === null ? (p.adi = "") : p.adi;
@@ -499,7 +497,9 @@ const module = {
                 this.servisler.splice(index, 1);
                 this.modal = false;
                 notify(response.data.msg);
-              } else notify(response.data.msg, true);
+              } else {
+                notify(response.data.msg, true);
+              }
             })
             .catch(e => {
               this.errors.push(e);
@@ -522,7 +522,6 @@ const module = {
       axios
         .get(this.apiUrl + "listeleTeknisyen")
         .then(response => {
-          console.log(response.data);
           this.teknisyen = response.data;
         })
         .catch(e => {
@@ -535,7 +534,6 @@ const module = {
       this.errors = {};
       this.modal = true;
       this.currentServis = {};
-      this.getTeknisyen();
     },
 
     //eğer kullanıcı yeniyse veya yetki tablosu boşsa default değerleri getirir. (table: yetkiDefault)
@@ -565,8 +563,10 @@ const module = {
       this.id = index;
 
       axios.get(this.apiUrl + "getServis/" + id).then(response => {
-        console.log(response.data);
-        this.currentServis = response.data;
+        this.currentServis = response.data.servis;
+
+        this.currentServis.cariAdi = response.data.servis.get_cari.adi;
+        this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
       });
 
       /*
@@ -584,8 +584,6 @@ const module = {
     },
 
     postData() {
-      //currentServis'a yetkileri ata..
-      //this.currentServis.yetkiler = this.yetkiler;
       axios
         .post(this.apiUrl + "newServis", this.currentServis)
         .then(res => {
@@ -594,10 +592,12 @@ const module = {
             notify("Lütfen formu kontrol edin!", true);
           } else {
             this.errors = {};
+
+            //yeni kayıtsa listeyi güncelle
             if (!this.currentServis.id) {
               this.getList();
             }
-
+            //update..
             this.servisler[this.id] = this.currentServis;
 
             this.modal = false;
@@ -609,9 +609,10 @@ const module = {
           notify(error.response.data.error, true);
         });
     },
-    search(user) {
+   /* search(user) {
       return Object.keys(this).every(key => user[key] === this[key]);
     },
+    */
     getIcon(icon) {
       switch (icon) {
         case "1":
@@ -639,7 +640,7 @@ const module = {
       return false;
     },
 
-    //kullanıcı listesindan ara..
+    //filter list..
     filteredData() {
       if (!this.filterText) return this.servisler;
 

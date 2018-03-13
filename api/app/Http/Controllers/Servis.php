@@ -12,29 +12,30 @@ class Servis extends Controller
      *
      * @return json array
      */
-    public function newCihaz()
+    public function yeniServis()
     {
 
         $sonuc = Request::all();
 
         //id varsa update et..
         if (isset($sonuc['id'])) {
-            return $this->updateCihaz();
+            return $this->guncelleServis();
         }
 
         $validator = Validator::make(Request::all(), [
             'cari_id' => 'required',
-
         ]);
-
+        
+        $sonuc['islemDurumu'] = empty($sonuc['islemDurumu']) ? '1' : $sonuc['islemDurumu'];
+            
         if ($validator->fails()) {
             $e = $validator->errors();
             return response()->json(array('status' => false, 'msg' => $e));
         }
 
-        $cihaz = new \App\Cihaz;
+        $servis = new \App\Servis;
 
-        $cihaz->fill($sonuc)->save();
+        $servis->fill($sonuc)->save();
 
         return response()->json(array('status' => true, 'msg' => 'Kayıt eklendi'));
     }
@@ -44,12 +45,15 @@ class Servis extends Controller
      *
      * @return json array
      */
-    public function updateCihaz()
+    public function guncelleServis()
     {
 
-        $cihaz = \App\Cihaz::find(Request::input('id'));
+        
+
+        $servis = \App\Servis::find(Request::input('id'));
 
         $input = Request::all();
+       
 
         $validator = Validator::make(Request::all(), [
             'cari_id' => 'required',
@@ -60,7 +64,7 @@ class Servis extends Controller
             return response()->json(array('status' => false, 'msg' => $e));
         }
 
-        $cihaz->fill($input)->save();
+        $servis->fill($input)->save();
 
         return response()->json(array('status' => true, 'msg' => 'İşlem Tamam'));
     }
@@ -70,35 +74,40 @@ class Servis extends Controller
      *
      * @return json array
      */
-    public function listServis()
+    public function listeServis()
     {
         $servisler = \App\Servis::
             leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
             ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
+            ->orderBy('id','DESC')
             ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu']);
 
         return response()->json($servisler);
     }
 
-    public function getServis($id)
+    public function getirServis($id)
     {
 
         $servisler = \App\Servis::find($id);
 
-        return response()->json(array('cari' => $servisler->getCari, 'cihaz' => $servisler->getCihaz, 'servis' => $servisler));
+        $servisler->getCari;
+        $servisler->getCihaz;
+      
+
+        return response()->json(array( 'servis' => $servisler));
     }
     /**
      * Delete
      *
      * @return json array
      */
-    public function deleteCihaz()
+    public function silServis()
     {
 
-        $cihaz = \App\Cihaz::find(Request::input('id'));
+        $servis = \App\Servis::find(Request::input('id'));
 
-        $cihaz->delete();
-        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi', 'id' => $cihaz->id));
+        $servis->delete();
+        return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi', 'id' => $servis->id));
 
     }
 

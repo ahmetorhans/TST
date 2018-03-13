@@ -83,7 +83,8 @@ module.exports = function (ctx) {
         'QAutocomplete',
         'QAjaxBar',
         'QDatetime',
-        'QBtnToggle'
+        'QBtnToggle',
+        'Loading'
       ],
       directives: [
         'Ripple'

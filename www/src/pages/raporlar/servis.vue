@@ -121,10 +121,10 @@ export default {
         .get(this.apiUrl + "listCari")
         .then(response => {
           this.cariler = response.data;
-          console.log(response.data);
+          
         })
         .catch(e => {
-          console.log(e);
+          
           this.errors.push(e);
         });
     }
