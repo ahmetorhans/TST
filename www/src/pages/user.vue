@@ -1,5 +1,5 @@
 <template>
-  <q-page v-if="guard.giris">
+  <q-page v-if="guard.giris==='1'">
    <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'600px'}">
      <q-modal-layout>
         
@@ -63,10 +63,10 @@
 
                   <tr v-for="(item,key) of yetkiler" >
                      <td>{{item.bolumAdi}}</td>
-                     <td><q-checkbox v-model="yetkiler[key]['giris']" :true-value="1" :false-value="0" val="0"/></td>
-                     <td><q-checkbox v-model="yetkiler[key]['yeni']" :true-value="1" :false-value="0" /></td>
-                     <td><q-checkbox v-model="yetkiler[key]['duzelt']" :true-value="1" :false-value="0" /></td>
-                     <td><q-checkbox v-model="yetkiler[key]['sil']" :true-value="1" :false-value="0" /></td>
+                     <td><q-checkbox v-model="yetkiler[key]['giris']" true-value="1" false-value="0" /></td>
+                     <td><q-checkbox v-model="yetkiler[key]['yeni']" true-value="1" false-value="0" /></td>
+                     <td><q-checkbox v-model="yetkiler[key]['duzelt']" true-value="1" false-value="0" /></td>
+                     <td><q-checkbox v-model="yetkiler[key]['sil']" true-value="1" false-value="0" /></td>
                    </tr>
                  </table>
              
@@ -74,7 +74,7 @@
               <br /><br />
                <q-field class="fip">
                  <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                 <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
+                 <q-btn align="right"  v-if="guard.sil==='1'" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
               </q-field>
         </div>
  </q-modal-layout>
@@ -86,14 +86,14 @@
         
           <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
-           <q-btn v-if="guard.yeni" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
+           <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
             
           </q-toolbar>
         
         <q-search
           v-model="filterText"
           :debounce="600"
-          placeholder="Adı veya eposta adresine göre ara"
+          placeholder="Kullanıcı Adı, E-posta"
           icon="search"
           float-label="Ara"
         />
@@ -193,8 +193,6 @@ const module = {
       axios
         .get(this.apiUrl + "yetkiler?bolum=kullanici")
         .then(response => {
-          console.info("role")
-          console.log(response.data);
           if (response.data.role == "super") {
             response.data.giris = "1";
             response.data.yeni = "1";
@@ -287,8 +285,6 @@ const module = {
         this.yetkiler = this.users[index].yetkiler;
       else this.yetkiler = this.defaultYetkiler();
 
-      console.log(this.yetkiler);
-
       this.errors = {};
 
       this.userModal = true;
@@ -306,8 +302,11 @@ const module = {
     },
 
     postData() {
+
+      
       //currentuser'a yetkileri ata..
       this.currentUser.yetkiler = this.yetkiler;
+      console.log(this.currentUser)
       axios
         .post(this.apiUrl+"register", this.currentUser)
         .then(res => {
@@ -359,9 +358,11 @@ const module = {
       if (!this.filterText) return this.users;
       let searchText = this.filterText.toLocaleLowerCase('tr-TR');
       return this.users.filter(p => {
+         p.name === null ? (p.name = "") : p.name;
+         p.email === null ? (p.email = "") : p.email;
         return (
-         p.name!==null ? p.name.toLocaleLowerCase('tr-TR').includes(searchText) :'' ||
-         p.email!==null ? p.email.toLocaleLowerCase('tr-TR').includes(searchText) :''
+         p.name.toLocaleLowerCase('tr-TR').includes(searchText) ||
+         p.email.toLocaleLowerCase('tr-TR').includes(searchText)
         );
       });
     }

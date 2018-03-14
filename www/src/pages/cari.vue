@@ -1,5 +1,5 @@
 <template>
-    <q-page v-if="guard.giris">
+    <q-page v-if="guard.giris==='1'">
    <q-modal  v-model="userModal" :content-css="{ minWidth: '75vw', minHeight:'99vh'}">
      <q-modal-layout>
         
@@ -83,7 +83,7 @@
                       <q-field class="fip">
                         <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
                         <span v-if="currentCari.id">
-                            <q-btn align="right"  icon="delete" v-if="guard.sil" color="negative" @click="sil(currentCari.id)"></q-btn>
+                            <q-btn align="right"  icon="delete" v-if="guard.sil==='1'" color="negative" @click="sil(currentCari.id)"></q-btn>
                         </span>
                       </q-field>
                 </div>
@@ -102,14 +102,14 @@
        
           <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
-         <q-btn v-if="guard.yeni" flat round dense @click="yeni()" wait-for-ripple icon="add" />
+         <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeni()" wait-for-ripple icon="add" />
             
           </q-toolbar>
         
         <q-search
           v-model="filterText"
           :debounce="600"
-          placeholder="Adı veya yetkiliye göre ara"
+          placeholder="Cari Adı, Yetkili"
           icon="search"
           float-label="Ara"
         />

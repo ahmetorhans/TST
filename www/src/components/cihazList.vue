@@ -33,9 +33,8 @@
 </template>
 <script>
 import axios from "axios";
-import store from "../store";
-import notify from "./notify";
-import { uid, filter } from "quasar";
+import notify from "../pages/notify";
+
 
 const module = {
   data() {
@@ -67,9 +66,7 @@ const module = {
   
     //kullanıcı seçilince index den mevcut değerleri currentCihaz'a at..
     rowClick(item) {
-       
-     this.$emit('clicked', item);
-     
+     this.$emit('cihazListEmit', item);
     },
 
     

@@ -1,7 +1,7 @@
 <template>
-<q-page>
+<q-page v-if="guard.giris==='1'">
 
-    <div class="row q-pa-sm">
+    <div class="row q-pa-sm" >
        
         <div class="col-md-12">
             <q-toolbar slot="header" color="faded">
@@ -49,8 +49,8 @@ export default {
     return {
       cariler: [],
       filter: "",
+      guard: {},
       pagination: {
-     
         rowsPerPage: 50
       },
       columns: [
@@ -92,10 +92,26 @@ export default {
   },
 
   created() {
+    this.getRole();
     this.getList();
   },
   methods: {
-    
+     getRole() {
+      axios
+        .get(this.apiUrl + "yetkiler?bolum=rapor")
+        .then(response => {
+          if (response.data.role == "super") {
+            response.data.giris = "1";
+            response.data.yeni = "1";
+            response.data.duzelt = "1";
+            response.data.sil = "1";
+          }
+          this.guard = response.data;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
 
     rowClick(row) {
       this.$router.push("/cariler/" + row.id);

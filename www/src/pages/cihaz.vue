@@ -1,5 +1,5 @@
 <template>
-  <q-page v-if="guard.giris">
+  <q-page v-if="guard.giris==='1'">
    <q-modal  v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'90vh'}">
      <q-modal-layout>
         
@@ -82,7 +82,7 @@
                       <q-field class="fip">
                         <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
                         <span v-if="currentCihaz.id">
-                            <q-btn align="right"  icon="delete" v-if="guard.sil" color="negative" @click="sil(currentCihaz.id)"></q-btn>
+                            <q-btn align="right"  icon="delete" v-if="guard.sil==='1'" color="negative" @click="sil(currentCihaz.id)"></q-btn>
                         </span>
                       </q-field>
                   </div>
@@ -98,7 +98,7 @@
         
           <q-toolbar slot="header" color="faded">
               <q-toolbar-title>Cihaz Bilgileri</q-toolbar-title>
-              <q-btn v-if="guard.yeni" flat round dense @click="yeniCihaz()" wait-for-ripple icon="add" />
+              <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeniCihaz()" wait-for-ripple icon="add" />
           </q-toolbar>
         
         <q-search
@@ -179,12 +179,7 @@ import { uid, filter } from "quasar";
 const module = {
   data() {
     return {
-      //file upload
-      url: this.apiUrl + "upload",
-      headers: {
-        Authorization:
-          "Bearer " + localStorage.getItem("vue-authenticate.vueauth_token")
-      },
+     
 
       //modal instance
       modal: false,
@@ -366,12 +361,16 @@ const module = {
 
     //kullanıcı seçilince index den mevcut değerleri currentCihaz'a at..
     rowClick(id) {
+    
+      this.currentCihaz={};      
       //id'den users'daki indexi bul..
       let index = this.cihazlar.findIndex(x => x.id === id);
       this.id = index;
 
       axios.get(this.apiUrl + "getCihaz/" + id).then(response => {
+        console.log(response.data)
         this.currentCihaz = response.data;
+        this.currentCihaz.cariAdi=response.data.cari.adi;
       });
 
       /*

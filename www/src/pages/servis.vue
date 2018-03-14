@@ -1,149 +1,14 @@
 <template>
-  <q-page v-if="guard.giris">
-
-    <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'90vh'}">
+  <q-page v-if="guard.giris==='1'">
+    <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'540px'}">
         <q-modal-layout>
             <q-toolbar slot="header" color="secondary">
                 <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
                 <q-btn flat round dense @click="modal = false" wait-for-ripple icon="close" />
             </q-toolbar>
-            <div class="layout-padding">
-                <div class="row"> 
-                    <div class="col-sm-12">
-                        <div class="row">
-                            <div class="col-xs-11">
-                                <q-field label="Cari Seçin" :label-width="3" class="fip">
-                                    <q-search v-model="currentServis.cariAdi" placeholder="Cari Adı">
-                                    <q-autocomplete @search="cariAra" @selected="cariAraSelected" />
-                                    </q-search>
-                                <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
-                                </q-field>
-                            </div>
-                            <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                                <q-btn icon="add" size="sm" round @click="cariModal = !cariModal"></q-btn>
-                            </div>
-                        </div>
-                        <div class="row" v-if="currentServis.cari_id"> 
-                                <div class="col-xs-11">
-                                    <q-field label="Cihaz Seçin" :label-width="3" class="fip">
-                                        <q-search v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
-                                            <q-autocomplete @search="cihazAra" @selected="cihazAraSelected" />
-                                        </q-search>
-                                        <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
-                                    </q-field>
-                                </div>
-                                <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                                    <q-btn icon="add" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
-                                </div>
 
-                                <div class="col-sm-11">
-                                    <q-field label="İşlem Durumu" :label-width="3" class="fip">
-                                        <q-select
-                                            v-model="currentServis.islemDurumu"
-                                            radio
-                                            :options="islemDurumu"
-                                            
-                                        />
-                                    </q-field>
-                                    <q-field label="Teknisyen" :label-width="3" class="fip">
-                                        <q-select
-                                            v-model="currentServis.teknisyen"
-                                            radio
-                                            :options="teknisyen"
-                                        />
-                                       
-                                    </q-field>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <q-field label="Fiyat" :label-width="6" class="fip">
-                                                <q-input v-model="currentServis.fiyat" suffix="TL" />
-                                            </q-field>
-                                        </div>
-                                        <div class="col-sm-6 q-pl-md">
-                                            <q-field label="Fatura Kesildi mi" :label-width="6" class="fip">
-                                                <q-checkbox v-model="currentServis.fatura" true-value="1" false-value="0" />
-                                            </q-field>  
-                                        </div>
-                                    </div>
-                                    
-                                 
-                                    <q-field label="Ek Parça" :label-width="3" class="fip">
-                                        <q-input v-model="currentServis.ekParca"  />
-                                    </q-field>
-                                    <q-field label="Açıklama" :label-width="3" class="fip">
-                                        <q-input  type="textarea" v-model="currentServis.aciklama"  />
-                                    </q-field>
-                                    <q-field class="fip">
-                                        <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                                        <q-btn align="right"  v-if="guard.sil" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
-                                    </q-field>
-                                </div>
-                        </div>
-                    </div>
-                  
-                </div>
-            </div> 
-        </q-modal-layout>
-    </q-modal>
+            <servis-duzelt :currentServis="currentServis" :guard="guard" @servisEmit="servisEmit" @servisSil="servisSil"/>
 
-    <q-modal v-model="cariModal" :content-css="{ zIndex:'9999',minWidth: '50vw', minHeight:'360px'}">
-        <q-modal-layout>
-            <div class="q-pa-md" >
-                <q-field label="Adı" :label-width="3" >
-                    <q-input v-model="currentCari.adi" :class="{'has-error': errors.adi}" required/>
-                    <span class="errMsg" v-if="errors.adi">{{ errors.adi }}</span>
-                </q-field>
-                <q-field label="Yetkili" :label-width="3" class="fip">
-                    <q-input v-model="currentCari.yetkili"  />
-                </q-field>
-                <q-field label="Eposta" :label-width="3" class="fip">
-                    <q-input v-model="currentCari.eposta"  />
-                </q-field>
-                
-                <q-field label="Adres" :label-width="3" class="fip">
-                    <q-input v-model="currentCari.adres"  />
-                </q-field>
-                <q-field label="Telefon" :label-width="3" class="fip">
-                    <q-input v-model="currentCari.telefon"  />
-                </q-field>
-                    <br />
-        
-                <q-field class="fip">
-                    <q-btn color="secondary" @click="cariKaydet" v-if="kaydetBtn">Kaydet</q-btn>
-                    <q-btn color="faded" @click="cariModal = false" label="Kapat"/>
-                </q-field>
-            </div>
-        </q-modal-layout>
-    </q-modal>
-
-    <q-modal v-model="cihazModal" :content-css="{ zIndex:'99999',minWidth: '50vw', minHeight:'380px'}">
-        <q-modal-layout>
-            
-            <div class="q-pa-md" >
-                <q-field label="Cihaz Adı" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.adi"  />
-                </q-field>
-                
-                <q-field label="Marka" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.marka"  />
-                </q-field>
-                
-                <q-field label="Model" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.model"  />
-                </q-field>
-                
-                <q-field label="Serino" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.serino"  />
-                </q-field>
-                 <q-field label="Açıklama" :label-width="3" class="fip">
-                    <q-input  type="textarea" v-model="currentCihaz.aciklama"  />
-                </q-field>
-                <q-field class="fip">
-                    <q-btn color="secondary" @click="cihazKaydet">Kaydet</q-btn>
-                    <q-btn @click="cihazModal = false" label="Kapat" />
-                </q-field>
-            </div>
         </q-modal-layout>
     </q-modal>
 
@@ -153,7 +18,7 @@
                 <q-toolbar-title>Cihaz Seç</q-toolbar-title>
                 <q-btn flat round dense @click="cihazListModal = false" wait-for-ripple icon="close" />
             </q-toolbar>
-            <cihaz-list @clicked="onClickChild"/>
+            
         </q-modal-layout>
     </q-modal>
    
@@ -161,7 +26,7 @@
        <div class="col-xs-12 col-md-12" >
             <q-toolbar slot="header" color="faded">
                 <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
-                <q-btn v-if="guard.yeni" flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
+                <q-btn v-if="guard.yeni=='1'" flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
             </q-toolbar>
         
             <q-search
@@ -222,28 +87,22 @@
 import axios from "axios";
 import store from "../store";
 import notify from "./notify";
-import cihazList from "./cihazList";
+import servisDuzelt from "../components/servisDuzelt";
 
 import { uid, filter } from "quasar";
 
 const module = {
+  components: {
+    servisDuzelt
+  },
+
   data() {
     return {
-      //file upload
-      url: this.apiUrl + "upload",
-      headers: {
-        Authorization:
-          "Bearer " + localStorage.getItem("vue-authenticate.vueauth_token")
-      },
-
       //modal instance
       modal: false,
 
       //tüm kayıtlar
       servisler: [],
-
-      //upload varsa submit etme, önce uploadları gönder
-      uploadVar: false,
 
       //ara.
       filterText: "",
@@ -258,25 +117,10 @@ const module = {
       //detay
       currentServis: {},
 
-      currentCari: {},
-      currentCihaz: {},
-
-      cariToggle: false,
-      cihazToggle: false,
-
       yetkiler: {},
-
-      cariModal: false,
-      cihazModal: false,
       cihazListModal: false,
 
       guard: {},
-
-      cariList: [],
-
-      cihazList: [],
-
-      teknisyen: [],
 
       islemDurumu: [
         { label: "Servis Kabul", value: "1" },
@@ -296,173 +140,33 @@ const module = {
     this.getRole();
 
     this.getList();
-
-    this.getTeknisyen();
-
-    window.addEventListener("keydown", this.fnkey);
+ 
   },
-
-  watch: {
-    uploadVar(val) {
-      if (val === false) {
-        this.postData();
-      }
-    }
-  },
-  components: {
-    cihazList
-  },
+  
   methods: {
+    //servisDuzelt component'den gelen datalar
+    servisEmit(val) {
+      this.modal = false;
+     
+        this.getList();
+      
+    },
+    servisSil(val){
+      this.modal= false;
+      console.log(val);
+      let index = this.servisler.findIndex(x => x.id === val);
+      this.servisler.splice(index, 1);
+    },
+
+    //islem durumu id den label a çevir..
     getIslemDurumu(id) {
       if (id) {
         let index = this.islemDurumu.findIndex(x => x.value === id);
         return this.islemDurumu[index].label;
       }
     },
-    //f10 basınca liste aç.
-    fnkey(event) {
-      event.defaultPrevented;
-
-      if (event.keyCode == "121") {
-        this.cihazListModal = true;
-      }
-    },
-
-    onClickChild(obj) {
-      this.currentServis.cihaz_id = obj.id;
-      this.currentServis.cihazAdi = obj.adi;
-      this.cihazListModal = false;
-    },
-
-    cariKaydet() {
-      axios
-        .post(this.apiUrl + "newCari", this.currentCari)
-        .then(res => {
-          if (res.data.status === false) {
-            this.errors = res.data.msg;
-            notify("Lütfen formu kontrol edin!", true);
-          } else {
-            this.errors = {};
-            this.cariModal = false;
-            this.currentCari = {};
-            notify(res.data.msg);
-          }
-        })
-        .catch(function(error) {
-          notify(error.response.data.error, true);
-        });
-    },
-
-    //autocompolete için..
-    cariAra(terms, done) {
-      axios
-        .get(this.apiUrl + "listShortCari")
-        .then(response => {
-          this.cariList = response.data;
-          this.cariAraComplete(terms, done);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-
-    //from searched..
-    cariAraComplete(terms, done) {
-      let searchText = this.currentServis.cariAdi.toLocaleLowerCase("tr-TR");
-
-      let sonuc = [];
-      let ver = this.cariList.filter(p => {
-        return p.adi !== null
-          ? p.adi.toLocaleLowerCase("tr-TR").includes(searchText)
-          : "";
-      });
-
-      let arr = [];
-
-      ver.forEach(e => {
-        arr.push({
-          label: e.adi,
-          value: e.id,
-          sublabel: e.yetkili + " " + e.telefon
-        });
-      });
-
-      return done(arr);
-    },
-
-    //autocomplete seçilen..
-    cariAraSelected(item) {
-      this.currentServis.cariAdi = item.label;
-      this.currentServis.cari_id = item.value;
-    },
-
-    cihazKaydet() {
-      this.currentCihaz.cari_id = this.currentServis.cari_id;
-      axios
-        .post(this.apiUrl + "newCihaz", this.currentCihaz)
-        .then(res => {
-          if (res.data.status === false) {
-            this.errors = res.data.msg;
-            notify("Lütfen formu kontrol edin!", true);
-          } else {
-            this.errors = {};
-            this.cihazModal = false;
-            this.currentCihaz = {};
-            notify(res.data.msg);
-          }
-        })
-        .catch(function(error) {
-          notify(error.response.data.error, true);
-        });
-    },
-
-    cihazAra(terms, done) {
-      if (this.cihazList.length == 0) {
-        axios
-          .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
-          .then(response => {
-            this.cihazList = response.data;
-            this.cihazAraComplete(terms, done);
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      } else {
-        this.cihazAraComplete(terms, done);
-      }
-    },
-
-    cihazAraComplete(terms, done) {
-      let searchText = this.currentServis.cihazAdi.toLocaleLowerCase("tr-TR");
-      let sonuc = [];
-
-      let ver = this.cihazList.filter(p => {
-        p.adi === null ? (p.adi = "") : p.adi;
-        p.serino === null ? (p.serino = "") : p.serino;
-        return (
-          p.adi.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 ||
-          p.serino.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1
-        );
-      });
-      let arr = [];
-
-      ver.forEach(e => {
-        arr.push({
-          label: e.adi,
-          value: e.id,
-          sublabel: e.marka + " " + e.model + " " + e.aciklama
-        });
-      });
-
-      return done(arr);
-    },
-
-    //autocomplete seçilen..
-    cihazAraSelected(item) {
-      this.currentServis.cihazAdi = item.label;
-      this.currentServis.cihaz_id = item.value;
-    },
-
+    
+  //this.guard
     getRole() {
       axios
         .get(this.apiUrl + "yetkiler?bolum=servis")
@@ -480,32 +184,6 @@ const module = {
         });
     },
 
-    sil(id) {
-      this.$q
-        .dialog({
-          title: "Servis Sil",
-          message: "Servis Silinsin mi?",
-          ok: "Evet",
-          cancel: "Hayır"
-        })
-        .then(() => {
-          axios
-            .get(this.apiUrl + "deleteServis?id=" + id)
-            .then(response => {
-              if (response.data.status === true) {
-                let index = this.servisler.findIndex(x => x.id === id);
-                this.servisler.splice(index, 1);
-                this.modal = false;
-                notify(response.data.msg);
-              } else {
-                notify(response.data.msg, true);
-              }
-            })
-            .catch(e => {
-              this.errors.push(e);
-            });
-        });
-    },
     //Tüm Liste..
     getList() {
       axios
@@ -517,17 +195,7 @@ const module = {
           this.errors.push(e);
         });
     },
-    //Tüm Liste..
-    getTeknisyen() {
-      axios
-        .get(this.apiUrl + "listeleTeknisyen")
-        .then(response => {
-          this.teknisyen = response.data;
-        })
-        .catch(e => {
-          this.errors.push(e);
-        });
-    },
+   
 
     //yeni modal açar..
     yeniServis() {
@@ -536,43 +204,22 @@ const module = {
       this.currentServis = {};
     },
 
-    //eğer kullanıcı yeniyse veya yetki tablosu boşsa default değerleri getirir. (table: yetkiDefault)
-    defaultYetkiler() {
-      axios.get(this.apiUrl + "yetkiDefault").then(response => {
-        this.yetkiler = response.data;
-      });
-    },
-
-    //dosya yükleme bitince watch ile takip et.. Sonra submit et..
-    finishUpload() {
-      this.uploadVar = false;
-    },
-
-    //Dosya yükle. Gelen değeri currentServis'a at..
-    postUpload(file, xhr) {
-      let sonuc = JSON.parse(xhr.response);
-      if (sonuc.status === true) {
-        this.currentServis.photo = sonuc.file;
-      }
-    },
-
     //kullanıcı seçilince index den mevcut değerleri currentServis'a at..
     rowClick(id) {
+      this.currentServis={};
+
       //id'den users'daki indexi bul..
       let index = this.servisler.findIndex(x => x.id === id);
       this.id = index;
 
       axios.get(this.apiUrl + "getServis/" + id).then(response => {
         this.currentServis = response.data.servis;
-
         this.currentServis.cariAdi = response.data.servis.get_cari.adi;
         this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
       });
 
       /*
-   
-
-      this.currentServis = Object.assign({}, this.servisler[index]);
+        this.currentServis = Object.assign({}, this.servisler[index]);
       */
       this.errors = {};
 
@@ -580,10 +227,6 @@ const module = {
     },
 
     submit() {
-      this.postData();
-    },
-
-    postData() {
       axios
         .post(this.apiUrl + "newServis", this.currentServis)
         .then(res => {
@@ -609,16 +252,16 @@ const module = {
           notify(error.response.data.error, true);
         });
     },
-   /* search(user) {
-      return Object.keys(this).every(key => user[key] === this[key]);
-    },
-    */
+
+   
     getIcon(icon) {
       switch (icon) {
         case "1":
           return "assignment_returned";
           break;
-
+         case "2":
+          return "contact_mail";
+          break;
         default:
           return "devices";
           break;
@@ -627,20 +270,7 @@ const module = {
   },
 
   computed: {
-    kaydetBtn() {
-      if (this.currentServis.id) {
-        if (this.guard.duzelt == "1") {
-          return true;
-        }
-      } else {
-        if (this.guard.yeni == "1") {
-          return true;
-        }
-      }
-      return false;
-    },
-
-    //filter list..
+   //filter list..
     filteredData() {
       if (!this.filterText) return this.servisler;
 

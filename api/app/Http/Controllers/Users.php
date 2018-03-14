@@ -106,7 +106,9 @@ class Users extends Controller
         }
          */
 
-        $input['role'] = ($user['role'] = 'super') ? $input['role']='super' : $input['role']; 
+        $input['role'] = ($user['role'] == 'super') ? 'super' : $input['role']; 
+        
+        
 
         $user->fill($input)->save();
 

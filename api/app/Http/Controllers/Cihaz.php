@@ -25,7 +25,6 @@ class Cihaz extends Controller
 
         $validator = Validator::make(Request::all(), [
             'cari_id' => 'required',
-
         ]);
 
         if ($validator->fails()) {
@@ -84,8 +83,9 @@ class Cihaz extends Controller
     }
 
     public function getCihaz($id){
-       
-        return response()->json(\App\Cihaz::find($id));
+        $cihaz =\App\Cihaz::find($id);
+        $cihaz->cari; 
+        return response()->json($cihaz);
     }
 
     public function listShortCihaz()
