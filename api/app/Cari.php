@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cari extends Model
 {
-     protected $guarded=['yetkiler','email','name'];
+     protected $guarded=['yetkiler','email','name','password'];
 
      
 }

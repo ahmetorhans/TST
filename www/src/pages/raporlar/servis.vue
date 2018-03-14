@@ -21,15 +21,16 @@
                     hide-underline
                     color="secondary"
                     v-model="filter"
-                    class="col-6"
+                    class="col-12"
                     placeholder="Ara"
                     />
                 </template>
 
                  <q-tr slot="body" slot-scope="props" :props="props" @click.native="rowClick(props.row)" class="cursor-pointer dtHeight" >
-                    <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props">
                     {{col.value}}
                     </q-td>
+                    <q-td><q-btn size="sm" round icon="edit" router-link to="/servisler"></q-btn></q-td>
                 </q-tr>
             </q-table>
 
@@ -55,7 +56,7 @@ export default {
       },
       columns: [
          {
-          label: "Servis No",
+          label: "No",
           name: "id",
           field: "id",
           sortable: true,
@@ -90,7 +91,16 @@ export default {
           field: "aciklama",
           sortable: true,
           align: "left"
-        },{
+        },
+        {
+          label: "Tarih",
+          name: "tarih",
+          field: "tarih",
+          sortable: true,
+          date: true,
+          align: "left"
+        },
+        {
           label: "Durum",
           name: "islemDurumLabel",
           field: "islemDurumLabel",
