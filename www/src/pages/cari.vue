@@ -61,11 +61,10 @@
                               :options="selectOptions"
                             />
                       </q-field>
-                      <br />
                       
-                      <q-card flat >
+                      <q-card flat>
                           <q-card-title>
-                            Giriş bilgileri
+                            Giriş bilgileri <span v-if="currentCari.user_id" ><q-icon name="done" /></span>
                           </q-card-title> 
                           <q-card-main>
                           <q-field label="Eposta Adresi" :label-width="3" class="fip" >
@@ -306,7 +305,8 @@ const module = {
 
     //kullanıcı seçilince index den mevcut değerleri currentCari'a at..
     rowClick(id) {
-     
+      
+      this.currentCari={};
       this.selectedTab = "tab-1";
       
       //id'den users'daki indexi bul..
@@ -316,6 +316,7 @@ const module = {
     
      // this.currentCari = Object.assign({}, this.cariler[index]);
       axios.get(this.apiUrl + "getCari/" + id).then(response => {
+        console.log(response.data);
         this.currentCari = response.data;
       
       });

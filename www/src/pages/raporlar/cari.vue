@@ -54,46 +54,33 @@ export default {
         rowsPerPage: 50
       },
       columns: [
-         {
-          label: "Servis No",
-          name: "id",
-          field: "id",
+        {
+          label: "Adı",
+          name: "adi",
+          field: "adi",
           sortable: true,
           align: "left"
         },
         {
-          label: "Cari",
-          name: "cariAdi",
-          field: "cariAdi",
-          sortable: true,
-          align: "left"
-        },
-        {
-          label: "Marka",
-          name: "marka",
-          field: "marka",
+          label: "Yetkili",
+          name: "yetkili",
+          field: "yetkili",
           sortable: true,
           align: "left",
           func: "deneme"
         },
         {
-          label: "Model",
-          name: "model",
-          field: "model",
+          label: "Adres",
+          name: "adres",
+          field: "adres",
           sortable: true,
           filter: false,
           align: "left"
         },
         {
-          label: "Açıklama",
-          name: "aciklama",
-          field: "aciklama",
-          sortable: true,
-          align: "left"
-        },{
-          label: "Durum",
-          name: "islemDurumLabel",
-          field: "islemDurumLabel",
+          label: "Telefon",
+          name: "telefon",
+          field: "telefon",
           sortable: true,
           align: "left"
         }
@@ -127,7 +114,7 @@ export default {
     },
 
     rowClick(row) {
-      //this.$router.push("/cariler/" + row.id);
+      this.$router.push("/cariler/" + row.id);
     },
     
     dataFilter(rows, terms, cols, cellValue) {
@@ -148,9 +135,8 @@ export default {
     },
     getList() {
       axios
-        .get(this.apiUrl + "listServis")
+        .get(this.apiUrl + "listCari")
         .then(response => {
-          console.log(response.data)
           this.cariler = response.data;
           
         })

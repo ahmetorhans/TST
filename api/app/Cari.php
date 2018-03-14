@@ -6,9 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cari extends Model
 {
-     protected $guarded=[];
+     protected $guarded=['yetkiler','email','name'];
 
-     protected $fillable = [
-        'adi', 'adres', 'telefon','vergiNo','vergiDairesi','durum','yetkili','aciklama','user_id','eposta','turu'
-    ];
+     
 }

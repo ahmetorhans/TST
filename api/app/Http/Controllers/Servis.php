@@ -48,9 +48,7 @@ class Servis extends Controller
     public function guncelleServis()
     {
 
-        
-
-        $servis = \App\Servis::find(Request::input('id'));
+       $servis = \App\Servis::find(Request::input('id'));
 
         $input = Request::all();
        
@@ -79,22 +77,27 @@ class Servis extends Controller
         $servisler = \App\Servis::
             leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
             ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
+            ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
             ->orderBy('id','DESC')
-            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu']);
+            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon']);
 
         return response()->json($servisler);
     }
 
+    /*public function listeleIslemDurumlari(){
+        return \App\Durum::get();
+    }*/
     public function getirServis($id)
     {
 
         $servisler = \App\Servis::find($id);
-
         $servisler->getCari;
         $servisler->getCihaz;
-      
 
-        return response()->json(array( 'servis' => $servisler));
+        $islemDurumlari= \App\Durum::get();
+        $teknisyenler=  \App\User::orderBy('id', 'DESC')->where('musteri','!=',"1")->get(['id as value','name as label']);
+
+        return response()->json(array( 'servis' => $servisler,'teknisyenler'=>$teknisyenler,'islemDurumlari'=>$islemDurumlari));
     }
     /**
      * Delete

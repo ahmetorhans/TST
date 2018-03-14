@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div class="q-pa-sm">
+     <q-toolbar slot="header" color="faded" >
+        <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
+      </q-toolbar>
+
     <q-modal v-model="cariModal" :content-css="{ zIndex:'9999',minWidth: '50vw', minHeight:'360px'}">
         <q-modal-layout>
           <cari-kaydet @cariKaydetEmit="cariKaydetEmit"/>
@@ -23,12 +27,23 @@
             <div class="row"> 
                 <div class="col-sm-12">
                     <div class="row">
+                      
                             <div class="col-xs-11">
                                 <q-field label="Cari Seçin" :label-width="3" class="fip">
                                     <q-search v-model="currentServis.cariAdi" placeholder="Cari Adı">
                                     <q-autocomplete @search="cariAra" @selected="cariAraSelected" />
                                     </q-search>
                                 <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
+                                </q-field>
+                                <q-field label=" " :label-width="3" class="fip">
+                                   <q-input stack-label="Cari Adı" :value="currentServis.get_cari.adi" disabled />
+                                </q-field>
+                               
+                                <q-field label=" " :label-width="3" class="fip">
+                                   <q-input stack-label="Yetkili" :value="currentServis.get_cari.yetkili" disabled />
+                                </q-field>
+                                <q-field label=" " :label-width="3" class="fip">
+                                   <q-input stack-label="Telefon" :value="currentServis.get_cari.telefon" disabled />
                                 </q-field>
                             </div>
                             <div class="col-xs-1" style="text-align:center;margin-top:5px;">
@@ -43,6 +58,17 @@
                                         </q-search>
                                         <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
                                     </q-field>
+
+                                    <q-field label=" " :label-width="3" class="fip">
+                                      <q-input stack-label="Cihaz Adı" :value="currentServis.get_cihaz.adi" disabled />
+                                    </q-field>
+                                  
+                                    <q-field label=" " :label-width="3" class="fip">
+                                      <q-input stack-label="Marka / Model " :value="currentServis.get_cihaz.marka + ' '+ currentServis.get_cihaz.model" disabled />
+                                    </q-field>
+                                    <q-field label=" " :label-width="3" class="fip">
+                                      <q-input stack-label="Seri no" :value="currentServis.get_cihaz.serino" disabled />
+                                    </q-field>
                                 </div>
                                 <div class="col-xs-1" style="text-align:center;margin-top:5px;">
                                     <q-btn icon="add" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
@@ -53,7 +79,7 @@
                                         <q-select
                                             v-model="currentServis.islemDurumu"
                                             radio
-                                            :options="islemDurumu"
+                                            :options="islemDurumlari"
                                         />
                                     </q-field>
                                     <q-field label="Teknisyen" :label-width="3" class="fip">
@@ -102,42 +128,86 @@
 <script>
 import axios from "axios";
 import notify from "../pages/notify";
-import cihazKaydet from "./cihazKaydet";
-import cariKaydet from "./cariKaydet";
-import cihazList from "./cihazList";
+import cihazKaydet from "../components/cihazKaydet";
+import cariKaydet from "../components/cariKaydet";
+import cihazList from "../components/cihazList";
 
 const module = {
-  props: ["currentServis", "guard"],
+  
   components: { cihazKaydet, cariKaydet, cihazList },
   data() {
     return {
       errors: {},
+
       cariList: [],
+ 
       cihazList: [],
+      
       teknisyen: [],
       cariModal: false,
       cihazModal: false,
-      cihazListModal:false,
-      islemDurumu: [
-        { label: "Servis Kabul", value: "1" },
-        { label: "Müşteri Talebi", value: "2" },
-        { label: "İşlem Yapılıyor", value: "3" },
-        { label: "Parça Bekliyor", value: "4" },
-        { label: "Dış Serviste", value: "5" },
-        { label: "İptal Edildi", value: "6" },
-        { label: "Onay Bekliyor", value: "7" },
-        { label: "Tamamlandı", value: "8" },
-        { label: "Teslim Edildi", value: "9" }
-      ]
+      cihazListModal: false,
+
+      currentServis:[],
+      guard:{},
+
+      islemDurumlari:[],
+
+   
     };
   },
 
   created() {
-    this.getTeknisyen();
+   
+    this.getRole();
+    //this.getTeknisyen();
+    this.getServis();
+   // this.getIslemDurumlari();
+
     window.addEventListener("keydown", this.fnkey);
   },
 
   methods: {
+
+    //ilgili servisi getir
+   getServis() {
+        this.currentServis.get_cari={};   
+        this.currentServis.get_cihaz={};   
+        if (this.$route.params.id) {
+            axios
+            .get(this.apiUrl + "getServis/" + this.$route.params.id)
+            .then(response => {
+                this.currentServis = response.data.servis;
+                this.currentServis.cariAdi = response.data.servis.get_cari.adi;
+                this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
+
+                this.teknisyen= response.data.teknisyenler;
+                this.islemDurumlari = response.data.islemDurumlari;
+            })
+            .catch(e => {
+                this.errors.push(e);
+            });
+        }
+        },
+
+    //this.guard
+    getRole() {
+      axios
+        .get(this.apiUrl + "yetkiler?bolum=servis")
+        .then(response => {
+          if (response.data.role == "super") {
+            response.data.giris = "1";
+            response.data.yeni = "1";
+            response.data.duzelt = "1";
+            response.data.sil = "1";
+          }
+          this.guard = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+
     //cihaz kaydet comp. gelen
     cihazKaydetEmit(val) {
       this.cihazModal = false;
@@ -147,9 +217,9 @@ const module = {
     },
     cihazListEmit(val) {
       console.log(val);
-      this.currentServis.cihaz_id=val.id;
-      this.currentServis.cihazAdi=val.adi;
-      this.cihazListModal=false;
+      this.currentServis.cihaz_id = val.id;
+      this.currentServis.cihazAdi = val.adi;
+      this.cihazListModal = false;
     },
 
     //f10 basınca liste aç.
@@ -184,6 +254,8 @@ const module = {
           : "";
       });
 
+      
+
       let arr = [];
 
       ver.forEach(e => {
@@ -199,6 +271,10 @@ const module = {
 
     //autocomplete seçilen..
     cariAraSelected(item) {
+      //seçilince diğer cari bilgileri de cariSelected'a at.
+      let index = this.cariList.findIndex(x => x.id === item.value);
+      this.currentServis.get_cari=this.cariList[index];
+      
       this.currentServis.cariAdi = item.label;
       this.currentServis.cari_id = item.value;
     },
@@ -246,6 +322,9 @@ const module = {
 
     //autocomplete seçilen..
     cihazAraSelected(item) {
+      let index = this.cihazList.findIndex(x => x.id === item.value);
+      this.currentServis.get_cihaz=this.cihazList[index];
+      
       this.currentServis.cihazAdi = item.label;
       this.currentServis.cihaz_id = item.value;
     },
@@ -263,7 +342,7 @@ const module = {
             .get(this.apiUrl + "deleteServis?id=" + id)
             .then(response => {
               if (response.data.status === true) {
-                this.$emit('servisSil',id);
+                this.$emit("servisSilEmit", id);
                 notify(response.data.msg);
               } else {
                 notify(response.data.msg, true);
@@ -275,18 +354,11 @@ const module = {
         });
     },
 
-    getTeknisyen() {
-      axios
-        .get(this.apiUrl + "listeleTeknisyen")
-        .then(response => {
-          this.teknisyen = response.data;
-        })
-        .catch(e => {
-          this.errors.push(e);
-        });
-    },
+    
+  
 
     submit() {
+      let routes = this.routes;
       axios
         .post(this.apiUrl + "newServis", this.currentServis)
         .then(res => {
@@ -295,7 +367,8 @@ const module = {
             notify("Lütfen formu kontrol edin!", true);
           } else {
             this.errors = {};
-            this.$emit("servisEmit", this.currentServis);
+           // this.$emit("servisEmit", this.currentServis);
+           this.$router.push('/servisler')
 
             //yeni kayıtsa listeyi güncelle
             /* if (!this.currentServis.id) {

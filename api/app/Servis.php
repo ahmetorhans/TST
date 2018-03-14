@@ -3,11 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
 
 class Servis extends Model
 {
 
-    protected $guarded = ['cariAdi','cihazAdi','get_cari','get_cihaz','get_teknisyen'];
+    protected $guarded = ['cariAdi','cihazAdi','get_cari','get_cihaz','get_teknisyen','islemDurumlari'];
 
     
     protected $table = 'servis';
@@ -20,8 +22,6 @@ class Servis extends Model
     {
         return $this->hasOne('App\Cihaz','id','cihaz_id');
     }
-
-   
 
    
 }

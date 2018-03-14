@@ -25,7 +25,7 @@ class CreateCarisTable extends Migration
             $table->string('durum',1)->nullable();
             $table->string('eposta',100)->nullable();
             $table->integer('user_id')->nullable();
-            $table->boolean('login')->nullable();
+            $table->boolean('login');
             $table->timestamps();
         });
     }

@@ -128,7 +128,7 @@ class Users extends Controller
         return response()->json($users);
 
     }
-
+/*
     public function listeleTeknisyen()
     {
 
@@ -136,7 +136,7 @@ class Users extends Controller
         return response()->json($users);
 
     }
-
+*/
     public function yetkiDefault()
     {
 

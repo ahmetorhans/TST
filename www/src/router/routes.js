@@ -18,17 +18,16 @@ export default [
     path: '/cariler/:cari*',
      component: () => import('layouts/default'), meta: { requiresAuth: true }, 
     children: [
- 
-      { path: '', component: () => import('pages/cari') }
-      
+       { path: '', component: () => import('pages/cari') }
     ]
   },
   {
-    path: '/servisler/:servis*',
+    path: '/servisler',
      component: () => import('layouts/default'), meta: { requiresAuth: true }, 
     children: [
  
-      { path: '', component: () => import('pages/servis') }
+      { path: '', component: () => import('pages/servis') },
+      { path: 'servis/:id*', component: () => import('pages/servisDetay') }
       
     ]
   },
@@ -44,7 +43,8 @@ export default [
      component: () => import('layouts/rapor'), meta: { requiresAuth: true }, 
     children: [
       { path: '', component: () => import('pages/rapor') },
-      { path: 'servis', component: () => import('pages/raporlar/servis') }
+      { path: 'servis', component: () => import('pages/raporlar/servis') },
+      { path: 'cari', component: () => import('pages/raporlar/cari') }
     ]
   },
   

@@ -162,7 +162,7 @@ class Cari extends Controller
             leftJoin('users', 'caris.user_id', '=', 'users.id')
             ->orderBy('caris.id', 'asc')
             ->where('caris.id',$id)
-            ->first(['caris.id', 'adi', 'adres', 'telefon', 'email', 'eposta','vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login','turu']);
+            ->first(['caris.id', 'adi', 'adres', 'telefon', 'email', 'eposta','vergiNo', 'vergiDairesi', 'vergiNo', 'yetkili', 'aciklama', 'durum', 'login','turu','user_id']);
 
         return response()->json($cari);
 

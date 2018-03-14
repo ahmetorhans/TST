@@ -1,27 +1,6 @@
 <template>
   <q-page v-if="guard.giris==='1'">
-    <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'540px'}">
-        <q-modal-layout>
-            <q-toolbar slot="header" color="secondary">
-                <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
-                <q-btn flat round dense @click="modal = false" wait-for-ripple icon="close" />
-            </q-toolbar>
-
-            <servis-duzelt :currentServis="currentServis" :guard="guard" @servisEmit="servisEmit" @servisSil="servisSil"/>
-
-        </q-modal-layout>
-    </q-modal>
-
-    <q-modal v-model="cihazListModal" :content-css="{ zIndex:'99999',minWidth: '50vw', minHeight:'65vh'}">
-        <q-modal-layout>
-            <q-toolbar color="faded" inverted>
-                <q-toolbar-title>Cihaz Seç</q-toolbar-title>
-                <q-btn flat round dense @click="cihazListModal = false" wait-for-ripple icon="close" />
-            </q-toolbar>
-            
-        </q-modal-layout>
-    </q-modal>
-   
+    
     <div class="row q-pa-sm" >
        <div class="col-xs-12 col-md-12" >
             <q-toolbar slot="header" color="faded">
@@ -39,7 +18,7 @@
 
             <q-list highlight >
                 <q-item class="desktop-only">
-                   <q-item-side left />
+                  
                     <q-item-main
                     label-lines="1"
                     sublabel-lines="1"
@@ -56,9 +35,10 @@
                         </div>
                         </q-item-tile>
                 </q-item-main>
+                 <q-item-side right />
                 </q-item>
                     <q-item  v-for="item of filteredData.slice(0,300)" :key="item.id">
-                        <q-item-side left :icon="getIcon(item.islemDurumu)" />
+                       
                         <q-item-main
                         label-lines="1"
                         sublabel-lines="3"
@@ -72,10 +52,11 @@
                                 <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
                                 <div class="col-md-2 listCol">{{item.serino}} </div>
                                 <div class="col-md-5 listCol">{{item.aciklama}} </div>
-                                <div class="col-md-2 listCol">{{getIslemDurumu(item.islemDurumu)}} </div>
+                                <div class="col-md-2 listCol">{{item.islemDurumLabel}} </div>
                             </div>
                         </q-item-tile>
                     </q-item-main>
+                     <q-item-side right :icon="item.icon" />
                     </q-item>
             </q-list>
         </div>
@@ -87,15 +68,9 @@
 import axios from "axios";
 import store from "../store";
 import notify from "./notify";
-import servisDuzelt from "../components/servisDuzelt";
 
-import { uid, filter } from "quasar";
 
 const module = {
-  components: {
-    servisDuzelt
-  },
-
   data() {
     return {
       //modal instance
@@ -122,17 +97,7 @@ const module = {
 
       guard: {},
 
-      islemDurumu: [
-        { label: "Servis Kabul", value: "1" },
-        { label: "Müşteri Talebi", value: "2" },
-        { label: "İşlem Yapılıyor", value: "3" },
-        { label: "Parça Bekliyor", value: "4" },
-        { label: "Dış Serviste", value: "5" },
-        { label: "İptal Edildi", value: "6" },
-        { label: "Onay Bekliyor", value: "7" },
-        { label: "Tamamlandı", value: "8" },
-        { label: "Teslim Edildi", value: "9" }
-      ]
+     
     };
   },
 
@@ -146,25 +111,19 @@ const module = {
   methods: {
     //servisDuzelt component'den gelen datalar
     servisEmit(val) {
-      this.modal = false;
-     
-        this.getList();
+      //this.modal = false;
+      this.getList();
       
     },
     servisSil(val){
-      this.modal= false;
-      console.log(val);
-      let index = this.servisler.findIndex(x => x.id === val);
-      this.servisler.splice(index, 1);
+      //this.modal= false;
+      
+      //let index = this.servisler.findIndex(x => x.id === val);
+      //this.servisler.splice(index, 1);
     },
 
     //islem durumu id den label a çevir..
-    getIslemDurumu(id) {
-      if (id) {
-        let index = this.islemDurumu.findIndex(x => x.value === id);
-        return this.islemDurumu[index].label;
-      }
-    },
+    
     
   //this.guard
     getRole() {
@@ -189,7 +148,9 @@ const module = {
       axios
         .get(this.apiUrl + "listServis")
         .then(response => {
+         
           this.servisler = response.data;
+           
         })
         .catch(e => {
           this.errors.push(e);
@@ -199,14 +160,16 @@ const module = {
 
     //yeni modal açar..
     yeniServis() {
-      this.errors = {};
-      this.modal = true;
-      this.currentServis = {};
+      this.$router.push('/servisler/servis');
+      //this.errors = {};
+    //  this.modal = true;
+     // this.currentServis = {};
     },
 
     //kullanıcı seçilince index den mevcut değerleri currentServis'a at..
     rowClick(id) {
-      this.currentServis={};
+     
+     /* this.currentServis={};
 
       //id'den users'daki indexi bul..
       let index = this.servisler.findIndex(x => x.id === id);
@@ -217,16 +180,18 @@ const module = {
         this.currentServis.cariAdi = response.data.servis.get_cari.adi;
         this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
       });
-
+      this.modal = true;
+      this.errors = {};
       /*
         this.currentServis = Object.assign({}, this.servisler[index]);
       */
-      this.errors = {};
+      
+      this.$router.push('/servisler/servis/'+id);
 
-      this.modal = true;
+     
     },
 
-    submit() {
+    /*submit() {
       axios
         .post(this.apiUrl + "newServis", this.currentServis)
         .then(res => {
@@ -252,7 +217,7 @@ const module = {
           notify(error.response.data.error, true);
         });
     },
-
+*/
    
     getIcon(icon) {
       switch (icon) {
