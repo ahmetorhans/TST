@@ -146,7 +146,7 @@ const module = {
     //Tüm Liste..
     getList() {
       axios
-        .get(this.apiUrl + "listServis")
+        .get(this.apiUrl + "servisListele")
         .then(response => {
          
           this.servisler = response.data;

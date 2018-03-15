@@ -45,7 +45,7 @@ const module = {
       this.currentCihaz.cari_id = this.cariId;
 
       axios
-        .post(this.apiUrl + "newCihaz", this.currentCihaz)
+        .post(this.apiUrl + "cihazKaydet", this.currentCihaz)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;

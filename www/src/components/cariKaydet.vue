@@ -44,7 +44,7 @@ const module = {
   methods: {
      cariKaydet() {
       axios
-        .post(this.apiUrl + "newCari", this.currentCari)
+        .post(this.apiUrl + "cariKaydet", this.currentCari)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;

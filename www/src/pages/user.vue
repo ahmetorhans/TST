@@ -215,7 +215,7 @@ const module = {
         })
         .then(() => {
           axios
-            .get(this.apiUrl + "deleteUser?id=" + id)
+            .get(this.apiUrl + "userSil?id=" + id)
             .then(response => {
               if (response.data.status === true) {
                 let index = this.users.findIndex(x => x.id === id);
@@ -234,7 +234,7 @@ const module = {
     //kullanıcıları getir..
     getUserList() {
       axios
-        .get(this.apiUrl + "userList")
+        .get(this.apiUrl + "userListele")
         .then(response => {
           this.users = response.data;
         })
@@ -308,7 +308,7 @@ const module = {
       this.currentUser.yetkiler = this.yetkiler;
       console.log(this.currentUser)
       axios
-        .post(this.apiUrl+"register", this.currentUser)
+        .post(this.apiUrl+"userKaydet", this.currentUser)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;

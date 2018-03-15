@@ -13,14 +13,14 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function newCihaz()
+    public function cihazKaydet()
     {
 
         $sonuc = Request::all();
 
         //id varsa update et..
         if (isset($sonuc['id'])) {
-            return $this->updateCihaz();
+            return $this->cihazGuncelle();
         }
 
         $validator = Validator::make(Request::all(), [
@@ -44,7 +44,7 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function updateCihaz ()
+    public function cihazGuncelle ()
     {
 
         $cihaz = \App\Cihaz::find(Request::input('id'));
@@ -70,7 +70,7 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function listCihaz()
+    public function cihazListele()
     {
         $cihaz = \App\Cihaz::
              leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
@@ -82,7 +82,7 @@ class Cihaz extends Controller
 
     }
 
-    public function getCihaz($id){
+    public function cihazGetir($id){
         $cihaz =\App\Cihaz::find($id);
         $cihaz->cari; 
         return response()->json($cihaz);
@@ -113,7 +113,7 @@ class Cihaz extends Controller
      *
      * @return json array
      */
-    public function deleteCihaz()
+    public function cihazSil()
     {
             
         $cihaz = \App\Cihaz::find(Request::input('id'));

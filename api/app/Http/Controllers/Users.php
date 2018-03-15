@@ -17,14 +17,14 @@ class Users extends Controller
      *
      * @return json array
      */
-    public function newUser()
+    public function userKaydet()
     {
 
         $sonuc = Request::all();
 
         //id varsa update et..
         if (isset($sonuc['id'])) {
-            return $this->updateUser();
+            return $this->userGuncelle();
         }
 
         //gerekli alanlar
@@ -64,7 +64,7 @@ class Users extends Controller
      *
      * @return json array
      */
-    public function updateUser()
+    public function userGuncelle()
     {
 
         $user = User::find(Request::input('id'));
@@ -121,7 +121,7 @@ class Users extends Controller
      *
      * @return json array
      */
-    public function listUser()
+    public function userListele()
     {
 
         $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->with('yetkiler')->get();
@@ -129,7 +129,7 @@ class Users extends Controller
 
     }
 
-    public function listeleTeknisyen()
+    public function teknisyenListele()
     {
 
         $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->get(['id as value','name as label']);
@@ -165,7 +165,7 @@ class Users extends Controller
         return response()->json($yetki);
     }
 
-    public function deleteUser()
+    public function userSil()
     {
         $id = Request::input('id');
 
@@ -184,7 +184,7 @@ class Users extends Controller
         }
     }
 
-    public function yetki()
+    public function yetkiler()
     {
        //default yetkilerler db'yi donat
         $this->yetkiDefault();

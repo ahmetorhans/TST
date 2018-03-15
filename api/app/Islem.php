@@ -8,4 +8,6 @@ class Islem extends Model
 {
     protected $table = 'islem';
 
+    protected $guarded = [];
+
 }

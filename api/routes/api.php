@@ -18,35 +18,37 @@ Route::get('test', 'HomeController@test');
 
 
 Route::group(['middleware' => 'jwt.auth'], function () {
-    Route::get('userList', 'Users@listUser');
-    Route::get('listeleTeknisyen', 'Users@listeleTeknisyen');
-    
-    Route::post('register', 'Users@newUser');
-    Route::get('yetkiler', 'Users@yetki');
-
+   
+    Route::get('userListele', 'Users@userListele');
+    Route::get('userSil', 'Users@userSil');
+    Route::post('userKaydet', 'Users@userKaydet');
+    Route::get('teknisyenListele', 'Users@teknisyenListele');
+    Route::get('yetkiler', 'Users@yetkiler');
     Route::get('yetkiDefault', 'Users@yetkiDefault');
-    Route::get('deleteUser', 'Users@deleteUser');
     
     Route::post('upload', 'Upload@uploadFile');
 
-    Route::get('listCari', 'Cari@listCari');
+    Route::get('cariListele', 'Cari@cariListele');
+    Route::get('cariGetir/{id}', 'Cari@cariGetir');
+    Route::post('cariKaydet', 'Cari@cariKaydet');
+    Route::get('cariSil', 'Cari@cariSil');
     Route::get('listShortCari', 'Cari@listShortCari');
-    Route::get('getCari/{id}', 'Cari@getCari');
-    Route::post('newCari', 'Cari@newCari');
-    Route::get('deleteCari', 'Cari@deleteCari');
 
-    Route::get('listCihaz', 'Cihaz@listCihaz');
-    Route::post('newCihaz', 'Cihaz@newCihaz');
-    Route::get('deleteCihaz', 'Cihaz@deleteCihaz');
-    Route::get('getCihaz/{id}', 'Cihaz@getCihaz');
+    Route::get('cihazListele', 'Cihaz@cihazListele');
+    Route::post('cihazKaydet', 'Cihaz@cihazKaydet');
+    Route::get('cihazSil', 'Cihaz@cihazSil');
+    Route::get('cihazGetir/{id}', 'Cihaz@cihazGetir');
     Route::get('listShortCihaz', 'Cihaz@listShortCihaz');
     Route::get('listShortCihazId/{id}', 'Cihaz@listShortCihazId');
 
-    Route::get('listServis', 'Servis@listeServis');
-    Route::post('newServis', 'Servis@yeniServis');
-    Route::get('deleteServis', 'Servis@silServis');
-    Route::get('getServis/{id}', 'Servis@getirServis');
-    Route::get('listeleIslemDurumlari', 'Servis@listeleIslemDurumlari');
+    Route::get('servisListele', 'Servis@servisListele');
+    Route::post('servisKaydet', 'Servis@servisKaydet');
+    Route::get('servisSil', 'Servis@servisSil');
+    Route::get('servisGetir/{id}', 'Servis@servisGetir');
+    Route::get('servisInit', 'Servis@servisInit');
+    Route::get('islemDurumlariListele', 'Servis@islemDurumlariListele');
+    Route::post('islemKaydet', 'Servis@islemKaydet');
+    Route::get('islemSil/{id}', 'Servis@islemSil');
     
 
 

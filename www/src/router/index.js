@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+//import VueBarcode from '@xkeshi/vue-barcode'
 import routes from './routes'
 import store from '../store'
 import VueFilter from 'vue-filter';
 import config from '../config';
+
+//Vue.component('barcode', VueBarcode);
+
 Vue.use(VueFilter); 
 Vue.use(VueRouter);
 

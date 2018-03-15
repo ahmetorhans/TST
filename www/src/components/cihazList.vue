@@ -47,14 +47,14 @@ const module = {
   },
 
   created() {
-    this.getList();
+    //this.getList();
   },
 
   methods: {
    
     getList() {
       axios
-        .get(this.apiUrl + "listCihaz")
+        .get(this.apiUrl + "cihazListele")
         .then(response => {
           this.cihazList = response.data;
         })

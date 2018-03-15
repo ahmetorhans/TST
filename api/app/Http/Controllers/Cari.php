@@ -14,14 +14,14 @@ class Cari extends Controller
      *
      * @return json array
      */
-    public function newCari()
+    public function cariKaydet()
     {
 
         $sonuc = Request::all();
 
         //id varsa update et..
         if (isset($sonuc['id'])) {
-            return $this->updateCari();
+            return $this->cariGuncelle();
         }
 
         
@@ -71,7 +71,7 @@ class Cari extends Controller
      *
      * @return json array
      */
-    public function updateCari()
+    public function cariGuncelle()
     {
 
         $cari = \App\Cari::find(Request::input('id'));
@@ -128,6 +128,7 @@ class Cari extends Controller
                     return response()->json(array('status' => false, 'msg' => $e));
                 }
                 $user = new User;
+                $user->musteri = "1";
                 $user->fill($input)->save();
 
                 //kullanıcı eklendi. Cariyi güncelle..
@@ -146,17 +147,17 @@ class Cari extends Controller
      *
      * @return json array
      */
-    public function listCari()
+    public function cariListele()
     {
         $cari = \App\Cari::
             leftJoin('users', 'caris.user_id', '=', 'users.id')
-            ->orderBy('caris.id', 'asc')
+            ->orderBy('caris.id', 'DESC')
             ->get(['caris.id', 'adi',  'yetkili','adres','telefon']);
 
         return response()->json($cari);
 
     }
-    public function getCari($id)
+    public function cariGetir($id)
     {
         $cari = \App\Cari::
             leftJoin('users', 'caris.user_id', '=', 'users.id')
@@ -178,7 +179,7 @@ class Cari extends Controller
 
     }
 
-    public function deleteCari()
+    public function cariSil()
     {
         $id = Request::input('id');
 

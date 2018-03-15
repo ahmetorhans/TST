@@ -158,7 +158,7 @@ export default {
     },
     getList() {
       axios
-        .get(this.apiUrl + "listServis")
+        .get(this.apiUrl + "servisListele")
         .then(response => {
           console.log(response.data)
           this.cariler = response.data;

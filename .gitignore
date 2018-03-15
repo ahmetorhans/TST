@@ -5,6 +5,7 @@
 /api/vendor
 /api/.env
 /www/dist
+/www/package.json
 .idea
 .vscode
 *.suo

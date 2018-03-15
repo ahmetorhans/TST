@@ -305,7 +305,7 @@ const module = {
         })
         .then(() => {
           axios
-            .get(this.apiUrl + "deleteCihaz?id=" + id)
+            .get(this.apiUrl + "cihazSil?id=" + id)
             .then(response => {
               if (response.data.status === true) {
                 let index = this.cihazlar.findIndex(x => x.id === id);
@@ -323,7 +323,7 @@ const module = {
     //Tüm Liste..
     getList() {
       axios
-        .get(this.apiUrl + "listCihaz")
+        .get(this.apiUrl + "cihazListele")
         .then(response => {
           this.cihazlar = response.data;
         })
@@ -367,7 +367,7 @@ const module = {
       let index = this.cihazlar.findIndex(x => x.id === id);
       this.id = index;
 
-      axios.get(this.apiUrl + "getCihaz/" + id).then(response => {
+      axios.get(this.apiUrl + "cihazGetir/" + id).then(response => {
         console.log(response.data)
         this.currentCihaz = response.data;
         this.currentCihaz.cariAdi=response.data.cari.adi;
@@ -391,7 +391,7 @@ const module = {
       //currentCihaz'a yetkileri ata..
       //this.currentCihaz.yetkiler = this.yetkiler;
       axios
-        .post(this.apiUrl + "newCihaz", this.currentCihaz)
+        .post(this.apiUrl + "cihazKaydet", this.currentCihaz)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;

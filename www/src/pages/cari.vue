@@ -241,7 +241,7 @@ const module = {
         })
         .then(() => {
           axios
-            .get(this.apiUrl + "deleteCari?id=" + id)
+            .get(this.apiUrl + "cariSil?id=" + id)
             .then(response => {
               if (response.data.status === true) {
                 let index = this.cariler.findIndex(x => x.id === id);
@@ -260,7 +260,7 @@ const module = {
     //kullanıcıları getir..
     getList() {
       axios
-        .get(this.apiUrl + "listCari")
+        .get(this.apiUrl + "cariListele")
         .then(response => {
           this.cariler = response.data;
           
@@ -315,7 +315,7 @@ const module = {
       this.id = index;
     
      // this.currentCari = Object.assign({}, this.cariler[index]);
-      axios.get(this.apiUrl + "getCari/" + id).then(response => {
+      axios.get(this.apiUrl + "cariGetir/" + id).then(response => {
         console.log(response.data);
         this.currentCari = response.data;
       
@@ -334,7 +334,7 @@ const module = {
       //currentCari'a yetkileri ata..
       this.currentCari.yetkiler = this.yetkiler;
       axios
-        .post(this.apiUrl+"newCari", this.currentCari)
+        .post(this.apiUrl+"cariKaydet", this.currentCari)
         .then(res => {
           if (res.data.status === false) {
             console.log(res.data);
