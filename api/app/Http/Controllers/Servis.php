@@ -34,6 +34,7 @@ class Servis extends Controller
         }
 
         $servis = new \App\Servis;
+        $servis->tarih=date('Y-m-d');
         $servis->fill($sonuc)->save();
 
         $access_token = Request::header('Authorization');
@@ -105,7 +106,20 @@ class Servis extends Controller
             ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
             ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
             ->orderBy('id','DESC')
-            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon','servis.created_at as tarih']);
+            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon','servis.tarih']);
+
+        return response()->json($servisler);
+    }
+
+    public function servisListeleBekleyen()
+    {
+        $servisler = \App\Servis::
+            leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
+            ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
+            ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
+            ->whereNotIn('durum.value',array(10,8,16))
+            ->orderBy('id','DESC')
+            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon','servis.tarih']);
 
         return response()->json($servisler);
     }

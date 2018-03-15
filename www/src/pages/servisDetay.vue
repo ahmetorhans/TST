@@ -129,7 +129,7 @@
               <q-item-tile label> {{item.adi}}</q-item-tile>
               <q-item-tile sublabel>
                 <div class="row">
-                  <div class="col-md-2 listCol">{{item.tarih}} </div>
+                  <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
                   <div class="col-md-2 listCol">{{item.user}} </div>
                   <div class="col-md-7 listCol">{{item.aciklama}} </div>
                 </div>
@@ -157,7 +157,7 @@
               </tr>
               <tr>
                 <td width="30%">Tarih</td>
-                <td>{{currentServis.created_at}}</td>
+                <td>{{formatDate(currentServis.created_at)}}</td>
               </tr>
               <tr>
                 <td width="30%">Fiyat</td>
@@ -243,7 +243,7 @@
                 <th width="30%">Kullanıcı</th>
               </tr>
               <tr v-for="item in currentServis.get_islem">
-                <td width="15%">{{item.tarih}}</td>
+                <td width="15%">{{formatDate(item.tarih)}}</td>
                 <td width="15%">{{item.adi}}</td>
                 <td width="50%">{{item.aciklama}}</td>
                 <td width="30%">{{item.user}}</td>
@@ -312,7 +312,7 @@ import islemKaydet from "../components/islemKaydet";
 
 const module = {
   components: { cihazKaydet, cariKaydet, cihazList, islemKaydet },
-  data() {
+  data () {
     return {
       errors: {},
 
@@ -333,7 +333,7 @@ const module = {
     };
   },
 
-  created() {
+  created () {
     /*this.getRole();
     this.getTeknisyen();
     this.getServis();
@@ -350,7 +350,15 @@ const module = {
   },
 
   methods: {
-    islemSil(id) {
+    formatDate (date) {
+      if (!date)
+        return
+      let nDate = new Date(date);
+      let fDate = new Date(nDate.toISOString().split('T')[0]);
+      return fDate.toLocaleDateString();
+
+    },
+    islemSil (id) {
       this.$q
         .dialog({
           title: "İşlem Sil",
@@ -369,10 +377,10 @@ const module = {
             .catch({})
         });
     },
-    yazdir() {
+    yazdir () {
       window.print();
     },
-    servisInit() {
+    servisInit () {
       axios
         .get(this.apiUrl + "servisInit?bolum=servis")
         .then(response => {
@@ -392,7 +400,7 @@ const module = {
           this.errors.push(e);
         });
     },
-    getTeknisyen() {
+    getTeknisyen () {
       axios
         .get(this.apiUrl + "teknisyenListele")
         .then(response => {
@@ -402,7 +410,7 @@ const module = {
           this.errors.push(e);
         });
     },
-    getIslemDurumlari() {
+    getIslemDurumlari () {
       axios
         .get(this.apiUrl + "islemDurumlariListele")
         .then(response => {
@@ -415,7 +423,7 @@ const module = {
         });
     },
     //ilgili servisi getir
-    getServis() {
+    getServis () {
       this.currentServis.get_cari = {};
       this.currentServis.get_cihaz = {};
       if (this.$route.params.id) {
@@ -439,7 +447,7 @@ const module = {
     },
 
     //this.guard
-    getRole() {
+    getRole () {
       axios
         .get(this.apiUrl + "yetkiler?bolum=servis")
         .then(response => {
@@ -457,17 +465,17 @@ const module = {
     },
 
     //cihaz kaydet comp. gelen
-    cihazKaydetEmit(val) {
+    cihazKaydetEmit (val) {
       this.cihazModal = false;
     },
-    islemKaydetEmit(val) {
+    islemKaydetEmit (val) {
       this.currentServis.get_islem.unshift(val);
       this.islemModal = false;
     },
-    cariKaydetEmit(val) {
+    cariKaydetEmit (val) {
       this.cariModal = false;
     },
-    cihazListEmit(val) {
+    cihazListEmit (val) {
       console.log(val);
       this.currentServis.cihaz_id = val.id;
       this.currentServis.cihazAdi = val.adi;
@@ -475,7 +483,7 @@ const module = {
     },
 
     //f10 basınca liste aç.
-    fnkey(event) {
+    fnkey (event) {
       event.defaultPrevented;
       if (event.keyCode == "121") {
         this.cihazListModal = true;
@@ -483,7 +491,7 @@ const module = {
     },
 
     //autocompolete için..
-    cariAra(terms, done) {
+    cariAra (terms, done) {
       axios
         .get(this.apiUrl + "listShortCari")
         .then(response => {
@@ -496,7 +504,7 @@ const module = {
     },
 
     //from searched..
-    cariAraComplete(terms, done) {
+    cariAraComplete (terms, done) {
       let searchText = this.currentServis.cariAdi.toLocaleLowerCase("tr-TR");
 
       let sonuc = [];
@@ -520,7 +528,7 @@ const module = {
     },
 
     //autocomplete seçilen..
-    cariAraSelected(item) {
+    cariAraSelected (item) {
       //seçilince diğer cari bilgileri de cariSelected'a at.
       let index = this.cariList.findIndex(x => x.id === item.value);
       this.currentServis.get_cari = this.cariList[index];
@@ -529,7 +537,7 @@ const module = {
       this.currentServis.cari_id = item.value;
     },
 
-    cihazAra(terms, done) {
+    cihazAra (terms, done) {
       if (this.cihazList.length == 0) {
         axios
           .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
@@ -545,7 +553,7 @@ const module = {
       }
     },
 
-    cihazAraComplete(terms, done) {
+    cihazAraComplete (terms, done) {
       let searchText = this.currentServis.cihazAdi.toLocaleLowerCase("tr-TR");
       let sonuc = [];
 
@@ -571,7 +579,7 @@ const module = {
     },
 
     //autocomplete seçilen..
-    cihazAraSelected(item) {
+    cihazAraSelected (item) {
       let index = this.cihazList.findIndex(x => x.id === item.value);
       this.currentServis.get_cihaz = this.cihazList[index];
 
@@ -579,7 +587,7 @@ const module = {
       this.currentServis.cihaz_id = item.value;
     },
 
-    sil(id) {
+    sil (id) {
       this.$q
         .dialog({
           title: "Servis Sil",
@@ -603,7 +611,7 @@ const module = {
             });
         });
     },
-    submit() {
+    submit () {
       console.log(this.currentServis);
       axios
         .post(this.apiUrl + "servisKaydet", this.currentServis)
@@ -636,7 +644,7 @@ const module = {
   },
 
   computed: {
-    kaydetBtn() {
+    kaydetBtn () {
       if (this.currentServis.id) {
         if (this.guard.duzelt == "1") {
           return true;

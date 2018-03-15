@@ -8,17 +8,13 @@
           <q-toolbar-title>Servis Listesi</q-toolbar-title>
         </q-toolbar>
 
-        <q-table :data="filteredData" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
+        <q-table :data="servisler" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
 
           <template slot="top-left" slot-scope="props">
             <q-search  color="secondary" v-model="filter" class="col-12" placeholder="Ara" />
 
           </template>
-          <template slot="top-right" slot-scope="props">
-
-            <q-select color="secondary" v-model="grupFilter"  float-label="İşlem Durumları" style="width:180px" :options="islemDurumlari" />
-
-          </template>
+         
 
           <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight">
             <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props">
@@ -47,8 +43,8 @@ export default {
       servisler: [],
       filter: "",
       guard: {},
-      grupFilter: '',
-      islemDurumlari:[],
+ 
+     
       pagination: {
         rowsPerPage: 50
       },
@@ -116,21 +112,10 @@ export default {
   created () {
     this.getRole();
     this.getList();
-    this.getIslemDurumlari();
+
   },
   methods: {
-    getIslemDurumlari () {
-      axios
-        .get(this.apiUrl + "islemDurumlariListele")
-        .then(response => {
-          console.log(response.data);
-          this.islemDurumlari = response.data;
-        })
-        .catch(e => {
-          console.log(e);
-          this.errors.push(e);
-        });
-    },
+    
     formatDate (date) {
       if (!date)
         return;
@@ -178,8 +163,10 @@ export default {
 
     getList () {
       axios
-        .get(this.apiUrl + "servisListele")
+        .get(this.apiUrl + "servisListeleBekleyen")
         .then(response => {
+            console.info("dsss")
+            console.log(response.data)
           this.servisler = response.data;
         })
         .catch(e => {
@@ -187,17 +174,6 @@ export default {
         });
     }
   },
-  computed: {
-    filteredData () {
-      if (!this.grupFilter)
-        return this.servisler;
-      return this.servisler.filter(p => {
-        console.log(p);
-        return (
-          p.islemDurumu.indexOf(this.grupFilter) > -1
-        );
-      });
-    }
-  }
+  
 };
 </script>>

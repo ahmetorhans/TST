@@ -44,6 +44,7 @@ export default [
     children: [
       { path: '', component: () => import('pages/rapor') },
       { path: 'servis', component: () => import('pages/raporlar/servis') },
+      { path: 'servisBekleyen', component: () => import('pages/raporlar/servisBekleyen') },
       { path: 'cari', component: () => import('pages/raporlar/cari') }
     ]
   },
