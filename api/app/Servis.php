@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 class Servis extends Model
 {
 
-    protected $guarded = ['cariAdi','cihazAdi','get_cari','get_cihaz','get_teknisyen','islemDurumlari'];
+    protected $guarded = ['get_islem','cariAdi','cihazAdi','get_cari','get_cihaz'];
 
-    
+        
     protected $table = 'servis';
 
     public function getCari()
@@ -21,6 +21,10 @@ class Servis extends Model
     public function getCihaz()
     {
         return $this->hasOne('App\Cihaz','id','cihaz_id');
+    }
+
+    public function getIslem(){
+        return $this->hasMany('App\Islem','servis_id','id');
     }
 
    

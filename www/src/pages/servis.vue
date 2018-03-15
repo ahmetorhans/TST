@@ -16,7 +16,7 @@
             float-label="Ara"
             />  
 
-            <q-list highlight >
+            <q-list highlight separator>
                 <q-item class="desktop-only">
                   
                     <q-item-main

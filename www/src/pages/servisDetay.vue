@@ -1,8 +1,174 @@
 <template>
   <div class="q-pa-sm">
-     <q-toolbar slot="header" color="faded" >
-        <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
-      </q-toolbar>
+      <q-tabs color="faded" inverted>
+       
+        <q-tab default slot="title" name="tab-1"  label="Servis" />
+        <q-tab  slot="title" name="tab-2" label="İşlemler" />
+        <q-tab alert slot="title" name="tab-3"  label="Özet" />
+        
+
+        <!-- Targets -->
+        <q-tab-pane name="tab-1">
+            <q-toolbar slot="header" color="faded" >
+              <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
+            </q-toolbar>
+              <div class="layout-padding">
+                  <div class="row"> 
+                      <div class="col-sm-12">
+                          <div class="row">
+                            
+                                  <div class="col-xs-11">
+                                      <q-field label="Cari Seçin" :label-width="3" class="fip">
+                                          <q-search v-model="currentServis.cariAdi" placeholder="Cari Adı">
+                                          <q-autocomplete @search="cariAra" @selected="cariAraSelected" />
+                                          </q-search>
+                                      <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
+                                      </q-field>
+                                      <div v-if="currentServis.cari_id">
+                                      <q-field label=" " :label-width="3" class="fip">
+                                        <q-input stack-label="Cari Adı" :value="currentServis.get_cari.adi" disabled />
+                                      </q-field>
+                                    
+                                      <q-field label=" " :label-width="3" class="fip">
+                                        <q-input stack-label="Yetkili" :value="currentServis.get_cari.yetkili" disabled />
+                                      </q-field>
+                                      <q-field label=" " :label-width="3" class="fip">
+                                        <q-input stack-label="Telefon" :value="currentServis.get_cari.telefon" disabled />
+                                      </q-field>
+                                      </div>
+                                  </div>
+                                  <div class="col-xs-1" style="text-align:center;margin-top:5px;">
+                                      <q-btn icon="add" size="sm" round @click="cariModal = !cariModal"></q-btn>
+                                  </div>
+                          </div>
+                          <div class="row" v-if="currentServis.cari_id"> 
+                                      <div class="col-xs-11">
+                                          <q-field label="Cihaz Seçin" :label-width="3" class="fip">
+                                              <q-search v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
+                                                  <q-autocomplete @search="cihazAra" @selected="cihazAraSelected" />
+                                              </q-search>
+                                              <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
+                                          </q-field>
+                                          <div v-if="currentServis.cihaz_id">
+                                              <q-field label=" " :label-width="3" class="fip">
+                                                <q-input stack-label="Cihaz Adı" :value="currentServis.get_cihaz.adi" disabled />
+                                              </q-field>
+                                        
+                                              <q-field label=" " :label-width="3" class="fip">
+                                                <q-input stack-label="Marka / Model " :value="currentServis.get_cihaz.marka + ' '+ currentServis.get_cihaz.model" disabled />
+                                              </q-field>
+                                              <q-field label=" " :label-width="3" class="fip">
+                                                <q-input stack-label="Seri no" :value="currentServis.get_cihaz.serino" disabled />
+                                              </q-field>
+                                          </div>
+                                      </div>
+                                      <div class="col-xs-1" style="text-align:center;margin-top:5px;">
+                                          <q-btn icon="add" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
+                                      </div>
+
+                                      <div class="col-sm-11">
+                                          <q-field label="İşlem Durumu" :label-width="3" class="fip">
+                                              <q-select
+                                                  v-model="currentServis.islemDurumu"
+                                                  radio
+                                                  :options="islemDurumlari"
+                                              />
+                                          </q-field>
+                                          <q-field label="Teknisyen" :label-width="3" class="fip">
+                                              <q-select
+                                                  v-model="currentServis.teknisyen"
+                                                  radio
+                                                  :options="teknisyen"
+                                              />
+                                            
+                                          </q-field>
+                                          
+                                          <div class="row">
+                                              <div class="col-sm-6">
+                                                  <q-field label="Fiyat" :label-width="6" class="fip">
+                                                      <q-input v-model="currentServis.fiyat" suffix="TL" />
+                                                  </q-field>
+                                              </div>
+                                              <div class="col-sm-6 q-pl-md">
+                                                  <q-field label="Fatura Kesildi mi" :label-width="6" class="fip">
+                                                      <q-checkbox v-model="currentServis.fatura" true-value="1" false-value="0" />
+                                                  </q-field>  
+                                              </div>
+                                          </div>
+                                          
+                                      
+                                          <q-field label="Ek Parça" :label-width="3" class="fip">
+                                              <q-input v-model="currentServis.ekParca"  />
+                                          </q-field>
+                                          <q-field label="Açıklama" :label-width="3" class="fip">
+                                              <q-input  type="textarea" v-model="currentServis.aciklama"  />
+                                          </q-field>
+                                          <q-field class="fip">
+                                              <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
+                                              <q-btn align="right" v-if="guard.sil=='1'" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
+                                            
+                                          </q-field>
+                                      </div>
+                              </div>
+                          </div>
+                        
+                      </div>
+                  </div> 
+        </q-tab-pane>
+        <q-tab-pane name="tab-2">
+
+             <q-list highlight separator>
+               <q-item class="desktop-only">
+                  
+                    <q-item-main
+                    label-lines="1"
+                    sublabel-lines="1"
+                    dense
+                  
+                    > 
+                    <q-item-tile sublabel>
+                        <div class="row">
+                           
+                            <div class="col-md-2 listCol">Tarih </div>
+                            <div class="col-md-2 listCol">Kullanıcı </div>
+                             <div class="col-md-8 listCol">Açıklama</div>
+                           
+                        </div>
+                        </q-item-tile>
+                </q-item-main>
+                
+                </q-item>
+                <q-item  v-for="item of currentServis.get_islem" :key="item.id">
+                       <q-item-main
+                        label-lines="1"
+                        sublabel-lines="3"
+                        dense > 
+                        <q-item-tile label > {{item.adi}}</q-item-tile>
+                        <q-item-tile sublabel>
+                            <div class="row">
+                                <div class="col-md-2 listCol">{{item.tarih}}  </div>
+                                <div class="col-md-2 listCol">{{item.user}} </div>
+                                <div class="col-md-8 listCol">{{item.aciklama}} </div>
+                                
+                            </div>
+                            
+                        </q-item-tile>
+                    </q-item-main>
+                   
+                    </q-item>
+                    
+            </q-list>
+
+
+        </q-tab-pane>
+        <q-tab-pane name="tab-3">Tab Three</q-tab-pane>
+        
+      </q-tabs>
+
+
+
+
+    
 
     <q-modal v-model="cariModal" :content-css="{ zIndex:'9999',minWidth: '50vw', minHeight:'360px'}">
         <q-modal-layout>
@@ -23,105 +189,7 @@
             <cihaz-list @cihazListEmit="cihazListEmit"/>
         </q-modal-layout>
     </q-modal>
-        <div class="layout-padding">
-            <div class="row"> 
-                <div class="col-sm-12">
-                    <div class="row">
-                      
-                            <div class="col-xs-11">
-                                <q-field label="Cari Seçin" :label-width="3" class="fip">
-                                    <q-search v-model="currentServis.cariAdi" placeholder="Cari Adı">
-                                    <q-autocomplete @search="cariAra" @selected="cariAraSelected" />
-                                    </q-search>
-                                <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
-                                </q-field>
-                                <q-field label=" " :label-width="3" class="fip">
-                                   <q-input stack-label="Cari Adı" :value="currentServis.get_cari.adi" disabled />
-                                </q-field>
-                               
-                                <q-field label=" " :label-width="3" class="fip">
-                                   <q-input stack-label="Yetkili" :value="currentServis.get_cari.yetkili" disabled />
-                                </q-field>
-                                <q-field label=" " :label-width="3" class="fip">
-                                   <q-input stack-label="Telefon" :value="currentServis.get_cari.telefon" disabled />
-                                </q-field>
-                            </div>
-                            <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                                <q-btn icon="add" size="sm" round @click="cariModal = !cariModal"></q-btn>
-                            </div>
-                    </div>
-                    <div class="row" v-if="currentServis.cari_id"> 
-                                <div class="col-xs-11">
-                                    <q-field label="Cihaz Seçin" :label-width="3" class="fip">
-                                        <q-search v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
-                                            <q-autocomplete @search="cihazAra" @selected="cihazAraSelected" />
-                                        </q-search>
-                                        <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
-                                    </q-field>
-
-                                    <q-field label=" " :label-width="3" class="fip">
-                                      <q-input stack-label="Cihaz Adı" :value="currentServis.get_cihaz.adi" disabled />
-                                    </q-field>
-                                  
-                                    <q-field label=" " :label-width="3" class="fip">
-                                      <q-input stack-label="Marka / Model " :value="currentServis.get_cihaz.marka + ' '+ currentServis.get_cihaz.model" disabled />
-                                    </q-field>
-                                    <q-field label=" " :label-width="3" class="fip">
-                                      <q-input stack-label="Seri no" :value="currentServis.get_cihaz.serino" disabled />
-                                    </q-field>
-                                </div>
-                                <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                                    <q-btn icon="add" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
-                                </div>
-
-                                <div class="col-sm-11">
-                                    <q-field label="İşlem Durumu" :label-width="3" class="fip">
-                                        <q-select
-                                            v-model="currentServis.islemDurumu"
-                                            radio
-                                            :options="islemDurumlari"
-                                        />
-                                    </q-field>
-                                    <q-field label="Teknisyen" :label-width="3" class="fip">
-                                        <q-select
-                                            v-model="currentServis.teknisyen"
-                                            radio
-                                            :options="teknisyen"
-                                        />
-                                       
-                                    </q-field>
-                                    
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <q-field label="Fiyat" :label-width="6" class="fip">
-                                                <q-input v-model="currentServis.fiyat" suffix="TL" />
-                                            </q-field>
-                                        </div>
-                                        <div class="col-sm-6 q-pl-md">
-                                            <q-field label="Fatura Kesildi mi" :label-width="6" class="fip">
-                                                <q-checkbox v-model="currentServis.fatura" true-value="1" false-value="0" />
-                                            </q-field>  
-                                        </div>
-                                    </div>
-                                    
-                                 
-                                    <q-field label="Ek Parça" :label-width="3" class="fip">
-                                        <q-input v-model="currentServis.ekParca"  />
-                                    </q-field>
-                                    <q-field label="Açıklama" :label-width="3" class="fip">
-                                        <q-input  type="textarea" v-model="currentServis.aciklama"  />
-                                    </q-field>
-                                    <q-field class="fip">
-                                        <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                                        <q-btn align="right" v-if="guard.sil=='1'" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
-                                       
-                                    </q-field>
-                                </div>
-                        </div>
-                    </div>
-                  
-                </div>
-            </div> 
+     
     </div>
 </template>
 
@@ -133,62 +201,77 @@ import cariKaydet from "../components/cariKaydet";
 import cihazList from "../components/cihazList";
 
 const module = {
-  
   components: { cihazKaydet, cariKaydet, cihazList },
   data() {
     return {
       errors: {},
 
       cariList: [],
- 
+
       cihazList: [],
-      
+
       teknisyen: [],
       cariModal: false,
       cihazModal: false,
       cihazListModal: false,
 
-      currentServis:[],
-      guard:{},
+      currentServis: {},
+      guard: {},
 
-      islemDurumlari:[],
-
-   
+      islemDurumlari: []
     };
   },
 
   created() {
-   
     this.getRole();
-    //this.getTeknisyen();
+    this.getTeknisyen();
     this.getServis();
-   // this.getIslemDurumlari();
+    this.getIslemDurumlari();
 
     window.addEventListener("keydown", this.fnkey);
   },
 
   methods: {
-
+    getTeknisyen() {
+      axios
+        .get(this.apiUrl + "listeleTeknisyen")
+        .then(response => {
+          this.teknisyen = response.data;
+        })
+        .catch(e => {
+          this.errors.push(e);
+        });
+    },
+    getIslemDurumlari() {
+      axios
+        .get(this.apiUrl + "listeleIslemDurumlari")
+        .then(response => {
+          console.log(response.data);
+          this.islemDurumlari = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+          this.errors.push(e);
+        });
+    },
     //ilgili servisi getir
-   getServis() {
-        this.currentServis.get_cari={};   
-        this.currentServis.get_cihaz={};   
-        if (this.$route.params.id) {
-            axios
-            .get(this.apiUrl + "getServis/" + this.$route.params.id)
-            .then(response => {
-                this.currentServis = response.data.servis;
-                this.currentServis.cariAdi = response.data.servis.get_cari.adi;
-                this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
-
-                this.teknisyen= response.data.teknisyenler;
-                this.islemDurumlari = response.data.islemDurumlari;
-            })
-            .catch(e => {
-                this.errors.push(e);
-            });
-        }
-        },
+    getServis() {
+      this.currentServis.get_cari = {};
+      this.currentServis.get_cihaz = {};
+      if (this.$route.params.id) {
+        axios
+          .get(this.apiUrl + "getServis/" + this.$route.params.id)
+          .then(response => {
+            console.log(response.data);
+            this.currentServis = response.data.servis;
+            this.currentServis.cariAdi = response.data.servis.get_cari.adi;
+            this.currentServis.cihazAdi = response.data.servis.get_cihaz.adi;
+          })
+          .catch(e => {
+            this.errors.push(e);
+          });
+      }
+    },
 
     //this.guard
     getRole() {
@@ -254,8 +337,6 @@ const module = {
           : "";
       });
 
-      
-
       let arr = [];
 
       ver.forEach(e => {
@@ -273,8 +354,8 @@ const module = {
     cariAraSelected(item) {
       //seçilince diğer cari bilgileri de cariSelected'a at.
       let index = this.cariList.findIndex(x => x.id === item.value);
-      this.currentServis.get_cari=this.cariList[index];
-      
+      this.currentServis.get_cari = this.cariList[index];
+
       this.currentServis.cariAdi = item.label;
       this.currentServis.cari_id = item.value;
     },
@@ -323,8 +404,8 @@ const module = {
     //autocomplete seçilen..
     cihazAraSelected(item) {
       let index = this.cihazList.findIndex(x => x.id === item.value);
-      this.currentServis.get_cihaz=this.cihazList[index];
-      
+      this.currentServis.get_cihaz = this.cihazList[index];
+
       this.currentServis.cihazAdi = item.label;
       this.currentServis.cihaz_id = item.value;
     },
@@ -353,12 +434,8 @@ const module = {
             });
         });
     },
-
-    
-  
-
     submit() {
-      let routes = this.routes;
+      console.log(this.currentServis)
       axios
         .post(this.apiUrl + "newServis", this.currentServis)
         .then(res => {
@@ -367,8 +444,8 @@ const module = {
             notify("Lütfen formu kontrol edin!", true);
           } else {
             this.errors = {};
-           // this.$emit("servisEmit", this.currentServis);
-           this.$router.push('/servisler')
+            // this.$emit("servisEmit", this.currentServis);
+            this.$router.push("/servisler");
 
             //yeni kayıtsa listeyi güncelle
             /* if (!this.currentServis.id) {
