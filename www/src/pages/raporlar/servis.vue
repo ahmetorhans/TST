@@ -192,7 +192,6 @@ export default {
       if (!this.grupFilter)
         return this.servisler;
       return this.servisler.filter(p => {
-        console.log(p);
         return (
           p.islemDurumu.indexOf(this.grupFilter) > -1
         );
