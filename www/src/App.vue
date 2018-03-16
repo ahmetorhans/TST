@@ -7,8 +7,18 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "App"
+  name: "App",
+  created(){
+    this.init();
+  },
+  methods:{
+      init(){
+        this.$store.dispatch('actionGuard');
+      }
+  }
 };
 </script>
 

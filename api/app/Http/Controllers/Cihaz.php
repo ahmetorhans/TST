@@ -75,7 +75,7 @@ class Cihaz extends Controller
         $cihaz = \App\Cihaz::
              leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
             ->orderBy('cihazs.id', 'DESC')
-            ->get(['cihazs.id','cihazs.adi','marka','model','serino','cihazs.aciklama','caris.adi as cariAdi','barkod']);
+            ->get(['cihazs.id','cihazs.adi','marka','model','serino','cihazs.aciklama','caris.adi as cariAdi','barkod','caris.id as cari_id']);
       
 
         return response()->json($cihaz);

@@ -55,6 +55,13 @@ export default {
       },
       columns: [
         {
+          label: "No",
+          name: "id",
+          field: "id",
+          sortable: true,
+          align: "left"
+        },
+       {
           label: "Adı",
           name: "adi",
           field: "adi",
@@ -92,8 +99,11 @@ export default {
   },
 
   created() {
+    
     this.getRole();
     this.getList();
+    
+    
   },
   methods: {
      getRole() {

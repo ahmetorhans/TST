@@ -106,7 +106,7 @@ class Servis extends Controller
             ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
             ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
             ->orderBy('id','DESC')
-            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon','servis.tarih']);
+            ->get(['servis.id','caris.adi AS cariAdi','caris.telefon','cihazs.adi','cihazs.model','cihazs.serino','cihazs.marka','servis.aciklama','servis.islemDurumu','durum.label as islemDurumLabel','durum.icon','servis.tarih','caris.id as cari_id']);
 
         return response()->json($servisler);
     }

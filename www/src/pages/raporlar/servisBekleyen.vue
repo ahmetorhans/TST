@@ -5,7 +5,7 @@
 
       <div class="col-md-12">
         <q-toolbar slot="header" color="faded">
-          <q-toolbar-title>Servis Listesi</q-toolbar-title>
+          <q-toolbar-title>Bekleyen Servisler</q-toolbar-title>
         </q-toolbar>
 
         <q-table :data="servisler" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
@@ -16,15 +16,16 @@
           </template>
          
 
-          <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight">
-            <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props">
+          <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight" @click.native="rowClick(props.row)">
+            <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props" >
               <span v-if="col.date===true">{{formatDate(col.value)}}</span>
               <span v-else>{{col.value}}</span>
 
             </q-td>
-            <q-td>
+           <!-- <q-td>
               <q-btn size="sm" round icon="edit" @click.native="rowClick(props.row)"></q-btn>
             </q-td>
+            -->
           </q-tr>
         </q-table>
 

@@ -1,123 +1,100 @@
 <template>
   <q-page v-if="guard.giris==='1'">
-   <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'600px'}">
-     <q-modal-layout>
-        
+    <q-modal v-model="userModal" :content-css="{ minWidth: '60vw', minHeight:'600px'}">
+      <q-modal-layout>
+
         <q-toolbar slot="header" color="secondary">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
-           <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
+          <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
 
         <div class="layout-padding">
 
-              <q-field label="Adı Soyadı" :label-width="3" >
-                  <q-input v-model="currentUser.name" :class="{'has-error': errors.name}" required/>
-                   <span class="errMsg" v-if="errors.name">{{ errors.name }}</span>
-              </q-field>
+          <q-field label="Adı Soyadı" :label-width="3">
+            <q-input v-model="currentUser.name" :class="{'has-error': errors.name}" required/>
+            <span class="errMsg" v-if="errors.name">{{ errors.name }}</span>
+          </q-field>
 
-              <q-field label="Eposta Adresi" :label-width="3" class="fip" >
-                   <q-input v-model="currentUser.email" :class="{'has-error': errors.email}" />
-                    <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
-              </q-field>
+          <q-field label="Eposta Adresi" :label-width="3" class="fip">
+            <q-input v-model="currentUser.email" :class="{'has-error': errors.email}" />
+            <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
+          </q-field>
 
-              <q-field label="Parola" :label-width="3" class="fip">
-                  <q-input v-model="currentUser.password" type="password" :class="{'has-error': errors.password}" />
-                   <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
-              </q-field>
+          <q-field label="Parola" :label-width="3" class="fip">
+            <q-input v-model="currentUser.password" type="password" :class="{'has-error': errors.password}" />
+            <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
+          </q-field>
 
-              <q-field label="Yetki" :label-width="3"  class="fip">
-                <q-select
-                    v-model="currentUser.role"
-                    radio
-                    :options="selectOptions"
-                  />
-              </q-field>
-               <q-field label="Fotoğraf" :label-width="3" class="fip">
-                  <q-uploader
-                    :url="url"
-                    auto-expand
-                    @uploaded="postUpload"
-                    @finish="finishUpload"
-                    :headers="headers"
-                    ref="uploader"
-                  /> 
-                 <!-- <img :src="`http://localhost:8000/files/${currentUser.photo}`" style="width:80px;" class="shadow-1"/>-->
-                {{currentUser.photo}}
-               </q-field>
-             
-             
+          <q-field label="Yetki" :label-width="3" class="fip">
+            <q-select v-model="currentUser.role" radio :options="selectOptions" />
+          </q-field>
+          <q-field label="Fotoğraf" :label-width="3" class="fip">
+            <q-uploader :url="url" auto-expand @uploaded="postUpload" @finish="finishUpload" :headers="headers" ref="uploader" />
+            <!-- <img :src="`http://localhost:8000/files/${currentUser.photo}`" style="width:80px;" class="shadow-1"/>-->
+            {{currentUser.photo}}
+          </q-field>
 
-              
+          <q-field>
 
-              <q-field>
-           
-               
-                 <table>
-                   <tr width="98%">
-                     <td width="40%"></td>
-                     <td width="20%">Giriş</td>
-                     <td width="18%">Yeni</td>
-                     <td width="18%">Düzelt</td>
-                     <td width="18%">Sil</td>
-                  </tr>
+            <table>
+              <tr width="98%">
+                <td width="40%"></td>
+                <td width="20%">Giriş</td>
+                <td width="18%">Yeni</td>
+                <td width="18%">Düzelt</td>
+                <td width="18%">Sil</td>
+              </tr>
 
-                  <tr v-for="(item,key) of yetkiler" >
-                     <td>{{item.bolumAdi}}</td>
-                     <td><q-checkbox v-model="yetkiler[key]['giris']" true-value="1" false-value="0" /></td>
-                     <td><q-checkbox v-model="yetkiler[key]['yeni']" true-value="1" false-value="0" /></td>
-                     <td><q-checkbox v-model="yetkiler[key]['duzelt']" true-value="1" false-value="0" /></td>
-                     <td><q-checkbox v-model="yetkiler[key]['sil']" true-value="1" false-value="0" /></td>
-                   </tr>
-                 </table>
-             
-              </q-field>
-              <br /><br />
-               <q-field class="fip">
-                 <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                 <q-btn align="right"  v-if="guard.sil==='1'" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
-              </q-field>
+              <tr v-for="(item,key) of yetkiler">
+                <td>{{item.bolumAdi}}</td>
+                <td>
+                  <q-checkbox v-model="yetkiler[key]['giris']" true-value="1" false-value="0" />
+                </td>
+                <td>
+                  <q-checkbox v-model="yetkiler[key]['yeni']" true-value="1" false-value="0" />
+                </td>
+                <td>
+                  <q-checkbox v-model="yetkiler[key]['duzelt']" true-value="1" false-value="0" />
+                </td>
+                <td>
+                  <q-checkbox v-model="yetkiler[key]['sil']" true-value="1" false-value="0" />
+                </td>
+              </tr>
+            </table>
+
+          </q-field>
+          <br /><br />
+          <q-field class="fip">
+            <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
+            <q-btn align="right" v-if="guard.sil==='1'" color="negative" @click="sil(currentUser.id)" icon="delete"></q-btn>
+          </q-field>
         </div>
- </q-modal-layout>
-     
+      </q-modal-layout>
+
     </q-modal>
-  
-    <div class="row q-pa-sm" >
-       <div class="col-xs-12 col-md-12" >
-        
-          <q-toolbar slot="header" color="faded">
+
+    <div class="row q-pa-sm">
+      <div class="col-xs-12 col-md-12">
+
+        <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Kullanıcı işlemleri</q-toolbar-title>
-           <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
-            
-          </q-toolbar>
-        
-        <q-search
-          v-model="filterText"
-          :debounce="600"
-          placeholder="Kullanıcı Adı, E-posta"
-          icon="search"
-          float-label="Ara"
-        />
+          <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeniKullanici()" wait-for-ripple icon="add" />
+
+        </q-toolbar>
+
+        <q-search v-model="filterText" :debounce="600" placeholder="Kullanıcı Adı, E-posta" icon="search" float-label="Ara" />
         <q-list highlight inset-separator>
-          <q-item  v-for="item of filteredData" :key="item.id">
-           <q-item-side left icon="face" />
-            <q-item-main
-              :label=item.name
-              label-lines="1"
-              :sublabel=item.email
-              sublabel-lines="2"
-              dense
-              @click.native="rowClick(item.id)"
-            />
-           <q-item-side right >{{item.role}}</q-item-side>
-            
+          <q-item v-for="item of filteredData" :key="item.id">
+            <q-item-side left icon="face" />
+            <q-item-main :label=item.name label-lines="1" :sublabel=item.email sublabel-lines="2" dense @click.native="rowClick(item.id)" />
+            <q-item-side right>{{item.role}}</q-item-side>
 
           </q-item>
         </q-list>
-              
-            
-        </div>
+
       </div>
-  
+    </div>
+
   </q-page>
 
 </template>
@@ -132,7 +109,7 @@ import store from "../store";
 import notify from "./notify";
 
 const module = {
-  data() {
+  data () {
     return {
       //file upload
       url: this.apiUrl + "upload",
@@ -163,25 +140,25 @@ const module = {
 
       yetkiler: {},
 
-      guard: {},
+      // guard: {},
 
       selectOptions: [
         { label: "Yönetici", value: "admin" },
         { label: "Kullanıcı", value: "user" }
-        
+
       ]
     };
   },
 
-  created() {
+  created () {
     this.getUserList();
-    this.getRole();
-    
-    
+    // this.getRole();
+
+
   },
 
   watch: {
-    uploadVar(val) {
+    uploadVar (val) {
       if (val === false) {
         this.postData();
       }
@@ -189,7 +166,7 @@ const module = {
   },
 
   methods: {
-    getRole() {
+    getRole () {
       axios
         .get(this.apiUrl + "yetkiler?bolum=kullanici")
         .then(response => {
@@ -205,7 +182,7 @@ const module = {
           this.errors.push(e);
         });
     },
-    sil(id) {
+    sil (id) {
       this.$q
         .dialog({
           title: "Kullanıcı Sil",
@@ -232,7 +209,7 @@ const module = {
     },
 
     //kullanıcıları getir..
-    getUserList() {
+    getUserList () {
       axios
         .get(this.apiUrl + "userListele")
         .then(response => {
@@ -244,7 +221,7 @@ const module = {
     },
 
     //yeni modal açar..
-    yeniKullanici() {
+    yeniKullanici () {
       this.errors = {};
       this.userModal = true;
       this.currentUser = {};
@@ -252,19 +229,19 @@ const module = {
     },
 
     //eğer kullanıcı yeniyse veya yetki tablosu boşsa default değerleri getirir. (table: yetkiDefault)
-    defaultYetkiler() {
+    defaultYetkiler () {
       axios.get(this.apiUrl + "yetkiDefault").then(response => {
         this.yetkiler = response.data;
       });
     },
 
     //dosya yükleme bitince watch ile takip et.. Sonra submit et..
-    finishUpload() {
+    finishUpload () {
       this.uploadVar = false;
     },
 
     //Dosya yükle. Gelen değeri currentuser'a at..
-    postUpload(file, xhr) {
+    postUpload (file, xhr) {
       let sonuc = JSON.parse(xhr.response);
       if (sonuc.status === true) {
         this.currentUser.photo = sonuc.file;
@@ -272,8 +249,8 @@ const module = {
     },
 
     //kullanıcı seçilince index den mevcut değerleri currentuser'a at..
-    rowClick(id) {
-      
+    rowClick (id) {
+
       //id'den users'daki indexi bul..
       let index = this.users.findIndex(x => x.id === id);
 
@@ -290,7 +267,7 @@ const module = {
       this.userModal = true;
     },
 
-    submit() {
+    submit () {
       let uploadFiles = this.$refs.uploader.files;
       //upload files varsa yükle.. yoksa direk post et.
       if (uploadFiles.length > 0) {
@@ -301,14 +278,14 @@ const module = {
       }
     },
 
-    postData() {
+    postData () {
 
-      
+
       //currentuser'a yetkileri ata..
       this.currentUser.yetkiler = this.yetkiler;
       console.log(this.currentUser)
       axios
-        .post(this.apiUrl+"userKaydet", this.currentUser)
+        .post(this.apiUrl + "userKaydet", this.currentUser)
         .then(res => {
           if (res.data.status === false) {
             this.errors = res.data.msg;
@@ -331,14 +308,17 @@ const module = {
             notify(res.data.msg);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           notify(error.response.data.error, true);
         });
     }
   },
 
   computed: {
-    kaydetBtn() {
+    guard () {
+      return this.$store.state.auth.guard.kullanici;
+    },
+    kaydetBtn () {
       if (this.currentUser.id) {
         if (this.guard.duzelt == "1") {
           return true;
@@ -350,19 +330,17 @@ const module = {
       }
       return false;
     },
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
+
     //kullanıcı listesindan ara..
-    filteredData() {
+    filteredData () {
       if (!this.filterText) return this.users;
       let searchText = this.filterText.toLocaleLowerCase('tr-TR');
       return this.users.filter(p => {
-         p.name === null ? (p.name = "") : p.name;
-         p.email === null ? (p.email = "") : p.email;
+        p.name === null ? (p.name = "") : p.name;
+        p.email === null ? (p.email = "") : p.email;
         return (
-         p.name.toLocaleLowerCase('tr-TR').includes(searchText) ||
-         p.email.toLocaleLowerCase('tr-TR').includes(searchText)
+          p.name.toLocaleLowerCase('tr-TR').includes(searchText) ||
+          p.email.toLocaleLowerCase('tr-TR').includes(searchText)
         );
       });
     }

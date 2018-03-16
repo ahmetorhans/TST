@@ -53,13 +53,11 @@ export default {
        notify("eposta ve parola gerekli",true);
        return
      }
-    
       
       this.$store.dispatch('login', { user }).then((res) =>{
         if (res.status===false){
           notify(res.msg,true);
         }else if (res.token){
-          
           this.$router.push('/');
         }
       });

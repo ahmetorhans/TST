@@ -1,60 +1,77 @@
-
 export default [
   {
-    path: '/',
-    component: () => import('layouts/default'),
+    path: "/",
+    component: () => import("layouts/default"),
+    children: [{ path: "", component: () => import("pages/index") }]
+  },
+  {
+    path: "/kullanicilar",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [{ path: "", component: () => import("pages/user") }]
+  },
+  {
+    path: "/cariler/:cari*",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [{ path: "", component: () => import("pages/cari") }]
+  },
+  {
+    path: "/servisler",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
     children: [
-      { path: '', component: () => import('pages/index') }
+      { path: "", component: () => import("pages/servis") },
+      { path: "servis/:id*", component: () => import("pages/servisDetay") }
     ]
   },
   {
-    path: '/kullanicilar',
-     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
-    children: [
-      { path: '', component: () => import('pages/user') }
+    path: "/cihazlar/:cihaz*",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [{ path: "", component: () => import("pages/cihaz") }]
+  },
+  {
+    path: "/ayarlar/",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [ 
+      { path: "", component: () => import("pages/profil") },
+      { path: "profil", component: () => import("pages/profil") }
     ]
   },
   {
-    path: '/cariler/:cari*',
-     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
+    path: "/raporlar",
+    component: () => import("layouts/rapor"),
+    meta: { requiresAuth: true },
+    name: 'raporlar',
     children: [
-       { path: '', component: () => import('pages/cari') }
+      { path: "", component: () => import("pages/raporlar/servis") },
+      { path: "servis", component: () => import("pages/raporlar/servis") },
+      {
+        path: "servisBekleyen",
+        meta: { rapor: true },
+        component: () => import("pages/raporlar/servisBekleyen")
+      },
+      {
+        path: "servisCari",
+        component: () => import("pages/raporlar/servisCari")
+      },
+      {
+        path: "cihazCari",
+        component: () => import("pages/raporlar/cihazCari")
+      },
+      { path: "cari", component: () => import("pages/raporlar/cari") },
+      { path: "cihaz", component: () => import("pages/raporlar/cihaz") }
     ]
+  },
+
+  {
+    path: "/login",
+    component: () => import("pages/login")
   },
   {
-    path: '/servisler',
-     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
-    children: [
- 
-      { path: '', component: () => import('pages/servis') },
-      { path: 'servis/:id*', component: () => import('pages/servisDetay') }
-      
-    ]
-  },
-  {
-    path: '/cihazlar',
-     component: () => import('layouts/default'), meta: { requiresAuth: true }, 
-    children: [
-      { path: '', component: () => import('pages/cihaz') }
-    ]
-  },
-  {
-    path: '/raporlar',
-     component: () => import('layouts/rapor'), meta: { requiresAuth: true }, 
-    children: [
-      { path: '', component: () => import('pages/rapor') },
-      { path: 'servis', component: () => import('pages/raporlar/servis') },
-      { path: 'servisBekleyen', component: () => import('pages/raporlar/servisBekleyen') },
-      { path: 'cari', component: () => import('pages/raporlar/cari') }
-    ]
-  },
-  
-  { 
-    path: '/login',
-    component: () => import('pages/login')
-  },
-  { 
-    path: '*',
-    component: () => import('pages/404')
+    path: "*",
+    component: () => import("pages/404")
   }
-]
+];

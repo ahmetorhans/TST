@@ -12,6 +12,7 @@ Vue.use(VueFilter);
 Vue.use(VueRouter);
 
 Vue.prototype.apiUrl = config.apiUrl;
+Vue.prototype.fileUrl = config.fileUrl;
 
 
 const Router = new VueRouter({

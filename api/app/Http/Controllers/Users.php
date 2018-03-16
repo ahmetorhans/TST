@@ -41,11 +41,10 @@ class Users extends Controller
 
         //password değerini şifrelememiz gerekiyor. Laravel auth işlemlerinde default olarak bcrypt ile şifrelenmiş değere bakıyor
         $sonuc['password'] = bcrypt($sonuc['password']);
-        
 
         //kullanıcımızı oluşturalım.
         $user = User::create($sonuc);
-        
+
         $user = $user->toArray();
 
         $yetkiler = Request::input('yetkiler');
@@ -106,9 +105,7 @@ class Users extends Controller
         }
          */
 
-        $input['role'] = ($user['role'] == 'super') ? 'super' : $input['role']; 
-        
-        
+        $input['role'] = ($user['role'] == 'super') ? 'super' : $input['role'];
 
         $user->fill($input)->save();
 
@@ -124,7 +121,7 @@ class Users extends Controller
     public function userListele()
     {
 
-        $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->with('yetkiler')->get();
+        $users = User::orderBy('id', 'DESC')->where('musteri', '!=', "1")->with('yetkiler')->get();
         return response()->json($users);
 
     }
@@ -132,7 +129,7 @@ class Users extends Controller
     public function teknisyenListele()
     {
 
-        $users = User::orderBy('id', 'DESC')->where('musteri','!=',"1")->get(['id as value','name as label']);
+        $users = User::orderBy('id', 'DESC')->where('musteri', '!=', "1")->get(['id as value', 'name as label']);
         return response()->json($users);
 
     }
@@ -170,13 +167,13 @@ class Users extends Controller
         $id = Request::input('id');
 
         $user = User::find($id);
-       
+
         if ($user['role'] != 'super') {
-           $sonuc = $user->delete();
-        }else{
-            $sonuc=0;
+            $sonuc = $user->delete();
+        } else {
+            $sonuc = 0;
         }
-        
+
         if ($sonuc) {
             return response()->json(array('status' => true, 'msg' => 'Kayıt Silindi'));
         } else {
@@ -186,7 +183,7 @@ class Users extends Controller
 
     public function yetkiler()
     {
-       //default yetkilerler db'yi donat
+        //default yetkilerler db'yi donat
         $this->yetkiDefault();
 
         $bolum = Request::input('bolum');
@@ -198,8 +195,76 @@ class Users extends Controller
             ->where('yetkis.bolum', '=', $bolum)
             ->first(['role', 'giris', 'bolum', 'bolumAdi', 'yeni', 'duzelt', 'sil']);
 
-            
         return response()->json($yetkiler);
 
+    }
+
+    public function guard()
+    {
+        //default yetkilerler db'yi donat
+        $this->yetkiDefault();
+        $access_token = Request::header('Authorization');
+        $user = JWTAuth::toUser(substr($access_token, 7));
+
+        $yetkiler = User::
+            leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
+            ->where('users.id', '=', $user['id'])
+            ->get(['role', 'giris', 'bolum', 'bolumAdi', 'yeni', 'duzelt', 'sil'])
+            ->keyBy('bolum');
+
+        if ($user['role'] === 'super') {
+            $arr = [];
+
+            foreach ($yetkiler->toArray() as $key => $val) {
+
+                foreach ($val as $k => $v) {
+                    if ($k == 'bolum' || $k=='bolumAdi' || $k =='role') {
+                        $arr[$key][$k] = $v;
+                    } else {
+                        $arr[$key][$k] = '1';
+                    }
+
+                }
+            }
+            return response()->json($arr);
+        }
+     
+        // print_r($yetkiler->toArray());
+        return response()->json($yetkiler);
+
+    }
+
+    public function profilGetir()
+    {
+        $access_token = Request::header('Authorization');
+        $user = JWTAuth::toUser(substr($access_token, 7));
+        return response()->json($user);
+    }
+
+    public function profilKaydet()
+    {
+        $access_token = Request::header('Authorization');
+        $user = JWTAuth::toUser(substr($access_token, 7));
+        $user = User::find($user['id']);
+
+        $validator = Validator::make(Request::all(), [
+            'name' => 'required|min:3,',
+            'email' => 'required|email|unique:users,email,' . $user['id'],
+
+        ]);
+
+        if ($validator->fails()) {
+            $e = $validator->errors();
+            return response()->json(array('status' => false, 'msg' => $e));
+        }
+        $input = Request::all();
+        if (!empty($input['password'])) {
+            $input['password'] = bcrypt(Request::input('password'));
+        }
+
+        $user->fill($input)->save();
+
+        //kullanıcımızı oluşturalım.
+        return response()->json(array('status' => true, 'msg' => 'İşlem Tamam'));
     }
 }

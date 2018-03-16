@@ -11,24 +11,25 @@
         <q-table :data="filteredData" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
 
           <template slot="top-left" slot-scope="props">
-            <q-search  color="secondary" v-model="filter" class="col-12" placeholder="Ara" />
+            <q-search color="secondary" v-model="filter" class="col-12" placeholder="Ara" />
 
           </template>
           <template slot="top-right" slot-scope="props">
 
-            <q-select color="secondary" v-model="grupFilter"  float-label="İşlem Durumları" style="width:180px" :options="islemDurumlari" />
+            <q-select color="secondary" v-model="grupFilter" float-label="İşlem Durumları" style="width:180px" :options="islemDurumlari" />
 
           </template>
 
-          <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight">
+          <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight" @click.native="rowClick(props.row)">
             <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props">
               <span v-if="col.date===true">{{formatDate(col.value)}}</span>
               <span v-else>{{col.value}}</span>
 
             </q-td>
-            <q-td>
+            <!--<q-td>
               <q-btn size="sm" round icon="edit" @click.native="rowClick(props.row)"></q-btn>
             </q-td>
+            -->
           </q-tr>
         </q-table>
 
@@ -46,9 +47,9 @@ export default {
     return {
       servisler: [],
       filter: "",
-      guard: {},
+      //guard: {},
       grupFilter: '',
-      islemDurumlari:[],
+      islemDurumlari: [],
       pagination: {
         rowsPerPage: 50
       },
@@ -87,7 +88,7 @@ export default {
           name: "aciklama",
           field: "aciklama",
           sortable: true,
-           filter: false,
+          filter: false,
           align: "left"
         },
         {
@@ -103,7 +104,15 @@ export default {
           name: "islemDurumLabel",
           field: "islemDurumLabel",
           sortable: true,
-           filter: false,
+          filter: false,
+          align: "left"
+        },
+        {
+          label: "Durum",
+          name: "islemDurumu",
+          field: "islemDurumu",
+          sortable: true,
+          filter: false,
           align: "left"
         }
       ]
@@ -114,7 +123,7 @@ export default {
   },
 
   created () {
-    this.getRole();
+    // this.getRole();
     this.getList();
     this.getIslemDurumlari();
   },
@@ -188,12 +197,15 @@ export default {
     }
   },
   computed: {
+    guard () {
+      return this.$store.state.auth.guard.rapor;
+    },
     filteredData () {
       if (!this.grupFilter)
         return this.servisler;
       return this.servisler.filter(p => {
         return (
-          p.islemDurumu.indexOf(this.grupFilter) > -1
+          p.islemDurumu == this.grupFilter
         );
       });
     }

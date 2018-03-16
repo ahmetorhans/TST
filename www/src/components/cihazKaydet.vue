@@ -1,30 +1,30 @@
 <template>
   <div>
-      <div class="q-pa-md" >
-                <q-field label="Cihaz Adı" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.adi"  />
-                </q-field>
-                
-                <q-field label="Marka" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.marka"  />
-                </q-field>
-                
-                <q-field label="Model" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.model"  />
-                </q-field>
-                
-                <q-field label="Serino" :label-width="3" class="fip">
-                    <q-input v-model="currentCihaz.serino"  />
-                </q-field>
-                 <q-field label="Açıklama" :label-width="3" class="fip">
-                    <q-input  type="textarea" v-model="currentCihaz.aciklama"  />
-                </q-field>
-                <q-field class="fip">
-                    <q-btn color="secondary" @click="cihazKaydet">Kaydet</q-btn>
-                    
-                </q-field>
-            </div>
+    <div class="q-pa-md">
+      <q-field label="Cihaz Adı" :label-width="3" class="fip">
+        <q-input v-model="currentCihaz.adi" />
+      </q-field>
+
+      <q-field label="Marka" :label-width="3" class="fip">
+        <q-input v-model="currentCihaz.marka" />
+      </q-field>
+
+      <q-field label="Model" :label-width="3" class="fip">
+        <q-input v-model="currentCihaz.model" />
+      </q-field>
+
+      <q-field label="Serino" :label-width="3" class="fip">
+        <q-input v-model="currentCihaz.serino" />
+      </q-field>
+      <q-field label="Açıklama" :label-width="3" class="fip">
+        <q-input type="textarea" v-model="currentCihaz.aciklama" />
+      </q-field>
+      <q-field class="fip">
+        <q-btn color="secondary" @click="cihazKaydet">Kaydet</q-btn>
+
+      </q-field>
     </div>
+  </div>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ import notify from "../pages/notify";
 
 const module = {
   props: ["cariId"],
-  data() {
+  data () {
     return {
       currentCihaz: {},
       errors: {}
@@ -41,7 +41,7 @@ const module = {
   },
 
   methods: {
-    cihazKaydet() {
+    cihazKaydet () {
       this.currentCihaz.cari_id = this.cariId;
 
       axios
@@ -56,7 +56,7 @@ const module = {
             this.$emit("cihazKaydetEmit", true);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           notify(error.response.data.error, true);
         });
     }

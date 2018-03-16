@@ -1,142 +1,123 @@
 <template>
-    <q-page v-if="guard.giris==='1'">
-   <q-modal  v-model="userModal" :content-css="{ minWidth: '75vw', minHeight:'99vh'}">
-     <q-modal-layout>
-        
+
+  <q-page v-if="guard.giris=='1'">
+
+
+    <q-modal v-model="userModal" :content-css="{ minWidth: '75vw', minHeight:'99vh'}">
+      <q-modal-layout>
+
         <q-toolbar slot="header" color="secondary">
           <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
-           <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
+          <q-btn flat round dense @click="userModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
-        
-              <div class="layout-padding">
-         
-                <div class="row"> 
-                  <div class="col-sm-10">
-                   <q-field label="Türü" :label-width="3" class="fip">
-                      <q-btn-toggle
-                          v-model="currentCari.turu"
-                          toggle-color="secondary"
-                          no-caps	
-                          :options="[
+
+        <div class="layout-padding">
+
+          <div class="row">
+            <div class="col-sm-10">
+              <q-field label="Türü" :label-width="3" class="fip">
+                <q-btn-toggle v-model="currentCari.turu" toggle-color="secondary" no-caps :options="[
                             {label: 'Kurum', value: 'kurum'},
                             {label: 'Kişi', value: 'kisi'},
-                          ]"
-                        />
-                      </q-field>
-                  
-                      <q-field label="Adı" :label-width="3" >
-                          <q-input v-model="currentCari.adi" :class="{'has-error': errors.adi}" required/>
-                          <span class="errMsg" v-if="errors.adi">{{ errors.adi }}</span>
-                      </q-field>
-                      <q-field label="Yetkili" :label-width="3" class="fip">
-                          <q-input v-model="currentCari.yetkili"  />
-                      </q-field>
-                      <q-field label="Eposta" :label-width="3" class="fip">
-                          <q-input v-model="currentCari.eposta"  />
-                      </q-field>
-                    
-                      <q-field label="Adres" :label-width="3" class="fip">
-                          <q-input v-model="currentCari.adres"  />
-                      </q-field>
-                      <q-field label="Telefon" :label-width="3" class="fip">
-                          <q-input v-model="currentCari.telefon"  />
-                      </q-field>
-                        <div class="col-sm-6">
-                              <q-field label="Vergi no" :label-width="3" class="fip">
-                                  <q-input v-model="currentCari.vergiNo"  />
-                              </q-field>
-                        </div>
-                        <div class="col-sm-6" v-if="currentCari.turu=='kurum'">
-                              <q-field label="Vergi Dairesi" :label-width="3" class="fip">
-                                  <q-input v-model="currentCari.vergiDairesi"  />
-                              </q-field>
-                        </div>
-                        <q-field label="Açıklama" :label-width="3" class="fip">
-                          <q-input  type="textarea" v-model="currentCari.aciklama"  />
-                      </q-field>
-                      <q-field label="Durum" :label-width="3"  class="fip">
-                          <q-select
-                              v-model="currentCari.durum"
-                              radio
-                              :options="selectOptions"
-                            />
-                      </q-field>
-                      
-                      <q-card flat>
-                          <q-card-title>
-                            Giriş bilgileri <span v-if="currentCari.user_id" ><q-icon name="done" /></span>
-                          </q-card-title> 
-                          <q-card-main>
-                          <q-field label="Eposta Adresi" :label-width="3" class="fip" >
-                                <q-input v-model="currentCari.email" :class="{'has-error': errors.email}" />
-                                  <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
-                            </q-field>
+                          ]" />
+              </q-field>
 
-                            <q-field label="Parola" :label-width="3" class="fip">
-                                <q-input  v-model="currentCari.password" type="password" :class="{'has-error': errors.password}" />
-                                <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
-                            </q-field>
-                          </q-card-main>
-                      </q-card>   
-              
-                      <q-field class="fip">
-                        <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                        <span v-if="currentCari.id">
-                            <q-btn align="right"  icon="delete" v-if="guard.sil==='1'" color="negative" @click="sil(currentCari.id)"></q-btn>
-                        </span>
-                      </q-field>
-                </div>
-                
-              </div> 
-              
+              <q-field label="Adı" :label-width="3">
+                <q-input v-model="currentCari.adi" :class="{'has-error': errors.adi}" required/>
+                <span class="errMsg" v-if="errors.adi">{{ errors.adi }}</span>
+              </q-field>
+              <q-field label="Yetkili" :label-width="3" class="fip">
+                <q-input v-model="currentCari.yetkili" />
+              </q-field>
+              <q-field label="Eposta" :label-width="3" class="fip">
+                <q-input v-model="currentCari.eposta" />
+              </q-field>
+
+              <q-field label="Adres" :label-width="3" class="fip">
+                <q-input v-model="currentCari.adres" />
+              </q-field>
+              <q-field label="Telefon" :label-width="3" class="fip">
+                <q-input v-model="currentCari.telefon" />
+              </q-field>
+              <div class="col-sm-6">
+                <q-field label="Vergi no" :label-width="3" class="fip">
+                  <q-input v-model="currentCari.vergiNo" />
+                </q-field>
+              </div>
+              <div class="col-sm-6" v-if="currentCari.turu=='kurum'">
+                <q-field label="Vergi Dairesi" :label-width="3" class="fip">
+                  <q-input v-model="currentCari.vergiDairesi" />
+                </q-field>
+              </div>
+              <q-field label="Açıklama" :label-width="3" class="fip">
+                <q-input type="textarea" v-model="currentCari.aciklama" />
+              </q-field>
+              <q-field label="Durum" :label-width="3" class="fip">
+                <q-select v-model="currentCari.durum" radio :options="selectOptions" />
+              </q-field>
+
+              <q-card flat>
+                <q-card-title>
+                  Giriş bilgileri
+                  <span v-if="currentCari.user_id">
+                    <q-icon name="done" />
+                  </span>
+                </q-card-title>
+                <q-card-main>
+                  <q-field label="Eposta Adresi" :label-width="3" class="fip">
+                    <q-input v-model="currentCari.email" :class="{'has-error': errors.email}" />
+                    <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
+                  </q-field>
+
+                  <q-field label="Parola" :label-width="3" class="fip">
+                    <q-input v-model="currentCari.password" type="password" :class="{'has-error': errors.password}" />
+                    <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
+                  </q-field>
+                </q-card-main>
+              </q-card>
+
+              <q-field class="fip">
+                <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
+                <span v-if="currentCari.id">
+                  <q-btn align="right" icon="delete" v-if="guard.sil==='1'" color="negative" @click="sil(currentCari.id)"></q-btn>
+                </span>
+              </q-field>
             </div>
 
-         
- </q-modal-layout>
-     
-    </q-modal>
-  
-    <div class="row q-pa-sm" >
-       <div class="col-xs-12 col-md-12" >
-       
-          <q-toolbar slot="header" color="faded">
-          <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
-         <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeni()" wait-for-ripple icon="add" />
-            
-          </q-toolbar>
-        
-        <q-search
-          v-model="filterText"
-          :debounce="600"
-          placeholder="Cari Adı, Yetkili"
-          icon="search"
-          float-label="Ara"
-        />
-        
-        
-        <q-list highlight inset-separator>
-          <q-item  v-for="item of filteredData.slice(0,100)" :key="item.id">
-              <q-item-side left icon="person_pin" />
+          </div>
 
-             
-              <q-item-main
-                :label=item.adi
-                label-lines="1"
-                sublabel-lines="3"
-                dense
-              @click.native="rowClick(item.id)"
-              > 
-          
+        </div>
+
+      </q-modal-layout>
+
+    </q-modal>
+
+    <div class="row q-pa-sm">
+      <div class="col-xs-12 col-md-12">
+
+        <q-toolbar slot="header" color="faded">
+          <q-toolbar-title>Cari Bilgileri</q-toolbar-title>
+          <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeni()" wait-for-ripple icon="add" />
+
+        </q-toolbar>
+
+        <q-search v-model="filterText" :debounce="600" placeholder="Cari Adı, Yetkili" icon="search" float-label="Ara" />
+
+        <q-list highlight inset-separator>
+          <q-item v-for="item of filteredData.slice(0,100)" :key="item.id">
+            <q-item-side left icon="person_pin" />
+
+            <q-item-main :label=item.adi label-lines="1" sublabel-lines="3" dense @click.native="rowClick(item.id)">
+
               <q-item-tile sublabel>{{item.yetkili}}</q-item-tile>
             </q-item-main>
-            <q-item-side right ></q-item-side>
+            <q-item-side right></q-item-side>
           </q-item>
         </q-list>
-              
-            
-        </div>
+
       </div>
-  
+    </div>
+
   </q-page>
 
 </template>
@@ -151,7 +132,7 @@ import store from "../store";
 import notify from "./notify";
 
 const module = {
-  data() {
+  data () {
     return {
       //file upload
       url: this.apiUrl + "upload",
@@ -182,7 +163,7 @@ const module = {
 
       yetkiler: {},
 
-      guard: {},
+     // guard: {},
 
       userVarmi: false,
 
@@ -195,15 +176,17 @@ const module = {
     };
   },
 
-  created() {
+  created () {
     //cari liste..
-    this.getRole();
-    this.getList();
+   // this.getRole();
+  this.getList();
+
     
+
   },
 
   watch: {
-    uploadVar(val) {
+    uploadVar (val) {
       if (val === false) {
         this.postData();
       }
@@ -211,13 +194,13 @@ const module = {
   },
 
   methods: {
-    success(pos) {},
-    getRole() {
+    success (pos) { },
+    getRole () {
       axios
         .get(this.apiUrl + "yetkiler?bolum=cari")
         .then(response => {
           console.log(response.status)
-          
+
           if (response.data.role == "super") {
             response.data.giris = "1";
             response.data.yeni = "1";
@@ -227,11 +210,11 @@ const module = {
           this.guard = response.data;
         })
         .catch(e => {
-         
-            console.log(e)
+
+          console.log(e)
         });
     },
-    sil(id) {
+    sil (id) {
       this.$q
         .dialog({
           title: "Cari Sil",
@@ -258,16 +241,16 @@ const module = {
     },
 
     //kullanıcıları getir..
-    getList() {
+    getList () {
       axios
         .get(this.apiUrl + "cariListele")
         .then(response => {
           this.cariler = response.data;
-          
+
           if (this.$route.params.cari) {
             this.rowClick(parseInt(this.$route.params.cari));
           }
-            console.log(response.data);
+
         })
         .catch(e => {
           this.errors.push(e);
@@ -275,28 +258,28 @@ const module = {
     },
 
     //yeni modal açar..
-    yeni() {
+    yeni () {
       this.errors = {};
       this.userModal = true;
       this.currentCari = {};
       this.selectedTab = "tab-1";
-      this.currentCari.turu="kurum";
+      this.currentCari.turu = "kurum";
     },
 
     //eğer kullanıcı yeniyse veya yetki tablosu boşsa default değerleri getirir. (table: yetkiDefault)
-    defaultYetkiler() {
+    defaultYetkiler () {
       axios.get(this.apiUrl + "yetkiDefault").then(response => {
         this.yetkiler = response.data;
       });
     },
 
     //dosya yükleme bitince watch ile takip et.. Sonra submit et..
-    finishUpload() {
+    finishUpload () {
       this.uploadVar = false;
     },
 
     //Dosya yükle. Gelen değeri currentCari'a at..
-    postUpload(file, xhr) {
+    postUpload (file, xhr) {
       let sonuc = JSON.parse(xhr.response);
       if (sonuc.status === true) {
         this.currentCari.photo = sonuc.file;
@@ -304,21 +287,21 @@ const module = {
     },
 
     //kullanıcı seçilince index den mevcut değerleri currentCari'a at..
-    rowClick(id) {
-      
-      this.currentCari={};
+    rowClick (id) {
+
+      this.currentCari = {};
       this.selectedTab = "tab-1";
-      
+
       //id'den users'daki indexi bul..
       let index = this.cariler.findIndex(x => x.id === id);
 
       this.id = index;
-    
-     // this.currentCari = Object.assign({}, this.cariler[index]);
+
+      // this.currentCari = Object.assign({}, this.cariler[index]);
       axios.get(this.apiUrl + "cariGetir/" + id).then(response => {
         console.log(response.data);
         this.currentCari = response.data;
-      
+
       });
 
       this.errors = {};
@@ -326,15 +309,15 @@ const module = {
       this.userModal = true;
     },
 
-    submit() {
+    submit () {
       this.postData();
     },
 
-    postData() {
+    postData () {
       //currentCari'a yetkileri ata..
       this.currentCari.yetkiler = this.yetkiler;
       axios
-        .post(this.apiUrl+"cariKaydet", this.currentCari)
+        .post(this.apiUrl + "cariKaydet", this.currentCari)
         .then(res => {
           if (res.data.status === false) {
             console.log(res.data);
@@ -356,15 +339,17 @@ const module = {
             notify(res.data.msg);
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           notify(error.response.data.error, true);
         });
     }
   },
 
   computed: {
-
-   kaydetBtn() {
+    guard () {
+      return this.$store.state.auth.guard.cari;
+    },
+    kaydetBtn () {
       if (this.currentCari.id) {
         if (this.guard.duzelt == "1") {
           return true;
@@ -376,11 +361,9 @@ const module = {
       }
       return false;
     },
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated;
-    },
+   
     //kullanıcı listesindan ara..
-    filteredData() {
+    filteredData () {
       if (!this.filterText) return this.cariler;
 
       let searchText = this.filterText.toLocaleLowerCase("tr-TR");

@@ -52,7 +52,7 @@
             <q-item-main label="Rapor"  />
             
         </q-item>
-       
+       <rapor-item class="desktop-only"/>
             
           <q-item to="/cihazlar" class="qitemH">
             <q-item-side icon="devices" /> 

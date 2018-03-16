@@ -25,6 +25,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('teknisyenListele', 'Users@teknisyenListele');
     Route::get('yetkiler', 'Users@yetkiler');
     Route::get('yetkiDefault', 'Users@yetkiDefault');
+    Route::get('profilGetir','Users@profilGetir');
+    Route::post('profilKaydet','Users@profilKaydet');
+    Route::get('guard', 'Users@guard');
     
     Route::post('upload', 'Upload@uploadFile');
 

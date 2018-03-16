@@ -2,7 +2,7 @@
   "name": "www",
   "version": "1.0.0",
   "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "productName": "Servis Takip",
   "cordovaId": "org.cordova.quasar.app",
   "author": "ahme torhan <ahmetorhans@gmail.com>",
   "private": true,
