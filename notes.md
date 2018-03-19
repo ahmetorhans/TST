@@ -9,3 +9,8 @@ git remote set-url origin https://USERNAME:PASSWORD@bitbucket.org/path/to/repo.g
 <br /><br />
 
 git pull origin master --allow-unrelated-histories
+
+--cihaz : lokasyon ekle
+--cihaz  : sözleşme tarihi
+--servis : cihaz ara. serino ve lokasyon ekle
+--servis : işlem ekle. dosya yükle.

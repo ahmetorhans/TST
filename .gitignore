@@ -3,7 +3,8 @@
 .thumbs.db
 /www/node_modules
 /api/vendor
-/api/.env
+/api/.env/
+/api/public/files/
 /www/dist
 /www/package.json
 .idea
