@@ -14,3 +14,8 @@ git pull origin master --allow-unrelated-histories
 --cihaz  : sözleşme tarihi
 --servis : cihaz ara. serino ve lokasyon ekle
 --servis : işlem ekle. dosya yükle.
+--pazarlamacı. 
+firma
+yetkili
+açıklama
+tarih
