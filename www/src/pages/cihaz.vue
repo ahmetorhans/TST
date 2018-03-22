@@ -39,13 +39,18 @@
               </q-field>
 
               <q-field label="Sayaç" :label-width="3" class="fip">
-                <q-input v-model="currentCihaz.sayac" />
+                <q-input type="number" v-model="currentCihaz.sayac" />
               </q-field>
 
               <q-field label="Açıklama" :label-width="3" class="fip">
                 <q-input type="textarea" v-model="currentCihaz.aciklama" />
               </q-field>
-
+              <q-field label="Lokasyon" :label-width="3" class="fip">
+                <q-input v-model="currentCihaz.lokasyon" />
+              </q-field>
+              <q-field label="Sözleşme Tarihi" :label-width="6" class="fip">
+                <q-datetime v-model="currentCihaz.sozlesmeTarihi" type="date" />
+              </q-field>
               <q-field label="Cihaz Fatura No" :label-width="3" class="fip">
                 <q-input v-model="currentCihaz.garantiFatura" />
               </q-field>

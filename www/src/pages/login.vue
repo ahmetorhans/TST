@@ -58,7 +58,8 @@ export default {
         if (res.status===false){
           notify(res.msg,true);
         }else if (res.token){
-          this.$router.push('/');
+          window.location.href='/';
+          //this.$router.push('/');
         }
       });
 

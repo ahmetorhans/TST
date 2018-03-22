@@ -26,6 +26,15 @@ export default [
     ]
   },
   {
+    path: "/randevular/:rendevu*",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [
+      { path: "", component: () => import("pages/randevu") }
+    
+    ]
+  },
+  {
     path: "/cihazlar/:cihaz*",
     component: () => import("layouts/default"),
     meta: { requiresAuth: true },

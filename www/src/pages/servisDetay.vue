@@ -1,9 +1,9 @@
 <template>
   <div class="q-pa-sm">
     <q-tabs color="faded" inverted no-pane-border>
-      <q-tab default slot="title" name="tab-1" label="Servis" />
+      <q-tab alert default slot="title" name="tab-1" label="Servis" />
       <q-tab slot="title" name="tab-2" label="İşlemler" />
-      <q-tab alert slot="title" name="tab-3" label="Özet" />
+      <q-tab  slot="title" name="tab-3" label="Özet" />
 
       <!-- tab servis -->
       <q-tab-pane name="tab-1">
@@ -132,6 +132,7 @@
                   <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
                   <div class="col-md-2 listCol">{{item.user}} </div>
                   <div class="col-md-7 listCol">{{item.aciklama}} </div>
+                  <div v-if="item.photo" class="col-md-1 listCol"><a :href="fileUrl+'/'+item.photo" target="_blank"><q-icon name="assignment" size="20px"/></a> </div>
                 </div>
               </q-item-tile>
             </q-item-main>
@@ -542,6 +543,7 @@ const module = {
         axios
           .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
           .then(response => {
+            
             this.cihazList = response.data;
             this.cihazAraComplete(terms, done);
           })
@@ -571,7 +573,7 @@ const module = {
         arr.push({
           label: e.adi,
           value: e.id,
-          sublabel: e.marka + " " + e.model + " " + e.aciklama
+          sublabel: 'Marka : ' + e.marka + "  " + e.model + " Lokasyon: " + e.lokasyon +' SeriNo: '+ e.serino
         });
       });
 

@@ -19,8 +19,7 @@ class VerifyJWTToken
  
             //Herşey yolundaysa token değeri ile user bilgilerini çekebiliriz.
             $user = JWTAuth::toUser(substr($access_token,7));
-
-          
+         
             
        
         }catch (JWTException $e) {
@@ -34,6 +33,8 @@ class VerifyJWTToken
                 return response()->json(['status'=>false, 'msg'=>'Token Gerekli'],401);
             }
         }
+        $request->attributes->set('gUser', $user);
+
        return $next($request);
     }
 }

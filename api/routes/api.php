@@ -53,6 +53,13 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('islemKaydet', 'Servis@islemKaydet');
     Route::get('islemSil/{id}', 'Servis@islemSil');
     Route::get('servisListeleBekleyen', 'Servis@servisListeleBekleyen');
+
+    Route::get('randevuListele', 'Randevu@randevuListele');
+    Route::post('randevuKaydet', 'Randevu@randevuKaydet');
+    Route::get('randevuSil', 'Randevu@randevuSil');
+    Route::get('randevuGetir/{id}', 'Randevu@randevuGetir');
+    Route::get('listShortRandevu', 'Randevu@listShortRandevu');
+    Route::get('listShortRandevuId/{id}', 'Randevu@listShortRandevuId');
     
 
 

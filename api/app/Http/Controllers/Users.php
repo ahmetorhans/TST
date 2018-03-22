@@ -206,6 +206,8 @@ class Users extends Controller
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
 
+        
+
         $yetkiler = User::
             leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
             ->where('users.id', '=', $user['id'])

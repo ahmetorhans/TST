@@ -33,7 +33,7 @@ class Cihaz extends Controller
         }
 
         $cihaz = new \App\Cihaz;
-
+       
         $cihaz->fill($sonuc)->save();
 
         return response()->json(array('status' => true, 'msg' => 'Kayıt eklendi'));
@@ -103,7 +103,7 @@ class Cihaz extends Controller
         $cihaz = \App\Cihaz::
             orderBy('id', 'asc')
             ->where('cari_id',$id)
-            ->get(['id', 'adi','marka','model','serino','aciklama']);
+            ->get(['id', 'adi','marka','model','serino','aciklama','lokasyon']);
 
         return response()->json($cihaz);
 

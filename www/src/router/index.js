@@ -17,7 +17,7 @@ Vue.prototype.fileUrl = config.fileUrl;
 
 const Router = new VueRouter({
 
-  mode: process.env.VUE_ROUTER_MODE,
+  mode: 'history',
   base: process.env.VUE_ROUTER_BASE,
   scrollBehavior: () => ({ y: 0 }),
   routes
@@ -27,6 +27,7 @@ const Router = new VueRouter({
 Router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthenticated) {
     next({ path: '/login'});
+    
   } else {
     next();
   }

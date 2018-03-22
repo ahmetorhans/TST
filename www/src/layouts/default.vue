@@ -20,6 +20,10 @@
           <q-item-side icon="store" />
           <q-item-main label="Servis" />
         </q-item>
+        <q-item to="/randevular" class="qitemH">
+          <q-item-side icon="timeline" />
+          <q-item-main label="Randevular" />
+        </q-item>
         <q-item to="/cariler" class="qitemH">
           <q-item-side icon="recent actors" />
           <q-item-main label="Cari" />
@@ -27,8 +31,8 @@
         <q-item to="/raporlar/servis" class="qitemH">
           <q-item-side icon="timeline" />
           <q-item-main label="Rapor" />
-
         </q-item>
+        
         <q-item to="/cihazlar" class="qitemH">
           <q-item-side icon="devices" />
           <q-item-main label="Cihazlar" />

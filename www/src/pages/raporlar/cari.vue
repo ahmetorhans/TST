@@ -5,7 +5,7 @@
        
         <div class="col-md-12">
             <q-toolbar slot="header" color="faded">
-              <q-toolbar-title>Servis Listesi</q-toolbar-title>
+              <q-toolbar-title>Cari Listesi</q-toolbar-title>
             </q-toolbar>
 
             <q-table

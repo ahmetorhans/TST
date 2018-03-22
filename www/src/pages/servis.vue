@@ -1,10 +1,10 @@
 <template>
-  <q-page v-if="guard.giris==='1'">
+  <q-page>
 
     <div class="row q-pa-sm">
       <div class="col-xs-12 col-md-12">
         <q-toolbar slot="header" color="faded">
-          <q-toolbar-title>Servis Bilgileri</q-toolbar-title>
+          <q-toolbar-title>Servis Bilgiler xcsdasdi</q-toolbar-title>
           <q-btn v-if="guard.yeni=='1'" flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
         </q-toolbar>
 
@@ -220,6 +220,7 @@ const module = {
 
   computed: {
     guard () {
+      console.log(this.$store.state.auth.guard.servis)
       return this.$store.state.auth.guard.servis;
     },
     //filter list..

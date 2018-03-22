@@ -14,15 +14,16 @@ export default ({ Vue }) => {
   //401 hatasında direk redirect yap
 
   Vue.axios.interceptors.response.use((response) => {
+    
     return response
   }, function (error) {
     
     
     if (error.response.status === 401  ) {
+      if (window.location.pathname!=='/login')
+        window.location.href = '/login'
 
-      window.location.href = '/login'
-
-      return
+      return;
     }
 
     return Promise.reject(error)
