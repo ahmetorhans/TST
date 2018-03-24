@@ -6,6 +6,8 @@
             </div>
             <div class="col-md-9">
                 <div class="layout-padding">
+                    <vue-xlsx-table @on-select-file="handleSelectedFile">ad</vue-xlsx-table>
+                    {{sutunlar}}
                     <q-field label="Adı Soyadı" :label-width="3">
                         <q-input v-model="currentUser.name" :class="{'has-error': errors.name}" required/>
                         <span class="errMsg" v-if="errors.name">{{ errors.name }}</span>
@@ -24,7 +26,7 @@
                     <q-field label="Fotoğraf" :label-width="3" class="fip">
                         <q-uploader :url="url" auto-expand @uploaded="postUpload" @finish="finishUpload" :headers="headers" ref="uploader" />
                         <!-- <img :src="`http://localhost:8000/files/${currentUser.photo}`" style="width:80px;" class="shadow-1"/>-->
-                        
+
                     </q-field>
 
                     <br />
@@ -35,7 +37,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <span v-if="currentUser.photo"><img :src="fileUrl+'/thumb/'+currentUser.photo"  class="responsive q-pa-sm"  /></span>
+                <span v-if="currentUser.photo"><img :src="fileUrl+'/thumb/'+currentUser.photo" class="responsive q-pa-sm" /></span>
             </div>
 
         </div>
@@ -71,6 +73,9 @@ const module = {
 
             guard: {},
 
+            sutunlar: {}
+
+
         };
     },
 
@@ -86,7 +91,10 @@ const module = {
     },
 
     methods: {
-
+        handleSelectedFile (convertedData) {
+            console.log(convertedData)
+            this.sutunlar = convertedData.body;
+        },
         getUser () {
             axios
                 .get(this.apiUrl + "profilGetir", this.currentUser)
@@ -127,7 +135,7 @@ const module = {
 
         postData () {
             //currentuser'a yetkileri ata..
-            
+            this.currentUser.xls= this.sutunlar;
             axios
                 .post(this.apiUrl + "profilKaydet", this.currentUser)
                 .then(res => {
@@ -136,11 +144,11 @@ const module = {
                         notify("Lütfen formu kontrol edin!", true);
                     } else {
                         this.errors = {};
-                       // localStorage.setItem('adi',this.currentUser.name);
-                        
+                        // localStorage.setItem('adi',this.currentUser.name);
+
                         //dosyaları boşalt..
                         this.$refs.uploader.files = [];
-                      
+
                         notify(res.data.msg);
                     }
                 })

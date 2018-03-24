@@ -13,8 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::post('auth/login', 'Authentication@login');
+Route::post('auth/login', 'Guard@login');
 Route::get('test', 'HomeController@test');
+Route::get('servisGetirGuest/{key}', 'Servis@servisGetirGuest');
+
+
 
 
 Route::group(['middleware' => 'jwt.auth'], function () {
@@ -43,6 +46,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('cihazGetir/{id}', 'Cihaz@cihazGetir');
     Route::get('listShortCihaz', 'Cihaz@listShortCihaz');
     Route::get('listShortCihazId/{id}', 'Cihaz@listShortCihazId');
+    Route::get('cihazListeleCari/{cari_id}', 'Cihaz@cihazListeleCari');
 
     Route::get('servisListele', 'Servis@servisListele');
     Route::post('servisKaydet', 'Servis@servisKaydet');
@@ -55,13 +59,18 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('servisListeleBekleyen', 'Servis@servisListeleBekleyen');
 
     Route::get('randevuListele', 'Randevu@randevuListele');
+    Route::get('randevuListeleRapor', 'Randevu@randevuListeleRapor');
+    
     Route::post('randevuKaydet', 'Randevu@randevuKaydet');
     Route::get('randevuSil', 'Randevu@randevuSil');
     Route::get('randevuGetir/{id}', 'Randevu@randevuGetir');
     Route::get('listShortRandevu', 'Randevu@listShortRandevu');
     Route::get('listShortRandevuId/{id}', 'Randevu@listShortRandevuId');
-    
+ 
+});
 
+//musteri 
 
-    
+Route::group(['middleware' => 'jwt.auth','prefix' => 'm'], function () {
+   Route::get('servisListele', 'Servis@servisListele');
 });

@@ -1,11 +1,11 @@
 <template>
-  <q-page v-if="guard.giris==='1'">
+  <q-page>
 
     <div class="row q-pa-sm">
       <div class="col-xs-12 col-md-12">
         <q-toolbar slot="header" color="faded">
-          <q-toolbar-title>Servis Bilgiler </q-toolbar-title>
-          <q-btn v-if="guard.yeni=='1'" flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
+          <q-toolbar-title>Servis Bilgiler</q-toolbar-title>
+          <q-btn  flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
         </q-toolbar>
 
         <q-search v-model="filterText" :debounce="600" placeholder="Servis Kodu" icon="search" float-label="Ara" />
@@ -37,7 +37,7 @@
                   <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
                   <div class="col-md-2 listCol">{{item.serino}} </div>
                   <div class="col-md-3 listCol">{{item.aciklama}} </div>
-                  <div class="col-md-2 listCol">{{item.tarih | tarih}} </div>
+                  <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
                   <div class="col-md-2 listCol">{{item.islemDurumLabel}} </div>
                 </div>
               </q-item-tile>
@@ -96,7 +96,14 @@ const module = {
 
   methods: {
 
-   
+    formatDate (date) {
+      if (!date)
+        return
+      let nDate = new Date(date);
+      let fDate = new Date(nDate.toISOString().split('T')[0]);
+      return fDate.toLocaleDateString();
+
+    },
     //servisDuzelt component'den gelen datalar
     servisEmit (val) {
       //this.modal = false;
@@ -148,7 +155,7 @@ const module = {
 
     //yeni modal açar..
     yeniServis () {
-      this.$router.push('/servisler/servis');
+      this.$router.push('/m/servisler/servis');
       //this.errors = {};
       //  this.modal = true;
       // this.currentServis = {};
@@ -174,7 +181,7 @@ const module = {
          this.currentServis = Object.assign({}, this.servisler[index]);
        */
 
-      this.$router.push('/servisler/servis/' + id);
+      this.$router.push('/m/servisler/servis/' + id);
 
 
     },

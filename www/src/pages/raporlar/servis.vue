@@ -8,7 +8,7 @@
           <q-toolbar-title>Servis Listesi</q-toolbar-title>
         </q-toolbar>
 
-        <q-table :data="filteredData" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
+        <q-table :visible-columns="visibleColumns" :data="filteredData" :columns="columns" :filter="filter" :filter-method="dataFilter" row-key="id" :pagination.sync="pagination">
 
           <template slot="top-left" slot-scope="props">
             <q-search color="secondary" v-model="filter" class="col-12" placeholder="Ara" />
@@ -22,7 +22,9 @@
 
           <q-tr slot="body" slot-scope="props" :props="props" class="cursor-pointer dtHeight" @click.native="rowClick(props.row)">
             <q-td auto-width v-for="col in props.cols" :key="col.name" :props="props">
-              <span v-if="col.date===true">{{formatDate(col.value)}}</span>
+              <span v-if="col.date===true">
+                {{col.value|tarih}}
+              </span>
               <span v-else>{{col.value}}</span>
 
             </q-td>
@@ -53,6 +55,8 @@ export default {
       pagination: {
         rowsPerPage: 50
       },
+      visibleColumns: ['id', 'cariAdi','marka','aciklama','model','tarih','islemDurumLabel'],
+
       columns: [
         {
           label: "No",
@@ -113,6 +117,7 @@ export default {
           field: "islemDurumu",
           sortable: true,
           filter: false,
+
           align: "left"
         }
       ]

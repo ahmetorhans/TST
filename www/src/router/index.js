@@ -7,17 +7,24 @@ import VueFilter from 'vue-filter';
 import config from '../config';
 
 //Vue.component('barcode', VueBarcode);
-
-Vue.use(VueFilter); 
+import vueXlsxTable from 'vue-xlsx-table'
+Vue.use(vueXlsxTable, {rABS: false}) 
+Vue.use(VueFilter);
 Vue.use(VueRouter);
 
 Vue.prototype.apiUrl = config.apiUrl;
 Vue.prototype.fileUrl = config.fileUrl;
 
-
+Vue.filter('tarih', function (date) {
+  if (!date)
+    return
+  let nDate = new Date(date);
+ // let fDate = new Date(nDate.toISOString().split('T')[0]);
+  return nDate.toLocaleDateString();
+})
 const Router = new VueRouter({
 
-  mode: 'history',
+  //mode: 'history',
   base: process.env.VUE_ROUTER_BASE,
   scrollBehavior: () => ({ y: 0 }),
   routes
@@ -26,8 +33,8 @@ const Router = new VueRouter({
 
 Router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthenticated) {
-    next({ path: '/login'});
-    
+    next({ path: '/login' });
+
   } else {
     next();
   }

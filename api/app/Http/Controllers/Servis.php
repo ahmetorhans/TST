@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Guard;
 use JWTAuth;
 use Request;
+//use Illuminate\Http\Request as Req;
 use Validator;
+use Mail;
 
 class Servis extends Controller
 {
@@ -17,7 +20,31 @@ class Servis extends Controller
     public function servisKaydet()
     {
 
+        if (Request::get('gUser')->musteri === '1') {
+            $cari = \App\Cari::where('user_id', Request::get('gUser')->id)->first(['id']);
+            Request::merge(['cari_id' => $cari['id']]);
+        } else {
+            if (Guard::yetki('servis')->yeni !== '1') {
+                return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+            }
+        }
+
         $sonuc = Request::all();
+        
+        $mail['aciklama']= isset($sonuc['aciklama']) ? $sonuc['aciklama'] : '';
+        $mail['sikayet']= isset($sonuc['sikayet']) ? $sonuc['sikayet'] : '';
+        $mail['cari'] = \App\Cari::find($sonuc['cari_id'])->first(['adi','yetkili']);
+        $mail['cihaz']=array();
+        if (!empty($sonuc['cihaz_id'])){
+            $mail['cihaz']= \App\Cihaz::find($sonuc['cihaz_id'])->first();
+        }
+        
+        Mail::send('servisMail', $mail, function($message) {
+            $message->to('ahmetariforhan@gmail.com', '')->subject
+               ('Servis Talebi');
+            $message->from('send@wmatik.com','Servis Takip');
+         });
+        
 
         //id varsa update et..
         if (isset($sonuc['id'])) {
@@ -37,6 +64,8 @@ class Servis extends Controller
 
         $servis = new \App\Servis;
         $servis->tarih = date('Y-m-d');
+        $servis->key=md5(microtime());
+        $servis->kullanici = Request::get('gUser')->id;
         $servis->fill($sonuc)->save();
 
         $access_token = Request::header('Authorization');
@@ -61,8 +90,18 @@ class Servis extends Controller
      */
     public function servisGuncelle()
     {
-
         $servis = \App\Servis::find(Request::input('id'));
+
+        if (Guard::mertebe() == 'musteri') {
+            $cari = \App\Cari::where('user_id', Request::get('gUser')->id)->first(['id']);
+            if ($cari['id'] != $servis['cari_id']) {
+                return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+            }
+        } else {
+            if (Guard::yetki('servis')->duzelt !== '1') {
+                return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+            }
+        }
 
         $input = Request::all();
 
@@ -100,22 +139,26 @@ class Servis extends Controller
     public function servisListele()
     {
 
-       // print_r(Request::get('gUser'));
-        if (Request::get('gUser')->musteri === '1') {
+        //  sadece kendi kayıtlarını getir..
+        if (Guard::mertebe() === 'musteri') {
             $servisler = \App\Servis::
                 leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
                 ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
                 ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
-                ->where('caris.user_id',Request::get('gUser')->id)
+                ->where('caris.user_id', Request::get('gUser')->id)
                 ->orderBy('id', 'DESC')
                 ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id']);
         } else {
+            if (Guard::yetki('servis')->giris !== '1') {
+                return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'),401);
+            }
             $servisler = \App\Servis::
                 leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
                 ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
                 ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
                 ->orderBy('id', 'DESC')
                 ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id']);
+
         }
 
         return response()->json($servisler);
@@ -138,18 +181,41 @@ class Servis extends Controller
     {
         return \App\Durum::get();
     }
-    public function servisGetir($id)
+    public function servisGetirGuest($key)
     {
 
-        $servisler = \App\Servis::find($id);
+        $servisler = \App\Servis::where('key',$key)->first();
+
+        
         $servisler->getCari;
         $servisler->getCihaz;
         $servisler->getIslem;
         $servisler->getDurum;
         $servisler->getTeknisyen;
 
-        //$islemDurumlari= \App\Durum::get();
-        //$teknisyenler=  \App\User::orderBy('id', 'DESC')->where('musteri','!=',"1")->get(['id as value','name as label']);
+        return response()->json(array('servis' => $servisler));
+    }
+    public function servisGetir($id)
+    {
+
+        $servisler = \App\Servis::find($id);
+
+        if (Guard::mertebe() === 'musteri') {
+            $cari = \App\Cari::where('user_id', Request::get('gUser')->id)->first(['id']);
+            if ($servisler['cari_id'] != $cari['id']) {
+                return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+            }
+        }
+        /*if (Guard::mertebe() == 'user') {
+        if ($servisler['kullanici'] != Request::get('gUser')->id) {
+        return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'),401);
+        }
+        }*/
+        $servisler->getCari;
+        $servisler->getCihaz;
+        $servisler->getIslem;
+        $servisler->getDurum;
+        $servisler->getTeknisyen;
 
         return response()->json(array('servis' => $servisler));
     }
@@ -160,6 +226,10 @@ class Servis extends Controller
      */
     public function servisSil()
     {
+
+        if (Guard::yetki('servis')->sil !== '1') {
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'));
+        }
 
         $servis = \App\Servis::find(Request::input('id'));
 
@@ -182,8 +252,10 @@ class Servis extends Controller
 
         $data['teknisyenler'] = \App\User::orderBy('id', 'DESC')->where('musteri', '!=', "1")->get(['id as value', 'name as label']);
         $data['islemDurumlari'] = \App\Durum::get();
-        $users = new \App\Http\Controllers\Users;
-        $data['yetkiler'] = $users->yetkiler();
+        $data['cari'] = \App\Cari::where('user_id', Request::get('gUser')->id)->first(['id']);
+
+        //$users = new \App\Http\Controllers\Users;
+        // $data['yetkiler'] = $users->yetkiler();
 
         return response()->json($data);
 

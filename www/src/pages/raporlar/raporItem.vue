@@ -12,8 +12,8 @@
         <q-item-main label="Cihaz Listesi" />
       </q-item>
 
-      <q-item to="/raporlar/servisBekleyen">
-        <q-item-main label="Bekleyen Servisler" />
+      <q-item to="/raporlar/randevu">
+        <q-item-main label="Bekleyen Randevular" />
       </q-item>
 
       <q-item to="/raporlar/servisCari">

@@ -30,4 +30,13 @@ class Authentication extends Controller
         return response()->json(compact('token'));
     }
 
+    public static function guard(){
+        if (Request::get('gUser')->musteri === '1') {
+        echo "musteri";
+        }else{
+            echo "ev";
+        }
+
+    }
+
 }

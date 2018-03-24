@@ -84,6 +84,19 @@ class Randevu extends Controller
         $randevu = \App\Randevu::
              leftJoin('caris', 'randevu.cari_id', '=', 'caris.id')
             ->orderBy('randevu.id', 'DESC')
+            ->get(['caris.adi as adi','randevu.id','randevu.yetkili','randevu.aciklama','islemTarihi','randevuTarihi','kullanici','bildirim']);
+      
+        return response()->json($randevu);
+
+    }
+
+    public function randevuListeleRapor()
+    {
+        $randevu = \App\Randevu::
+             leftJoin('caris', 'randevu.cari_id', '=', 'caris.id')
+            ->orderBy('randevuTarihi', 'asc')
+            ->where('bildirim','!=','1')
+            ->whereDate('randevuTarihi','>',date('Y-m-d'))
             ->get(['caris.adi as adi','randevu.id','randevu.yetkili','randevu.aciklama','islemTarihi','randevuTarihi','kullanici']);
       
         return response()->json($randevu);

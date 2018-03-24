@@ -3,34 +3,39 @@
         <div class="row">
             <div class="col-md-12">
                 <ayar-list />
-
             </div>
             <div class="col-md-9">
                 <div class="layout-padding">
-
-                   
-
-
-                    <q-field label="Smtp Server Adı" :label-width="3">
-                        <q-input v-model="currentAyar.name" :class="{'has-error': errors.name}" required/>
+                    <q-field label="Adı Soyadı" :label-width="3">
+                        <q-input v-model="currentUser.name" :class="{'has-error': errors.name}" required/>
                         <span class="errMsg" v-if="errors.name">{{ errors.name }}</span>
                     </q-field>
 
                     <q-field label="Eposta Adresi" :label-width="3" class="fip">
-                        <q-input v-model="currentAyar.email" :class="{'has-error': errors.email}" />
+                        <q-input v-model="currentUser.email" :class="{'has-error': errors.email}" />
                         <span class="errMsg" v-if="errors.email">{{ errors.email }}</span>
                     </q-field>
 
                     <q-field label="Parola" :label-width="3" class="fip">
-                        <q-input v-model="currentAyar.password" type="password" :class="{'has-error': errors.password}" />
+                        <q-input v-model="currentUser.password" type="password" :class="{'has-error': errors.password}" />
                         <span class="errMsg" v-if="errors.password">{{ errors.password }}</span>
                     </q-field>
+
+                    <q-field label="Fotoğraf" :label-width="3" class="fip">
+                        <q-uploader :url="url" auto-expand @uploaded="postUpload" @finish="finishUpload" :headers="headers" ref="uploader" />
+                        <!-- <img :src="`http://localhost:8000/files/${currentUser.photo}`" style="width:80px;" class="shadow-1"/>-->
+                        
+                    </q-field>
+
                     <br />
                     <q-field class="fip">
                         <q-btn color="secondary" @click="submit">Kaydet</q-btn>
 
                     </q-field>
                 </div>
+            </div>
+            <div class="col-md-3">
+                <span v-if="currentUser.photo"><img :src="fileUrl+'/thumb/'+currentUser.photo"  class="responsive q-pa-sm"  /></span>
             </div>
 
         </div>
@@ -40,50 +45,102 @@
 <script>
 import axios from "axios";
 import ayarList from '../components/ayarList';
+import store from "../store";
 import notify from "./notify";
 
 const module = {
     components: { ayarList },
     data () {
         return {
+            //file upload
+            url: this.apiUrl + "upload",
+            headers: {
+                Authorization:
+                    "Bearer " + localStorage.getItem("vue-authenticate.vueauth_token")
+            },
+
+            //upload varsa submit etme, önce uploadları gönder
+            uploadVar: false,
+
             errors: {},
+
             //detay kullanıcı
-            currentAyar: {},
+            currentUser: {},
+
+            yetkiler: {},
+
             guard: {},
 
         };
     },
 
     created () {
-        this.getSetting();
+        this.getUser();
+    },
+    watch: {
+        uploadVar (val) {
+            if (val === false) {
+                this.postData();
+            }
+        }
     },
 
-
     methods: {
-        handleSelectedFile (convertedData) {
-            console.log(convertedData)
-        },
-        getSetting () {
+
+        getUser () {
             axios
-                .get(this.apiUrl + "ayarGetir/smtp")
-                .then(res => {
+                .get(this.apiUrl + "profilGetir", this.currentUser)
+                .then(response => {
+
                     console.log(response.data)
-                    this.currentAyar = response.data;
+
+                    this.currentUser = response.data;
+
+
                 })
+
         },
 
+        //dosya yükleme bitince watch ile takip et.. Sonra submit et..
+        finishUpload () {
+            this.uploadVar = false;
+        },
+
+        //Dosya yükle. Gelen değeri currentuser'a at..
+        postUpload (file, xhr) {
+            let sonuc = JSON.parse(xhr.response);
+            if (sonuc.status === true) {
+                this.currentUser.photo = sonuc.file;
+            }
+        },
 
         submit () {
-            //currentAyar'a yetkileri ata..
-            console.log(this.currentAyar)
+            let uploadFiles = this.$refs.uploader.files;
+            //upload files varsa yükle.. yoksa direk post et.
+            if (uploadFiles.length > 0) {
+                this.$refs.uploader.upload();
+                this.uploadVar = true;
+            } else {
+                this.postData();
+            }
+        },
+
+        postData () {
+            //currentuser'a yetkileri ata..
+            
             axios
-                .post(this.apiUrl + "ayarKaydet", this.currentAyar)
+                .post(this.apiUrl + "profilKaydet", this.currentUser)
                 .then(res => {
                     if (res.data.status === false) {
                         this.errors = res.data.msg;
                         notify("Lütfen formu kontrol edin!", true);
                     } else {
                         this.errors = {};
+                       // localStorage.setItem('adi',this.currentUser.name);
+                        
+                        //dosyaları boşalt..
+                        this.$refs.uploader.files = [];
+                      
                         notify(res.data.msg);
                     }
                 })
@@ -95,7 +152,7 @@ const module = {
 
     computed: {
         kaydetBtn () {
-            if (this.currentAyar.id) {
+            if (this.currentUser.id) {
                 if (this.guard.duzelt == "1") {
                     return true;
                 }

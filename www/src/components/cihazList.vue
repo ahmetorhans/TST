@@ -37,6 +37,7 @@ import notify from "../pages/notify";
 
 
 const module = {
+  props: ['cari_id'],
   data() {
     return {
       //tüm kayıtlar
@@ -47,16 +48,17 @@ const module = {
   },
 
   created() {
-    //this.getList();
+    this.getList();
   },
 
   methods: {
    
     getList() {
+      
       axios
-        .get(this.apiUrl + "cihazListele")
+        .get(this.apiUrl + "cihazListeleCari/"+this.cari_id)
         .then(response => {
-          this.cihazList = response.data;
+           this.cihazList = response.data;
         })
         .catch(e => {
           this.errors.push(e);
@@ -66,6 +68,7 @@ const module = {
   
     //kullanıcı seçilince index den mevcut değerleri currentCihaz'a at..
     rowClick(item) {
+      
      this.$emit('cihazListEmit', item);
     },
 

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Guard;
 use App\User;
 use App\Yetki;
-use App\yetkiDefault;
 use DB;
 use JWTAuth;
 use Request;
@@ -19,6 +19,10 @@ class Users extends Controller
      */
     public function userKaydet()
     {
+
+        if (Guard::yetki('kullanici')->yeni !== '1') {
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+        }
 
         $sonuc = Request::all();
 
@@ -66,6 +70,9 @@ class Users extends Controller
     public function userGuncelle()
     {
 
+        if (Guard::yetki('kullanici')->duzelt !== '1') {
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+        }
         $user = User::find(Request::input('id'));
 
         $validator = Validator::make(Request::all(), [
@@ -120,6 +127,9 @@ class Users extends Controller
      */
     public function userListele()
     {
+        if (Guard::yetki('kullanici')->giris !== '1') {
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+        }
 
         $users = User::orderBy('id', 'DESC')->where('musteri', '!=', "1")->with('yetkiler')->get();
         return response()->json($users);
@@ -134,36 +144,12 @@ class Users extends Controller
 
     }
 
-    public function yetkiDefault()
-    {
-
-        $user = User::get();
-
-        $yetkiler = yetkiDefault::all('bolum', 'bolumAdi')->toArray();
-
-        foreach ($user as $val) {
-
-            foreach ($yetkiler as $ny) {
-
-                $yetki = Yetki::where('user_id', '=', $val['id'])
-                    ->where('bolum', '=', $ny['bolum'])
-                    ->get();
-
-                if (count($yetki) == 0) {
-                    DB::table('yetkis')->insert(
-                        ['bolum' => $ny['bolum'], 'user_id' => $val['id'], 'bolumAdi' => $ny['bolumAdi']]
-                    );
-                }
-
-            }
-
-        }
-        $yetki = \App\Yetkidefault::orderBy('id', 'DESC')->get();
-        return response()->json($yetki);
-    }
-
     public function userSil()
     {
+
+        if (Guard::yetki('kullanici')->sil !== '1') {
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+        }
         $id = Request::input('id');
 
         $user = User::find($id);
@@ -184,11 +170,10 @@ class Users extends Controller
     public function yetkiler()
     {
         //default yetkilerler db'yi donat
-        $this->yetkiDefault();
+        //$this->yetkiDefault();
 
         $bolum = Request::input('bolum');
-        $access_token = Request::header('Authorization');
-        $user = JWTAuth::toUser(substr($access_token, 7));
+        $user = Request::get('gUser');
         $yetkiler = User::
             leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
             ->where('users.id', '=', $user['id'])
@@ -202,37 +187,43 @@ class Users extends Controller
     public function guard()
     {
         //default yetkilerler db'yi donat
-        $this->yetkiDefault();
-        $access_token = Request::header('Authorization');
-        $user = JWTAuth::toUser(substr($access_token, 7));
 
-        
+        /* $user = Request::get('gUser');
+        if ($user->musteri==='1'){
+        $user->role='musteri';
+        }else{
+        if (!$user->role){
+        $user->role='user';
+        }
+        }
 
         $yetkiler = User::
-            leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
-            ->where('users.id', '=', $user['id'])
-            ->get(['role', 'giris', 'bolum', 'bolumAdi', 'yeni', 'duzelt', 'sil'])
-            ->keyBy('bolum');
+        leftJoin('yetkis', 'users.id', '=', 'yetkis.user_id')
+        ->where('users.id', '=', $user['id'])
+        ->get(['role', 'giris', 'bolum', 'bolumAdi', 'yeni', 'duzelt', 'sil'])
+        ->keyBy('bolum');
 
         if ($user['role'] === 'super') {
-            $arr = [];
+        $arr = [];
 
-            foreach ($yetkiler->toArray() as $key => $val) {
+        foreach ($yetkiler->toArray() as $key => $val) {
 
-                foreach ($val as $k => $v) {
-                    if ($k == 'bolum' || $k=='bolumAdi' || $k =='role') {
-                        $arr[$key][$k] = $v;
-                    } else {
-                        $arr[$key][$k] = '1';
-                    }
-
-                }
-            }
-            return response()->json($arr);
+        foreach ($val as $k => $v) {
+        if ($k == 'bolum' || $k=='bolumAdi' || $k =='role') {
+        $arr[$key][$k] = $v;
+        } else {
+        $arr[$key][$k] = '1';
         }
-     
-        // print_r($yetkiler->toArray());
-        return response()->json($yetkiler);
+
+        }
+        }
+        $arr['role'] = $user['role'];
+        return response()->json($arr);
+        }
+        $yetkiler['role']=$user['role'];
+         */
+        $sonuc = Guard::yetki();
+        return response()->json($sonuc);
 
     }
 
@@ -245,6 +236,14 @@ class Users extends Controller
 
     public function profilKaydet()
     {
+
+     
+        
+        foreach((array)Request::input('xls') as $k=>$v){
+          
+           $arr[]=$v[0];
+        }
+        return $arr;
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
         $user = User::find($user['id']);

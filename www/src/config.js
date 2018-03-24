@@ -1,5 +1,5 @@
 export default {
     fileUrl: 'http://localhost:8000/files/',
-    apiUrl: 'http://localhost:8000/api/'
+    apiUrl: 'http://192.168.0.12:8000/api/'
     
 }

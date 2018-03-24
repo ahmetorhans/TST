@@ -5,6 +5,12 @@ export default [
     children: [{ path: "", component: () => import("pages/index") }]
   },
   {
+    path: "/servisid/:id",
+    component: () => import("layouts/guest"),
+    meta: { requiresAuth: false },
+    children: [{ path: "", component: () => import("pages/servisid") }]
+  },
+  {
     path: "/kullanicilar",
     component: () => import("layouts/default"),
     meta: { requiresAuth: true },
@@ -26,7 +32,7 @@ export default [
     ]
   },
   {
-    path: "/randevular/:rendevu*",
+    path: "/randevular/:randevu*",
     component: () => import("layouts/default"),
     meta: { requiresAuth: true },
     children: [
@@ -51,7 +57,7 @@ export default [
   },
   {
     path: "/raporlar",
-    component: () => import("layouts/rapor"),
+    component: () => import("layouts/default"),
     meta: { requiresAuth: true },
     name: 'raporlar',
     children: [
@@ -71,13 +77,26 @@ export default [
         component: () => import("pages/raporlar/cihazCari")
       },
       { path: "cari", component: () => import("pages/raporlar/cari") },
-      { path: "cihaz", component: () => import("pages/raporlar/cihaz") }
+      { path: "cihaz", component: () => import("pages/raporlar/cihaz") },
+      { path: "randevu", component: () => import("pages/raporlar/randevu") }
     ]
   },
 
   {
     path: "/login",
     component: () => import("pages/login")
+  },
+
+  {
+    path: "/m/",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [ 
+      { path: "profil", component: () => import("pages/profil.musteri") },
+      { path: "servisler", component: () => import("pages/servis.musteri") },
+      { path: "servisler/servis/:id*", component: () => import("pages/servisDetay.musteri") },
+      { path: "cihazlar/:id*", component: () => import("pages/cihaz.musteri") }
+    ]
   },
   {
     path: "*",

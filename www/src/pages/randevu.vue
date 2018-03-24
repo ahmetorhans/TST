@@ -1,6 +1,6 @@
 <template>
   <q-page v-if="guard.giris==='1'">
-    <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'360px'}">
+    <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'400px'}">
       <q-modal-layout>
 
         <q-toolbar slot="header" color="secondary">
@@ -33,6 +33,11 @@
                 <q-datetime v-model="currentRandevu.randevuTarihi" type="date" />
               </q-field>
 
+               <q-field label="Tamamlandı" :label-width="3" class="fip">
+                <q-toggle v-model="currentRandevu.bildirim"  true-value="1" false-value="0" />
+              </q-field>
+
+             
               <q-field class="fip">
                 <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
                 <span v-if="currentRandevu.id">
@@ -65,25 +70,26 @@
                 <div class="row">
                   <div class="col-md-2 listCol">Kullanıcı</div>
                   <div class="col-md-4 listCol">Yetkili </div>
-                  <div class="col-md-4 listCol">Açıklama </div>
+                  <div class="col-md-3 listCol">Açıklama </div>
                   <div class="col-md-1 listCol">Tarih </div>
-                  <div class="col-md-1 listCol">Randevu Tarihi </div>
+                  <div class="col-md-2 listCol" style="text-align:right">Randevu Tarihi </div>
+                  
 
                 </div>
               </q-item-tile>
             </q-item-main>
           </q-item>
           <q-item v-for="item of filteredData.slice(0,300)" :key="item.id">
-            <q-item-side left icon="devices" />
-            <q-item-main :label=item.adi label-lines="1" sublabel-lines="3" dense @click.native="rowClick(item.id)">
-
+            <q-item-side left icon="alarm_on" />
+            <q-item-main :label=item.adi label-lines="1" sublabel-lines="3" dense @click.native="rowClick(item.id)" >
               <q-item-tile sublabel>
                 <div class="row">
                   <div class="col-md-2 listCol">{{item.kullanici}} </div>
                   <div class="col-md-4 listCol">{{item.yetkili}} </div>
-                  <div class="col-md-4 listCol">{{item.aciklama}} </div>
-                  <div class="col-md-1 listCol">{{formatDate(item.islemTarihi)}} </div>
-                  <div class="col-md-1 listCol">{{formatDate(item.randevuTarihi)}} </div>
+                  <div class="col-md-3 listCol">{{item.aciklama}} </div>
+                  <div class="col-md-1 listCol">{{item.islemTarihi | tarih}} </div>
+                  <div class="col-md-2 listCol" style="text-align:right"><q-icon v-if="item.bildirim=='1'" name='done' /><strong> {{item.randevuTarihi | tarih}}  </strong></div>
+         
                 </div>
               </q-item-tile>
 
@@ -95,7 +101,7 @@
       </div>
     </div>
 
-  </q-page>
+  </q-page> 
 
 </template>
 

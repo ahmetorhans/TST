@@ -1,9 +1,9 @@
 <template>
-  <div class="q-pa-sm" v-if="guard.giris==='1'">
+  <div class="q-pa-sm" >
     <q-tabs color="faded" inverted no-pane-border>
       <q-tab alert default slot="title" name="tab-1" label="Servis" />
       <q-tab slot="title" name="tab-2" label="İşlemler" />
-      <q-tab  slot="title" name="tab-3" label="Özet" />
+      <q-tab slot="title" name="tab-3" label="Özet" />
 
       <!-- tab servis -->
       <q-tab-pane name="tab-1">
@@ -13,42 +13,17 @@
         <div class="layout-padding">
           <div class="row">
             <div class="col-sm-12">
-              <div class="row">
-
+              
+              <div class="row" >
                 <div class="col-xs-11">
-                  <q-field label="Cari Seçin" :label-width="3" class="fip">
-                    <q-search v-model="currentServis.cariAdi" placeholder="Cari Adı">
-                      <q-autocomplete @search="cariAra" @selected="cariAraSelected" />
-                    </q-search>
-                    <span class="errMsg" v-if="errors.cari_id">{{ errors.cari_id }}</span>
-                  </q-field>
-                  <div v-if="currentServis.cari_id">
-                    <q-field label=" " :label-width="3" class="fip">
-                      <q-input stack-label="Cari Adı" :value="currentServis.get_cari.adi" disabled />
-                    </q-field>
-
-                    <q-field label=" " :label-width="3" class="fip">
-                      <q-input stack-label="Yetkili" :value="currentServis.get_cari.yetkili" disabled />
-                    </q-field>
-                    <q-field label=" " :label-width="3" class="fip">
-                      <q-input stack-label="Telefon" :value="currentServis.get_cari.telefon" disabled />
-                    </q-field>
-                  </div>
-                </div>
-                <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                  <q-btn icon="add" size="sm" round @click="cariModal = !cariModal"></q-btn>
-                </div>
-              </div>
-              <div class="row" v-if="currentServis.cari_id">
-                <div class="col-xs-11">
-                  <q-field label="Cihaz Seçin" :label-width="3" class="fip">
-                    <q-search v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
+                  <q-field v-if="!currentServis.id"  label="Cihaz" :label-width="3" class="fip">
+                    <q-search  v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
                       <q-autocomplete @search="cihazAra" @selected="cihazAraSelected" />
                     </q-search>
                     <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
                   </q-field>
                   <div v-if="currentServis.cihaz_id">
-                    <q-field label=" " :label-width="3" class="fip">
+                    <q-field label="Cihaz Detay" :label-width="3" class="fip">
                       <q-input stack-label="Cihaz Adı" :value="currentServis.get_cihaz.adi" disabled />
                     </q-field>
 
@@ -60,42 +35,25 @@
                     </q-field>
                   </div>
                 </div>
-                <div class="col-xs-1" style="text-align:center;margin-top:5px;">
-                  <q-btn icon="add" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
+                <div class="col-xs-1" style="text-align:center;margin-top:5px;" v-if="!currentServis.id">
+                  <q-btn icon="add" title="Cihaz ekle" size="sm" round @click="cihazModal = !cihazModal"></q-btn>
+                   <q-btn icon="assignment" title="Cihaz Listele" size="sm" round @click="cihazListModal = !cihazListModal"></q-btn>
                 </div>
 
                 <div class="col-sm-11">
-                  <q-field label="İşlem Durumu" :label-width="3" class="fip">
-                    <q-select v-model="currentServis.islemDurumu" radio :options="islemDurumlari" />
-                  </q-field>
-                  <q-field label="Teknisyen" :label-width="3" class="fip">
-                    <q-select v-model="currentServis.teknisyen" radio :options="teknisyen" />
-
-                  </q-field>
-
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <q-field label="Fiyat" :label-width="6" class="fip">
-                        <q-input v-model="currentServis.fiyat" suffix="TL" />
-                      </q-field>
-                    </div>
-                    <div class="col-sm-6 q-pl-md">
-                      <q-field label="Fatura Kesildi mi" :label-width="6" class="fip">
-                        <q-checkbox v-model="currentServis.fatura" true-value="1" false-value="0" />
-                      </q-field>
-                    </div>
-                  </div>
-
-                  <q-field label="Ek Parça" :label-width="3" class="fip">
-                    <q-input v-model="currentServis.ekParca" />
-                  </q-field>
+            
+                  
                   <q-field label="Açıklama" :label-width="3" class="fip">
                     <q-input type="textarea" v-model="currentServis.aciklama" />
                   </q-field>
-                  <q-field class="fip">
-                    <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
-                    <q-btn align="right" v-if="guard.sil=='1'" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
 
+                   <q-field label="İşlem" :label-width="3" class="fip">
+                     <q-select v-model="currentServis.sikayet" radio :options="selectOptions" />
+                  </q-field>
+
+                  
+                  <q-field class="fip">
+                    <q-btn color="secondary" @click="submit" v-if="!currentServis.id">Kaydet</q-btn>
                   </q-field>
                 </div>
               </div>
@@ -106,7 +64,7 @@
       </q-tab-pane>
       <!-- tab islemler -->
       <q-tab-pane name="tab-2">
-        <q-btn icon="add" size="md" v-if="kaydetBtn" label="Ekle" @click="islemModal = !islemModal" class="q-pa-sm" />
+       <!-- <q-btn icon="add" size="md"  label="Ekle" @click="islemModal = !islemModal" class="q-pa-sm" />-->
         <div style="clear:both">&nbsp;</div>
         <q-list highlight separator>
           <q-item class="desktop-only">
@@ -129,15 +87,14 @@
               <q-item-tile label> {{item.adi}}</q-item-tile>
               <q-item-tile sublabel>
                 <div class="row">
-                  <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
+                  <div class="col-md-2 listCol">{{item.tarih | tarih}} </div>
                   <div class="col-md-2 listCol">{{item.user}} </div>
                   <div class="col-md-7 listCol">{{item.aciklama}} </div>
                   <div v-if="item.photo" class="col-md-1 listCol"><a :href="fileUrl+'/'+item.photo" target="_blank"><q-icon name="assignment" size="20px"/></a> </div>
                 </div>
               </q-item-tile>
             </q-item-main>
-            <q-item-tile label>
-              <q-icon v-if="guard.sil=='1'" @click.native="islemSil(item.id)" name="delete" size="20px" color="faded" /></q-item-tile>
+           
           </q-item>
 
         </q-list>
@@ -149,10 +106,6 @@
           <div class="rows12">
             <table class="greyGridTable">
               <tr>
-                <td width="30%">Link</td>
-                <td> <a style="cursor:pointer" @click="$router.push('/servisid/'+currentServis.key)">{{currentServis.key}}</a></td>
-              </tr>
-              <tr>
                 <td width="30%">İşlem Durumu</td>
                 <td> {{currentServis.get_durum.label}}</td>
               </tr>
@@ -162,11 +115,11 @@
               </tr>
               <tr>
                 <td width="30%">Tarih</td>
-                <td>{{formatDate(currentServis.created_at)}}</td>
+                <td>{{currentServis.created_at | tarih}}</td>
               </tr>
               <tr>
                 <td width="30%">Fiyat</td>
-                <td>{{currentServis.fiyat}} </td>
+                <td>{{currentServis.fiyat}}</td>
               </tr>
               <tr>
                 <td width="30%">Teknisyen</td>
@@ -248,7 +201,7 @@
                 <th width="30%">Kullanıcı</th>
               </tr>
               <tr v-for="item in currentServis.get_islem">
-                <td width="15%">{{formatDate(item.tarih)}}</td>
+                <td width="15%">{{item.tarih | tarih}}</td>
                 <td width="15%">{{item.adi}}</td>
                 <td width="50%">{{item.aciklama}}</td>
                 <td width="30%">{{item.user}}</td>
@@ -289,7 +242,7 @@
           <q-toolbar-title>Cihaz Seç</q-toolbar-title>
           <q-btn flat round dense @click="cihazListModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
-         <cihaz-list v-if="currentServis.cari_id" :cari_id="currentServis.cari_id" @cihazListEmit="cihazListEmit" />
+        <cihaz-list v-if="currentServis.cari_id"  :cari_id="currentServis.cari_id" @cihazListEmit="cihazListEmit" />
       </q-modal-layout>
     </q-modal>
 
@@ -321,6 +274,12 @@ const module = {
     return {
       errors: {},
 
+       selectOptions: [
+        { label: "Yeni Sipariş", value: "Yeni Sipariş" },
+        { label: "Tamir Talebi", value: "Tamir Talebi" },
+        { label: "Bakım Talebi", value: "Bakım Talebi" }
+      ],
+
       cariList: [],
 
       cihazList: [],
@@ -332,7 +291,7 @@ const module = {
       islemModal: false,
 
       currentServis: {},
-   
+      guard: {},
 
       islemDurumlari: []
     };
@@ -355,33 +314,8 @@ const module = {
   },
 
   methods: {
-    formatDate (date) {
-      if (!date)
-        return
-      let nDate = new Date(date);
-      let fDate = new Date(nDate.toISOString().split('T')[0]);
-      return fDate.toLocaleDateString();
-
-    },
-    islemSil (id) {
-      this.$q
-        .dialog({
-          title: "İşlem Sil",
-          message: "İşlem Silinsin mi?",
-          ok: "Evet",
-          cancel: "Hayır"
-        })
-        .then(() => {
-          axios
-            .get(this.apiUrl + 'islemSil/' + id)
-            .then((response) => {
-              let index = this.currentServis.get_islem.findIndex(x => x.id === id);
-              this.currentServis.get_islem.splice(index, 1);
-              
-            })
-            .catch({})
-        });
-    },
+  
+    
     yazdir () {
       window.print();
     },
@@ -389,46 +323,18 @@ const module = {
       axios
         .get(this.apiUrl + "servisInit?bolum=servis")
         .then(response => {
+          this.currentServis.cari_id= response.data.cari.id;
+         
           this.teknisyen = response.data.teknisyenler;
           this.islemDurumlari = response.data.islemDurumlari;
-          
 
-         /* if (response.data.yetkiler.original.role == "super") {
-            response.data.yetkiler.original.giris = "1";
-            response.data.yetkiler.original.yeni = "1";
-            response.data.yetkiler.original.duzelt = "1";
-            response.data.yetkiler.original.sil = "1";
-          }
-          this.guard = response.data.yetkiler.original;
-          */
-          
+        
         })
         .catch(e => {
           this.errors.push(e);
         });
     },
-    getTeknisyen () {
-      axios
-        .get(this.apiUrl + "teknisyenListele")
-        .then(response => {
-          this.teknisyen = response.data;
-        })
-        .catch(e => {
-          this.errors.push(e);
-        });
-    },
-    getIslemDurumlari () {
-      axios
-        .get(this.apiUrl + "islemDurumlariListele")
-        .then(response => {
-          console.log(response.data);
-          this.islemDurumlari = response.data;
-        })
-        .catch(e => {
-          console.log(e);
-          this.errors.push(e);
-        });
-    },
+   
     //ilgili servisi getir
     getServis () {
       this.currentServis.get_cari = {};
@@ -454,22 +360,7 @@ const module = {
     },
 
     //this.guard
-    getRole () {
-      axios
-        .get(this.apiUrl + "yetkiler?bolum=servis")
-        .then(response => {
-          if (response.data.role == "super") {
-            response.data.giris = "1";
-            response.data.yeni = "1";
-            response.data.duzelt = "1";
-            response.data.sil = "1";
-          }
-          this.guard = response.data;
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
+   
 
     //cihaz kaydet comp. gelen
     cihazKaydetEmit (val) {
@@ -483,10 +374,10 @@ const module = {
       this.cariModal = false;
     },
     cihazListEmit (val) {
-      console.log(val);
+      
       this.currentServis.cihaz_id = val.id;
       this.currentServis.cihazAdi = val.adi;
-      this.currentServis.get_cihaz.adi= val.adi;
+       this.currentServis.get_cihaz.adi= val.adi;
       this.currentServis.get_cihaz.marka= val.marka;
       this.currentServis.get_cihaz.model= val.model;
       this.currentServis.get_cihaz.serino= val.serino;
@@ -501,54 +392,10 @@ const module = {
       }
     },
 
-    //autocompolete için..
-    cariAra (terms, done) {
-      axios
-        .get(this.apiUrl + "listShortCari")
-        .then(response => {
-          this.cariList = response.data;
-          this.cariAraComplete(terms, done);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-
-    //from searched..
-    cariAraComplete (terms, done) {
-      let searchText = this.currentServis.cariAdi.toLocaleLowerCase("tr-TR");
-
-      let sonuc = [];
-      let ver = this.cariList.filter(p => {
-        return p.adi !== null
-          ? p.adi.toLocaleLowerCase("tr-TR").includes(searchText)
-          : "";
-      });
-
-      let arr = [];
-
-      ver.forEach(e => {
-        arr.push({
-          label: e.adi,
-          value: e.id,
-          sublabel: e.yetkili + " " + e.telefon
-        });
-      });
-
-      return done(arr);
-    },
-
-    //autocomplete seçilen..
-    cariAraSelected (item) {
-      //seçilince diğer cari bilgileri de cariSelected'a at.
-      let index = this.cariList.findIndex(x => x.id === item.value);
-      this.currentServis.get_cari = this.cariList[index];
-
-      this.currentServis.cariAdi = item.label;
-      this.currentServis.cari_id = item.value;
-    },
+   
 
     cihazAra (terms, done) {
+  
       if (this.cihazList.length == 0) {
         axios
           .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
@@ -599,33 +446,10 @@ const module = {
       this.currentServis.cihaz_id = item.value;
     },
 
-    sil (id) {
-      this.$q
-        .dialog({
-          title: "Servis Sil",
-          message: "Servis Silinsin mi?",
-          ok: "Evet",
-          cancel: "Hayır"
-        })
-        .then(() => {
-          axios
-            .get(this.apiUrl + "servisSil?id=" + id)
-            .then(response => {
-              if (response.data.status === true) {
-                this.$emit("servisSilEmit", id);
-                 this.$router.push("/servisler");
-                notify(response.data.msg);
-              } else {
-                notify(response.data.msg, true);
-              }
-            })
-            .catch(e => {
-              this.errors.push(e);
-            });
-        });
-    },
+    
     submit () {
-      console.log(this.currentServis);
+     this.currentServis.islemDurumu='2';
+     
       axios
         .post(this.apiUrl + "servisKaydet", this.currentServis)
         .then(res => {
@@ -638,7 +462,7 @@ const module = {
             if (res.data.islemler.id)
               this.currentServis.get_islem.push(res.data.islemler);
 
-            if (!this.currentServis.id) this.$router.push("/servisler");
+            if (!this.currentServis.id) this.$router.push("/m/servisler");
 
             this.errors = {};
             // this.$emit("servisEmit", this.currentServis);
@@ -657,21 +481,7 @@ const module = {
   },
 
   computed: {
-    guard () {
-       return this.$store.state.auth.guard.servis;
-    },
-    kaydetBtn () {
-      if (this.currentServis.id) {
-        if (this.guard.duzelt == "1") {
-          return true;
-        }
-      } else {
-        if (this.guard.yeni == "1") {
-          return true;
-        }
-      }
-      return false;
-    }
+   
   }
 };
 

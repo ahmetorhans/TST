@@ -14,7 +14,8 @@ const vueAuth = new VueAuthenticate(Vue.prototype.$http, {
 export default {
   state: {
     isAuthenticated: false,
-    guard: []
+    guard: [],
+    authLoaded : false,
   },
 
   getters: {
@@ -35,6 +36,9 @@ export default {
     },
     mutationGuard(state, data) {
       state.guard = data.sonuc;
+      state.authLoaded=true;
+      console.log("data.sonuc.store");
+      console.log(data.sonuc);
     }
   },
 

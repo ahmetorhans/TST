@@ -1,10 +1,10 @@
 <template>
-  <q-page v-if="guard.giris==='1'">
+  <q-page>
 
     <div class="row q-pa-sm">
       <div class="col-xs-12 col-md-12">
         <q-toolbar slot="header" color="faded">
-          <q-toolbar-title>Servis Bilgiler </q-toolbar-title>
+          <q-toolbar-title>Servis Bilgiler xcsdasdi</q-toolbar-title>
           <q-btn v-if="guard.yeni=='1'" flat round dense @click="yeniServis()" wait-for-ripple icon="add" />
         </q-toolbar>
 
@@ -19,8 +19,7 @@
                   <div class="col-md-1 listCol">Servis No </div>
                   <div class="col-md-2 listCol">Marka / Model </div>
                   <div class="col-md-2 listCol">Serino </div>
-                  <div class="col-md-3 listCol">Açıklama </div>
-                  <div class="col-md-2 listCol">Tarih </div>
+                  <div class="col-md-5 listCol">Açıklama </div>
                   <div class="col-md-2 listCol">Durum </div>
                 </div>
               </q-item-tile>
@@ -36,8 +35,7 @@
                   <div class="col-md-1 listCol">{{item.id}} </div>
                   <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
                   <div class="col-md-2 listCol">{{item.serino}} </div>
-                  <div class="col-md-3 listCol">{{item.aciklama}} </div>
-                  <div class="col-md-2 listCol">{{item.tarih | tarih}} </div>
+                  <div class="col-md-5 listCol">{{item.aciklama}} </div>
                   <div class="col-md-2 listCol">{{item.islemDurumLabel}} </div>
                 </div>
               </q-item-tile>
@@ -95,8 +93,6 @@ const module = {
   },
 
   methods: {
-
-   
     //servisDuzelt component'den gelen datalar
     servisEmit (val) {
       //this.modal = false;
@@ -224,7 +220,7 @@ const module = {
 
   computed: {
     guard () {
- 
+      console.log(this.$store.state.auth.guard.servis)
       return this.$store.state.auth.guard.servis;
     },
     //filter list..

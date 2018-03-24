@@ -84,7 +84,8 @@ module.exports = function (ctx) {
         'QAjaxBar',
         'QDatetime',
         'QBtnToggle',
-        'Loading'
+        'Loading',
+        'QToggle'
       ],
       directives: [
         'Ripple'

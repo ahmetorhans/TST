@@ -7,46 +7,36 @@
         </q-btn>
 
         <q-toolbar-title>
-          Canon Denizli
+          Canon Denizli 
           <div slot="subtitle">Servis Takip v0.1</div>
         </q-toolbar-title>
+        <q-btn 
+        v-if="guard=='kendi'"
+          flat
+          dense
+          round
+          @click="rightDrawerOpen = !rightDrawerOpen"
+        >
+          <q-icon name="timeline" />
+        </q-btn>
       </q-toolbar>
     </q-layout-header>
 
     <q-layout-drawer v-model="leftDrawerOpen" content-class="bg-grey-2" :content-style="{width: '240px'}">
-      <q-list no-border link inset-delimiter>
-        <q-list-header></q-list-header>
-        <q-item to="/servisler" class="qitemH">
-          <q-item-side icon="store" />
-          <q-item-main label="Servis" />
-        </q-item>
-        <q-item to="/randevular" class="qitemH">
-          <q-item-side icon="timeline" />
-          <q-item-main label="Randevular" />
-        </q-item>
-        <q-item to="/cariler" class="qitemH">
-          <q-item-side icon="recent actors" />
-          <q-item-main label="Cari" />
-        </q-item>
-        <q-item to="/raporlar/servis" class="qitemH">
-          <q-item-side icon="timeline" />
-          <q-item-main label="Rapor" />
-        </q-item>
-        
-        <q-item to="/cihazlar" class="qitemH">
-          <q-item-side icon="devices" />
-          <q-item-main label="Cihazlar" />
-        </q-item>
-        <q-item to="/kullanicilar" class="qitemH">
-          <q-item-side icon="supervisor_account" />
-          <q-item-main label="Kullanıcılar" />
-        </q-item>
-        <q-item to="/ayarlar" class="qitemH">
-          <q-item-side icon="settings" />
-          <q-item-main label="Ayarlar" />
-        </q-item>
-
+      <q-list no-border link inset-delimiter v-if="yuklendi">
+        <q-list-header>{{$store.state.auth.guard.name}}</q-list-header>
+        <musteri v-if="guard=='musteri'"/>
+        <user v-if="guard=='kendi'"/>
       </q-list>
+    </q-layout-drawer>
+    <q-layout-drawer
+    v-if="guard=='kendi'"
+      side="right"
+      v-model="rightDrawerOpen"
+      content-class="bg-grey-2"
+     
+    >
+      <rapor-item />
     </q-layout-drawer>
 
     <q-page-container>
@@ -59,21 +49,35 @@
 import { openURL } from 'quasar'
 import store from '../store'
 import raporItem from '../pages/raporlar/raporItem';
-
+import user from './user';
+import musteri from './musteri';
 export default {
   name: 'LayoutDefault',
-  components: { raporItem },
+  components: { raporItem,user,musteri },
 
   data () {
+
     return {
       leftDrawerOpen: true,
-     
+      yuklendi : false,
+      rightDrawerOpen:false,
     }
   },
-  
-  methods: {
 
-  }
+ computed: {
+      guard () {
+
+        if (this.$store.state.auth.authLoaded)
+          this.yuklendi=true;
+
+        let role = this.$store.state.auth.guard.userGroup;
+        if (role==='musteri')
+          return 'musteri'
+        else
+          return 'kendi'
+      },
+
+    }
 }
 </script>
 
