@@ -19,15 +19,11 @@ export default {
       this.$store.dispatch('actionGuard');
       var router = this.$router;
       axios.interceptors.response.use((response) => {
-
         return response
       }, function (error) {
-
         if (error.response.status === 401) {
-         
-              router.push('/login')
+            router.push('/login')
         }
-
         return Promise.reject(error)
       })
     }
