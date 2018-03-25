@@ -8,7 +8,7 @@
 
         <q-toolbar-title>
           Canon Denizli 
-          <div slot="subtitle">Servis Takip v0.1</div>
+          <div slot="subtitle">Servis Takip </div>
         </q-toolbar-title>
         <q-btn 
         v-if="guard=='kendi'"
@@ -24,7 +24,8 @@
 
     <q-layout-drawer v-model="leftDrawerOpen" content-class="bg-grey-2" :content-style="{width: '240px'}">
       <q-list no-border link inset-delimiter v-if="yuklendi">
-        <q-list-header>{{$store.state.auth.guard.name}}</q-list-header>
+        <q-list-header>{{$store.state.auth.guard.name}} <small style="cursor:pointer" @click="$router.push('/logout')">[Çıkış]</small></q-list-header>
+    
         <musteri v-if="guard=='musteri'"/>
         <user v-if="guard=='kendi'"/>
       </q-list>
@@ -67,10 +68,14 @@ export default {
  computed: {
       guard () {
 
+        
         if (this.$store.state.auth.authLoaded)
           this.yuklendi=true;
 
         let role = this.$store.state.auth.guard.userGroup;
+
+        console.log(this.$store.state.auth.guard);
+        
         if (role==='musteri')
           return 'musteri'
         else
@@ -83,6 +88,6 @@ export default {
 
 <style>
 .qitemH {
-  height: 60px;
+  height: 55px;
 }
 </style>

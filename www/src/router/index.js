@@ -24,7 +24,7 @@ Vue.filter('tarih', function (date) {
 })
 const Router = new VueRouter({
 
-  //mode: 'history',
+ // mode: 'history',
   base: process.env.VUE_ROUTER_BASE,
   scrollBehavior: () => ({ y: 0 }),
   routes

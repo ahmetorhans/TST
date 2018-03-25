@@ -128,7 +128,7 @@ class Users extends Controller
     public function userListele()
     {
         if (Guard::yetki('kullanici')->giris !== '1') {
-            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'), 401);
+            return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'));
         }
 
         $users = User::orderBy('id', 'DESC')->where('musteri', '!=', "1")->with('yetkiler')->get();

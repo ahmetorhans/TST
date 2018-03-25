@@ -35,16 +35,17 @@ export default {
       state.isAuthenticated = payload.isAuthenticated;
     },
     mutationGuard(state, data) {
+      state.guard=[];
       state.guard = data.sonuc;
       state.authLoaded=true;
-      console.log("data.sonuc.store");
-      console.log(data.sonuc);
+     
     }
   },
 
   actions: {
     actionGuard(context, payload) {
       axios.get(config.apiUrl + "guard").then(response => {
+        
         context.commit("mutationGuard", { sonuc: response.data });
       });
     },

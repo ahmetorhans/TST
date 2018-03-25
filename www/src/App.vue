@@ -1,8 +1,8 @@
 <template>
   <div id="q-app">
-     <router-view />
-      <q-ajax-bar color="faded"/>
-      
+    <router-view />
+    <q-ajax-bar color="faded" />
+
   </div>
 </template>
 
@@ -11,13 +11,26 @@ import axios from "axios";
 
 export default {
   name: "App",
-  created(){
+  created () {
     this.init();
   },
-  methods:{
-      init(){
-        this.$store.dispatch('actionGuard');
-      }
+  methods: {
+    init () {
+      this.$store.dispatch('actionGuard');
+      var router = this.$router;
+      axios.interceptors.response.use((response) => {
+
+        return response
+      }, function (error) {
+
+        if (error.response.status === 401) {
+         
+              router.push('/login')
+        }
+
+        return Promise.reject(error)
+      })
+    }
   }
 };
 </script>

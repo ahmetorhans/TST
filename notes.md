@@ -28,3 +28,7 @@ tarih
 --cari cihaz ekle
 --cari 
 
+giriş
+--servisler
+--randevular
+

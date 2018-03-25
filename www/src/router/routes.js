@@ -2,6 +2,7 @@ export default [
   {
     path: "/",
     component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
     children: [{ path: "", component: () => import("pages/index") }]
   },
   {
@@ -91,6 +92,10 @@ export default [
   {
     path: "/login",
     component: () => import("pages/login")
+  },
+  {
+    path: "/logout",
+    component: () => import("pages/logout")
   },
 
   {

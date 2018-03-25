@@ -21,14 +21,15 @@
       <q-item-side icon="devices" />
       <q-item-main label="Cihazlar" />
     </q-item>
+     <q-item to="/urunler" class="qitemH">
+      <q-item-side icon="shop" />
+      <q-item-main label="Ürünler" />
+    </q-item>
     <q-item to="/kullanicilar" class="qitemH">
       <q-item-side icon="supervisor_account" />
       <q-item-main label="Kullanıcılar" />
     </q-item>
-    <q-item to="/urunler" class="qitemH">
-      <q-item-side icon="settings" />
-      <q-item-main label="Ürünler" />
-    </q-item>
+   
     <q-item to="/ayarlar" class="qitemH">
       <q-item-side icon="settings" />
       <q-item-main label="Ayarlar" />

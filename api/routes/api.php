@@ -49,6 +49,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('cihazListeleCari/{cari_id}', 'Cihaz@cihazListeleCari');
 
     Route::get('servisListele', 'Servis@servisListele');
+    Route::get('servisListeleKendisi', 'Servis@servisListeleKendisi');
     Route::post('servisKaydet', 'Servis@servisKaydet');
     Route::get('servisSil', 'Servis@servisSil');
     Route::get('servisGetir/{id}', 'Servis@servisGetir');
