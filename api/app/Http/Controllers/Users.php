@@ -236,14 +236,8 @@ class Users extends Controller
 
     public function profilKaydet()
     {
-
-     
-        
-        foreach((array)Request::input('xls') as $k=>$v){
-          
-           $arr[]=$v[0];
-        }
-        return $arr;
+      
+      
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
         $user = User::find($user['id']);

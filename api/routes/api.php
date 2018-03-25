@@ -66,6 +66,13 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('randevuGetir/{id}', 'Randevu@randevuGetir');
     Route::get('listShortRandevu', 'Randevu@listShortRandevu');
     Route::get('listShortRandevuId/{id}', 'Randevu@listShortRandevuId');
+
+    Route::get('urunListele', 'Urun@urunListele');
+    Route::post('urunKaydet', 'Urun@urunKaydet');
+    Route::get('urunSil', 'Urun@urunSil');
+    Route::get('urunGetir/{id}', 'Urun@urunGetir');
+    Route::post('xlsKaydet', 'Urun@xlsKaydet');
+    Route::get('xlsSifirla', 'Urun@xlsSifirla');
  
 });
 

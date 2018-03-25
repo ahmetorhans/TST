@@ -18,8 +18,8 @@ class Urunler extends Migration
             
             $table->string('stok_kodu',30)->nullable();
             $table->string('aciklama')->nullable();
-            $table->string('bayiFiyat',7)->nullable();
-            $table->string('fiyat',7)->nullable();
+            $table->string('bayiFiyat',12)->nullable();
+            $table->string('fiyat',12)->nullable();
             $table->string('marka',50)->nullable();
             $table->string('model',50)->nullable();
             $table->text('ekBilgi')->nullable();

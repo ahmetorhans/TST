@@ -6,8 +6,7 @@
             </div>
             <div class="col-md-9">
                 <div class="layout-padding">
-                    <vue-xlsx-table @on-select-file="handleSelectedFile">ad</vue-xlsx-table>
-                    {{sutunlar}}
+                   
                     <q-field label="Adı Soyadı" :label-width="3">
                         <q-input v-model="currentUser.name" :class="{'has-error': errors.name}" required/>
                         <span class="errMsg" v-if="errors.name">{{ errors.name }}</span>
@@ -91,10 +90,7 @@ const module = {
     },
 
     methods: {
-        handleSelectedFile (convertedData) {
-            console.log(convertedData)
-            this.sutunlar = convertedData.body;
-        },
+       
         getUser () {
             axios
                 .get(this.apiUrl + "profilGetir", this.currentUser)
@@ -135,7 +131,8 @@ const module = {
 
         postData () {
             //currentuser'a yetkileri ata..
-            this.currentUser.xls= this.sutunlar;
+            console.log(this.sutunlar)
+            this.currentUser.xls = this.sutunlar;
             axios
                 .post(this.apiUrl + "profilKaydet", this.currentUser)
                 .then(res => {

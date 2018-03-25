@@ -47,6 +47,12 @@ export default [
     children: [{ path: "", component: () => import("pages/cihaz") }]
   },
   {
+    path: "/urunler/:urun*",
+    component: () => import("layouts/default"),
+    meta: { requiresAuth: true },
+    children: [{ path: "", component: () => import("pages/urun") }]
+  },
+  {
     path: "/ayarlar/",
     component: () => import("layouts/default"),
     meta: { requiresAuth: true },
