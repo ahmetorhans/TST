@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\yetkiDefault;
+use App\Yetkidefault;
 use DB;
 use JWTAuth;
 use Request;
@@ -117,7 +117,7 @@ class Guard extends Controller
 
         $user = User::get();
 
-        $yetkiler = yetkiDefault::all('bolum', 'bolumAdi')->toArray();
+        $yetkiler = \App\Yetkidefault::all('bolum', 'bolumAdi')->toArray();
 
         foreach ($user as $val) {
 
