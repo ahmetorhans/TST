@@ -1,5 +1,7 @@
+let host = 'http://192.168.0.28:8000';
 export default {
-    fileUrl: 'http://192.168.0.12:8000/files/',
-    apiUrl: 'http://192.168.0.12:8000/api/'
+    
+    fileUrl: host + '/files/',
+    apiUrl: host + '/api/'
     
 }
