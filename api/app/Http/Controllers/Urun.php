@@ -142,9 +142,9 @@ class Urun extends Controller
                 $ekle->fill($kayit)->save();
 
             } else {
-                if ($urun['otoKayit'] == '1') {
+                
                     $urun->fill($kayit)->save();
-                }
+                
 
             }
         }
