@@ -28,6 +28,8 @@ class CreateYetkidefaultsTable extends Migration
         DB::table('yetkidefaults')->insert(array('bolum'=>'rapor','bolumAdi'=>'Raporlar'));
         DB::table('yetkidefaults')->insert(array('bolum'=>'cihaz','bolumAdi'=>'Cihazlar'));
         DB::table('yetkidefaults')->insert(array('bolum'=>'servis','bolumAdi'=>'Servisler'));
+        DB::table('yetkidefaults')->insert(array('bolum'=>'randevu','bolumAdi'=>'Randevular'));
+        DB::table('yetkidefaults')->insert(array('bolum'=>'urun','bolumAdi'=>'Ürünler'));
     }
 
     /**
