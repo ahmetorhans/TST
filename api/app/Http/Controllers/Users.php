@@ -262,4 +262,22 @@ class Users extends Controller
         //kullanıcımızı oluşturalım.
         return response()->json(array('status' => true, 'msg' => 'İşlem Tamam'));
     }
+
+    public function bildirimToken($token)
+    {
+
+        $user = Request::get('gUser');
+
+        if ($user['id']){
+            $userUpdate = User::find($user['id']);
+            $userUpdate->bildirimToken = $token;
+            $userUpdate->save();
+            return response()->json(array('status' => true, 'msg' => 'Kayıt eklendi'));
+        }
+
+        
+
+        
+        return response()->json(array('status' => false, 'msg' => 'Token kaydetme hatası'));
+    }
 }

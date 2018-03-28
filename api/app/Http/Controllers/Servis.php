@@ -35,20 +35,8 @@ class Servis extends Controller
         if (isset($sonuc['id'])) {
             return $this->servisGuncelle();
         }
-        $mail['aciklama'] = isset($sonuc['aciklama']) ? $sonuc['aciklama'] : '';
-        $mail['sikayet'] = isset($sonuc['sikayet']) ? $sonuc['sikayet'] : '';
-        $mail['cari'] = \App\Cari::find($sonuc['cari_id'])->first(['adi', 'yetkili']);
-        $mail['cihaz'] = array();
-        if (!empty($sonuc['cihaz_id'])) {
-            $mail['cihaz'] = \App\Cihaz::find($sonuc['cihaz_id'])->first();
-        }
-        if (Request::get('gUser')->musteri === '1') {
-            Mail::send('servisMail', $mail, function ($message) {
-                $message->to('ahmetariforhan@gmail.com', '')->subject
-                    ('Servis Talebi');
-                $message->from('send@wmatik.com', 'Servis Takip');
-            });
-        }
+
+        
 
         $validator = Validator::make(Request::all(), [
             'cari_id' => 'required',
@@ -78,6 +66,29 @@ class Servis extends Controller
         $islem->aciklama = 'Sistem tarafından eklendi';
         $islem->user = $user->name;
         $islem->save();
+
+        if (Request::get('gUser')->musteri === '1') {
+            $mail['aciklama'] = isset($sonuc['aciklama']) ? $sonuc['aciklama'] : '';
+            $mail['sikayet'] = isset($sonuc['sikayet']) ? $sonuc['sikayet'] : '';
+            $mail['cari'] = \App\Cari::where('id', $sonuc['cari_id'])->first(['adi', 'yetkili']);
+            $mail['cihaz'] = array();
+            if (!empty($sonuc['cihaz_id'])) {
+                $mail['cihaz'] = \App\Cihaz::find($sonuc['cihaz_id'])->first();
+            }
+
+            $sendto = \App\User::where('role', 'super')->first();
+
+            if ($sendto['bildirimToken']) {
+                $this->sendNot($sendto['bildirimToken'], $servis->id, $mail['cari']['adi'] . ' ' . $mail['aciklama']);
+            }
+          //  $sendto->email = 'ahmetorhans@gmail.com';
+            
+            Mail::send('servisMail', $mail, function ($message) use ($sendto) {
+                $message->to($sendto['email'], '')->subject
+                    ('Servis Talebi');
+                $message->from('send@wmatik.com', 'Servis Takip');
+            });
+        }
 
         return response()->json(array('status' => true, 'islemler' => $islem, 'msg' => 'Kayıt eklendi'));
     }
@@ -180,14 +191,11 @@ class Servis extends Controller
                 leftJoin('cihazs', 'servis.cihaz_id', '=', 'cihazs.id')
                 ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
                 ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
-                ->where('teknisyen',Request::get('gUser')->id)
+                ->where('teknisyen', Request::get('gUser')->id)
                 ->orderBy('id', 'DESC')
                 ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id']);
         }
 
-
-
-       
         return response()->json($servisler);
     }
 
@@ -309,6 +317,46 @@ class Servis extends Controller
         $islem->fill($sonuc)->save();
 
         return response()->json(array('status' => true, 'msg' => 'Kayıt eklendi', 'islemSonuc' => $islem));
+    }
+    private function sendNot($registrationIds, $servisId, $mesaj)
+    {
+
+        define('API_ACCESS_KEY', 'AAAAG-jSIgA:APA91bFgEXQj4mGNkegraQGDrbrAbgss_XqP5feX4OSFKcC0yKcyAqy2HpniVbt5NA1kRaL7jUPzBytArC7NOiE5OCl_bQP7sIesRrCew1vxz1gPEBGx22b489sEwwrxCtjsc_w6RTrJ');
+
+        $msg = array
+            (
+            'body' => $mesaj,
+            'title' => 'Servis Talebi',
+            'icon' => 'icon',
+            'sound' => 'mySound', 
+        );
+        $data = array(
+            "id" => $servisId,
+        );
+        $fields = array
+            (
+            'to' => $registrationIds,
+            'notification' => $msg,
+            'data' => $data,
+        );
+
+        $headers = array
+            (
+            'Authorization: key=' . API_ACCESS_KEY,
+            'Content-Type: application/json',
+        );
+#Send Reponse To FireBase Server
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
+
     }
 
 }

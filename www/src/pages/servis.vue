@@ -88,15 +88,12 @@ const module = {
   },
 
   created () {
-    // this.getRole();
-
     this.getList();
-
+   
   },
 
   methods: {
 
-   
     //servisDuzelt component'den gelen datalar
     servisEmit (val) {
       //this.modal = false;
@@ -224,7 +221,7 @@ const module = {
 
   computed: {
     guard () {
- 
+
       return this.$store.state.auth.guard.servis;
     },
     //filter list..

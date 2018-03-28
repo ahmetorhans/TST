@@ -31,6 +31,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('profilGetir','Users@profilGetir');
     Route::post('profilKaydet','Users@profilKaydet');
     Route::get('guard', 'Users@guard');
+    Route::get('bildirimToken/{token}', 'Users@bildirimToken');
     
     Route::post('upload', 'Upload@uploadFile');
 

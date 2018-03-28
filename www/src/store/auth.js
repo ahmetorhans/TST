@@ -44,6 +44,8 @@ export default {
 
   actions: {
     actionGuard(context, payload) {
+
+      
       axios.get(config.apiUrl + "guard").then(response => {
         
         context.commit("mutationGuard", { sonuc: response.data });

@@ -137,7 +137,7 @@ module.exports = function (ctx) {
       }
     },
     cordova: {
-      // id: 'org.cordova.quasar.app'
+       id: 'com.wmatik.tst'
     },
     electron: {
       extendWebpack (cfg) {

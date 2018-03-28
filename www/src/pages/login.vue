@@ -27,6 +27,7 @@
   </q-layout>
 </template>
 <script>
+import axios from "axios";
 import notify from './notify';
 export default {
   data () {
@@ -36,13 +37,31 @@ export default {
     };
   },
   methods: {
+    getToken () {
+      var apiUrl = this.apiUrl             
+      if (this.$q.platform.is.cordova) {
+        window.FirebasePlugin.getToken(function (token) {
+        
+           localStorage.setItem('bToken',token);
+           axios
+            .get(apiUrl + "bildirimToken/"+token)
+            .then(response => {
+            })
+            .catch(e => {
+              alert("Bildirim token hatası.."+ e);
+            });
+        }, function (error) {
+          alert('Bildirim Token Hatası :' + JSON.stringify(error));
+        });
+      }
+    },
     login: function () {
       let user = {
         email: this.email,
         password: this.password
       }
       if (!this.email || !this.password) {
-        notify("eposta ve parola gerekli", true);
+        notify("Eposta ve Parola gerekli", true);
         return
       }
 
@@ -50,6 +69,7 @@ export default {
         if (res.status === false) {
           notify(res.msg, true);
         } else if (res.token) {
+          this.getToken();
           this.$store.dispatch('actionGuard');
           this.$router.push('/');
 

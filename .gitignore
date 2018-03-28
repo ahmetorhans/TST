@@ -11,6 +11,7 @@
 /www/package.json
 
 /www/src-cordova
+/www/src-cordova c
 /www/src-electron
 .idea
 .vscode
