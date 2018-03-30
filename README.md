@@ -1,10 +1,11 @@
+Api 
 
-cd web
-quasar dev
+v1.0.1
+    -   Upload image size
 
+www 
 
-
-cd api
-php artisan serve
-
+v1.0.1
+    -   cordova notification.
+    -   cordova app icon
 

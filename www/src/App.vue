@@ -13,14 +13,18 @@ export default {
   name: "App",
   created () {
     this.init();
-    var router = this.$router;
-    window.FirebasePlugin.onNotificationOpen(function (notification) {
-      if (notification.id) {
-        router.push('servisler/servis/' + notification.id);
-      }
-    }, function (error) {
-      //alert(JSON.stringify(error));
-    });
+
+    //cordova notificaitom varsa yönlendir.
+    if (this.$q.platform.is.cordova) {
+      var router = this.$router;
+      window.FirebasePlugin.onNotificationOpen(function (notification) {
+        if (notification.id) {
+          router.push('servisler/servis/' + notification.id);
+        }
+      }, function (error) {
+        //alert(JSON.stringify(error));
+      });
+    }
   },
   methods: {
 
