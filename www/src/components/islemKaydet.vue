@@ -57,7 +57,7 @@ const module = {
         },
         {
           correctOrientation: true,
-          quality: 25,
+          quality: 30,
           destinationType: navigator.camera.DestinationType.DATA_URL,
           sourceType: navigator.camera.PictureSourceType.CAMERA
         }
