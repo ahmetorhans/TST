@@ -3,7 +3,7 @@
     <q-tabs color="faded" inverted no-pane-border>
       <q-tab alert default slot="title" name="tab-1" label="Servis" />
       <q-tab slot="title" name="tab-2" label="İşlemler" />
-      <q-tab  slot="title" name="tab-3" label="Özet" />
+      <q-tab slot="title" name="tab-3" label="Özet" />
 
       <!-- tab servis -->
       <q-tab-pane name="tab-1">
@@ -132,7 +132,12 @@
                   <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
                   <div class="col-md-2 listCol">{{item.user}} </div>
                   <div class="col-md-7 listCol">{{item.aciklama}} </div>
-                  <div v-if="item.photo" class="col-md-1 listCol"><a :href="fileUrl+'/'+item.photo" target="_blank"><q-icon name="assignment" size="20px"/></a> </div>
+                 
+                  <div v-if="item.photo" class="col-md-1 listCol">
+                    <a :href="fileUrl+'/'+item.photo" target="_blank">
+                      <q-icon name="assignment" size="20px" />
+                    </a>
+                  </div>
                 </div>
               </q-item-tile>
             </q-item-main>
@@ -150,7 +155,9 @@
             <table class="greyGridTable">
               <tr>
                 <td width="30%">Link</td>
-                <td> <a style="cursor:pointer" @click="$router.push('/servisid/'+currentServis.key)">{{currentServis.key}}</a></td>
+                <td>
+                  <a style="cursor:pointer" @click="$router.push('/servisid/'+currentServis.key)">{{currentServis.key}}</a>
+                </td>
               </tr>
               <tr>
                 <td width="30%">İşlem Durumu</td>
@@ -289,11 +296,11 @@
           <q-toolbar-title>Cihaz Seç</q-toolbar-title>
           <q-btn flat round dense @click="cihazListModal = false" wait-for-ripple icon="close" />
         </q-toolbar>
-         <cihaz-list v-if="currentServis.cari_id" :cari_id="currentServis.cari_id" @cihazListEmit="cihazListEmit" />
+        <cihaz-list v-if="currentServis.cari_id" :cari_id="currentServis.cari_id" @cihazListEmit="cihazListEmit" />
       </q-modal-layout>
     </q-modal>
 
-    <q-modal v-model="islemModal" :content-css="{ zIndex:'99999',minWidth: '50vw', minHeight:'280px'}">
+    <q-modal v-model="islemModal" :content-css="{ zIndex:'99999',minWidth: '50vw', minHeight:'360px'}">
       <q-modal-layout>
         <q-toolbar color="faded" inverted>
           <q-toolbar-title>İşlem Kaydet</q-toolbar-title>
@@ -332,18 +339,24 @@ const module = {
       islemModal: false,
 
       currentServis: {},
-   
 
-      islemDurumlari: []
+
+      islemDurumlari: [],
+
+      imageSrc: ''
     };
   },
+  mounted () {
+    document.addEventListener('deviceready', this.onDeviceReady, false)
 
+  },
   created () {
     /*this.getRole();
     this.getTeknisyen();
     this.getServis();
     this.getIslemDurumlari();
 */
+
     this.servisInit();
     this.getServis();
     this.currentServis.get_cari = [];
@@ -355,6 +368,11 @@ const module = {
   },
 
   methods: {
+    onDeviceReady () {
+
+    },
+
+    
     formatDate (date) {
       if (!date)
         return
@@ -377,7 +395,7 @@ const module = {
             .then((response) => {
               let index = this.currentServis.get_islem.findIndex(x => x.id === id);
               this.currentServis.get_islem.splice(index, 1);
-              
+
             })
             .catch({})
         });
@@ -391,17 +409,17 @@ const module = {
         .then(response => {
           this.teknisyen = response.data.teknisyenler;
           this.islemDurumlari = response.data.islemDurumlari;
-          
 
-         /* if (response.data.yetkiler.original.role == "super") {
-            response.data.yetkiler.original.giris = "1";
-            response.data.yetkiler.original.yeni = "1";
-            response.data.yetkiler.original.duzelt = "1";
-            response.data.yetkiler.original.sil = "1";
-          }
-          this.guard = response.data.yetkiler.original;
-          */
-          
+
+          /* if (response.data.yetkiler.original.role == "super") {
+             response.data.yetkiler.original.giris = "1";
+             response.data.yetkiler.original.yeni = "1";
+             response.data.yetkiler.original.duzelt = "1";
+             response.data.yetkiler.original.sil = "1";
+           }
+           this.guard = response.data.yetkiler.original;
+           */
+
         })
         .catch(e => {
           this.errors.push(e);
@@ -486,10 +504,10 @@ const module = {
       console.log(val);
       this.currentServis.cihaz_id = val.id;
       this.currentServis.cihazAdi = val.adi;
-      this.currentServis.get_cihaz.adi= val.adi;
-      this.currentServis.get_cihaz.marka= val.marka;
-      this.currentServis.get_cihaz.model= val.model;
-      this.currentServis.get_cihaz.serino= val.serino;
+      this.currentServis.get_cihaz.adi = val.adi;
+      this.currentServis.get_cihaz.marka = val.marka;
+      this.currentServis.get_cihaz.model = val.model;
+      this.currentServis.get_cihaz.serino = val.serino;
       this.cihazListModal = false;
     },
 
@@ -553,7 +571,7 @@ const module = {
         axios
           .get(this.apiUrl + "listShortCihazId/" + this.currentServis.cari_id)
           .then(response => {
-            
+
             this.cihazList = response.data;
             this.cihazAraComplete(terms, done);
           })
@@ -583,7 +601,7 @@ const module = {
         arr.push({
           label: e.adi,
           value: e.id,
-          sublabel: 'Marka : ' + e.marka + "  " + e.model + " Lokasyon: " + e.lokasyon +' SeriNo: '+ e.serino
+          sublabel: 'Marka : ' + e.marka + "  " + e.model + " Lokasyon: " + e.lokasyon + ' SeriNo: ' + e.serino
         });
       });
 
@@ -613,7 +631,7 @@ const module = {
             .then(response => {
               if (response.data.status === true) {
                 this.$emit("servisSilEmit", id);
-                 this.$router.push("/servisler");
+                this.$router.push("/servisler");
                 notify(response.data.msg);
               } else {
                 notify(response.data.msg, true);
@@ -658,7 +676,7 @@ const module = {
 
   computed: {
     guard () {
-       return this.$store.state.auth.guard.servis;
+      return this.$store.state.auth.guard.servis;
     },
     kaydetBtn () {
       if (this.currentServis.id) {

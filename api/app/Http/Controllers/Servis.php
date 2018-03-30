@@ -8,7 +8,8 @@ use Mail;
 //use Illuminate\Http\Request as Req;
 use Request;
 use Validator;
-
+use Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 class Servis extends Controller
 {
 
@@ -308,12 +309,20 @@ class Servis extends Controller
             return response()->json(array('status' => false, 'msg' => $e));
         }
 
+        
         $islem = new \App\Islem;
         $islem->tarih = date('Y-m-d');
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
         $islem->user = $user->name;
-
+        if (Request::input('cameraPhoto')){
+            $url = "cam-".time().".jpg";
+            $path = public_path('/app/files/'. $url);
+            Image::make(file_get_contents(Request::input('cameraPhoto')))->resize(1000, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($path,75);   
+           $islem->photo=$url;
+        }
         $islem->fill($sonuc)->save();
 
         return response()->json(array('status' => true, 'msg' => 'Kayıt eklendi', 'islemSonuc' => $islem));

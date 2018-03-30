@@ -41,8 +41,7 @@ export default {
       var apiUrl = this.apiUrl             
       if (this.$q.platform.is.cordova) {
         window.FirebasePlugin.getToken(function (token) {
-        
-           localStorage.setItem('bToken',token);
+          localStorage.setItem('bToken',token);
            axios
             .get(apiUrl + "bildirimToken/"+token)
             .then(response => {

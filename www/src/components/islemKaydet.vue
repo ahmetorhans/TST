@@ -12,7 +12,10 @@
 
       <q-field label="Fotoğraf" :label-width="3" class="fip">
         <q-uploader :url="url" auto-expand @uploaded="postUpload" :headers="headers" ref="uploader" />
-       
+        <div v-if="$q.platform.is.cordova">
+          <q-btn name="Kamera" @click.native="getPicture()" label="camera" icon="photo_camera"/>
+          <img :src="imageSrc" style="width:85%">
+        </div>
       </q-field>
 
       <q-field class="fip">
@@ -30,28 +33,49 @@ const module = {
   props: ["servisId"],
   data () {
     return {
-       url: this.apiUrl + "upload",
+      url: this.apiUrl + "upload",
       headers: {
         Authorization:
           "Bearer " + localStorage.getItem("vue-authenticate.vueauth_token")
       },
 
       currentIslem: {},
-      errors: {}
+      errors: {},
+      imageSrc: ''
     };
   },
 
   methods: {
-     postUpload (file, xhr) {
+    getPicture: function () {
+      navigator.camera.getPicture(
+        data => {
+          //this.imageSrc = data
+          this.imageSrc = `data:image/jpeg;base64,${data}`
+        },
+        () => {
+          this.$q.notify('Kameraya erişilemedi !')
+        },
+        {
+          correctOrientation: true,
+          quality: 25,
+          destinationType: navigator.camera.DestinationType.DATA_URL,
+          sourceType: navigator.camera.PictureSourceType.CAMERA
+        }
+      )
+
+
+    },
+    postUpload (file, xhr) {
       let sonuc = JSON.parse(xhr.response);
-      console.log(sonuc);
       if (sonuc.status === true) {
         this.currentIslem.photo = sonuc.file;
       }
     },
     islemKaydet () {
+      if (this.imageSrc) {
+        this.currentIslem.cameraPhoto = this.imageSrc;
+      }
       this.currentIslem.servis_id = this.servisId;
-
       axios
         .post(this.apiUrl + "islemKaydet", this.currentIslem)
         .then(res => {
@@ -61,8 +85,6 @@ const module = {
           } else {
             this.errors = {};
             notify(res.data.msg);
-            console.info("asdasda")
-            console.log(res.data)
             this.$emit("islemKaydetEmit", res.data.islemSonuc);
           }
         })

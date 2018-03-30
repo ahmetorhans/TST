@@ -89,7 +89,8 @@ const module = {
 
   created () {
     this.getList();
-   
+ 
+
   },
 
   methods: {

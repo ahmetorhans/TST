@@ -14,5 +14,7 @@ line 51:  stringsXml: fileExists(ANDROID_DIR + '/app/src/main/res/values/strings
 <br />
 <preference name="android-targetSdkVersion" value="20" />
 <br />
-plugin : cordova-plugin-firebase" spec="^0.1.25" 
+plugins : 
+cordova-plugin-firebase
+cordova-plugin-camera
 
