@@ -7,28 +7,12 @@ remote add user pass<br />
 git remote set-url origin https://USERNAME:PASSWORD@bitbucket.org/path/to/repo.git<br /><br />
 
 <br /><br />
+Cordova
 
-git pull origin master --allow-unrelated-histories
-
-+--cihaz : lokasyon ekle
-+--cihaz  : sözleşme tarihi
-+--servis : cihaz ara. serino ve lokasyon ekle
-+--servis : işlem ekle. dosya yükle.
-+--pazarlamacı. 
-firma
-yetkili
-açıklama
-tarih
-
---şifremi unuttum
-+--cari giriş
---cari servis liste
---cari servis ekle
---cari cihaz listele
---cari cihaz ekle
---cari 
-
-giriş
---servisler
---randevular
+C:\PROJECT\tst\www\src-cordova\plugins\cordova-plugin-firebase\scripts
+line 51:  stringsXml: fileExists(ANDROID_DIR + '/app/src/main/res/values/strings.xml') ? ANDROID_DIR + '/app/src/main/res/values/strings.xml' : ANDROID_DIR + '/res/values/strings.xml'
+<br />
+<preference name="android-targetSdkVersion" value="20" />
+<br />
+plugin : cordova-plugin-firebase" spec="^0.1.25" 
 

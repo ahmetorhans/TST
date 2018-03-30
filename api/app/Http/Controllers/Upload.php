@@ -16,7 +16,7 @@ class Upload extends Controller
      * Upload file
      *
      * @param Request $request
-     * @return json
+     * @return json array
      */
     public function uploadFile(Request $request){
         
