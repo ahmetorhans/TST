@@ -1,5 +1,7 @@
 <template>
+
   <q-page v-if="guard.giris==='1'">
+  
     <q-modal v-model="modal" :content-css="{ minWidth: '65vw', minHeight:'90vh'}">
       <q-modal-layout>
 
@@ -57,7 +59,8 @@
 
         <q-toolbar slot="header" color="secondary">
           <q-toolbar-title>Ayarlar</q-toolbar-title>
-          <q-btn flat round dense @click="ayarModal = false" wait-for-ripple icon="close" />
+          
+          <q-btn  flat round dense @click="ayarModal = false" wait-for-ripple icon="close" />
 
         </q-toolbar>
         <div class="layout-padding">
@@ -96,7 +99,7 @@
 
         <q-toolbar slot="header" color="faded">
           <q-toolbar-title>Ürünler</q-toolbar-title>
-          <q-btn flat round dense @click="ayarModal = !ayarModal" wait-for-ripple icon="settings" />
+          <q-btn v-if="guard.role==='super' || guard.role==='admin'" flat round dense @click="ayarModal = !ayarModal" wait-for-ripple icon="settings" />
           <q-btn v-if="guard.yeni==='1'" flat round dense @click="yeniUrun()" wait-for-ripple icon="add" />
 
         </q-toolbar>
