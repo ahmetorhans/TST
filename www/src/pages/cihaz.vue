@@ -131,7 +131,7 @@
                   <div class="col-md-1 listCol desktop-only">{{item.id}} </div>
                   <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
                   <div class="col-md-2 listCol">{{item.serino}} </div>
-                  <div class="col-md-5 listCol">{{item.aciklama}} </div>
+                  <div class="col-md-5 listCol">{{item.aciklama}} <span v-if="item.lokasyon" > <br /> [Lokasyon]  {{item.lokasyon}}</span> </div>
                   <div class="col-md-2 listCol">{{item.cariAdi}} </div>
                 </div>
               </q-item-tile>

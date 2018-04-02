@@ -103,13 +103,13 @@
 
         <q-search v-model="filterText" :debounce="600" placeholder="Cari Adı, Yetkili" icon="search" float-label="Ara" />
 
-        <q-list highlight inset-separator>
-          <q-item v-for="item of filteredData.slice(0,100)" :key="item.id">
+        <q-list highlight inset-separator >
+          <q-item v-for="item of filteredData.slice(0,100)" :key="item.id" style="padding:15px" >
             <q-item-side left icon="person_pin" />
 
             <q-item-main :label=item.adi label-lines="1" sublabel-lines="3" dense @click.native="rowClick(item.id)">
 
-              <q-item-tile sublabel>{{item.yetkili}}</q-item-tile>
+              <q-item-tile sublabel >{{item.yetkili}}</q-item-tile>
             </q-item-main>
             <q-item-side right></q-item-side>
           </q-item>

@@ -101,13 +101,13 @@ class Cihaz extends Controller
                 leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
                 ->where('caris.user_id', Request::get('gUser')->id)
                 ->orderBy('cihazs.id', 'DESC')
-                ->get(['cihazs.id', 'cihazs.adi', 'marka', 'model', 'serino', 'cihazs.aciklama', 'caris.adi as cariAdi', 'barkod', 'caris.id as cari_id', 'musteriKaydi']);
+                ->get(['cihazs.id', 'cihazs.adi', 'marka', 'model', 'serino', 'cihazs.aciklama', 'caris.adi as cariAdi', 'barkod', 'caris.id as cari_id', 'musteriKaydi','lokasyon']);
 
         } else {
             $cihaz = \App\Cihaz::
                 leftJoin('caris', 'cihazs.cari_id', '=', 'caris.id')
                 ->orderBy('cihazs.id', 'DESC')
-                ->get(['cihazs.id', 'cihazs.adi', 'marka', 'model', 'serino', 'cihazs.aciklama', 'caris.adi as cariAdi', 'barkod', 'caris.id as cari_id', 'musteriKaydi']);
+                ->get(['cihazs.id', 'cihazs.adi', 'marka', 'model', 'serino', 'cihazs.aciklama', 'caris.adi as cariAdi', 'barkod', 'caris.id as cari_id', 'musteriKaydi','lokasyon']);
 
         }
 

@@ -2,8 +2,8 @@
   <div class="q-pa-sm" v-if="guard.giris==='1'">
     <q-tabs color="faded" inverted no-pane-border>
       <q-tab alert default slot="title" name="tab-1" label="Servis" />
-      <q-tab slot="title" name="tab-2" label="İşlemler" />
-      <q-tab slot="title" name="tab-3" label="Özet" />
+      <q-tab v-if="currentServis.id" slot="title" name="tab-2" label="İşlemler" />
+      <q-tab v-if="currentServis.id" slot="title" name="tab-3" label="Özet" />
 
       <!-- tab servis -->
       <q-tab-pane name="tab-1">
