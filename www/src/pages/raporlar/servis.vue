@@ -55,8 +55,7 @@ export default {
       pagination: {
         rowsPerPage: 50
       },
-      visibleColumns: ['id', 'cariAdi','marka','aciklama','model','tarih','islemDurumLabel'],
-
+      visibleColumns: ['id', 'cariAdi','marka','aciklama','model','serino','tarih','islemDurumLabel','lokasyon','garantiTarih'],
       columns: [
         {
           label: "No",
@@ -87,6 +86,13 @@ export default {
           sortable: true,
           align: "left"
         },
+         {
+          label: "Seri no",
+          name: "serino",
+          field: "serino",
+          sortable: true,
+         align: "left"
+        },
         {
           label: "Açıklama",
           name: "aciklama",
@@ -103,6 +109,23 @@ export default {
           date: true,
           align: "left"
         },
+         {
+          label: "Garanti Tarih",
+          name: "garantiTarih",
+          field: "garantiTarih",
+          sortable: true,
+          date: true,
+          align: "left"
+        },
+         {
+          label: "Lokasyon",
+          name: "lokasyon",
+          field: "lokasyon",
+          sortable: true,
+         
+          align: "left"
+        },
+        
         {
           label: "Durum",
           name: "islemDurumLabel",
@@ -139,6 +162,13 @@ export default {
         .then(response => {
           console.log(response.data);
           this.islemDurumlari = response.data;
+          let garanti = {
+            id:99,
+            label:'Garantisi Bitenler',
+            value:99
+          }
+          this.islemDurumlari.push(garanti);
+         
         })
         .catch(e => {
           console.log(e);
@@ -208,6 +238,17 @@ export default {
     filteredData () {
       if (!this.grupFilter)
         return this.servisler;
+
+      if (this.grupFilter=='99'){
+        return this.servisler.filter(p => {
+          if (!p.garantiTarih)
+          return
+          let d = new Date(p.garantiTarih);
+           return (
+           d < Date.now()
+        );
+      });
+      } 
       return this.servisler.filter(p => {
         return (
           p.islemDurumu == this.grupFilter

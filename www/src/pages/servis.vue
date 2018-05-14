@@ -33,10 +33,12 @@
               <q-item-tile label> {{item.cariAdi}}</q-item-tile>
               <q-item-tile sublabel>
                 <div class="row">
+               
                   <div class="col-md-1 listCol">{{item.id}} </div>
                   <div class="col-md-2 listCol">{{item.marka}} {{item.model}} </div>
                   <div class="col-md-2 listCol">{{item.serino}} </div>
-                  <div class="col-md-3 listCol">{{item.aciklama}} </div>
+                  <div class="col-md-3 listCol">{{item.aciklama}} <span v-if='item.lokasyon'> [Lokasyon]  {{item.lokasyon}}</span> </div>
+                    
                   <div class="col-md-2 listCol">{{item.tarih | tarih}} </div>
                   <div class="col-md-2 listCol">{{item.islemDurumLabel}} </div>
                 </div>

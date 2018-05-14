@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Guard;
+use Intervention\Image\ImageManagerStatic as Image;
 use JWTAuth;
-use Mail;
 //use Illuminate\Http\Request as Req;
+use Mail;
 use Request;
 use Validator;
-use Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+
 class Servis extends Controller
 {
 
@@ -36,8 +36,6 @@ class Servis extends Controller
         if (isset($sonuc['id'])) {
             return $this->servisGuncelle();
         }
-
-        
 
         $validator = Validator::make(Request::all(), [
             'cari_id' => 'required',
@@ -73,6 +71,7 @@ class Servis extends Controller
             $mail['sikayet'] = isset($sonuc['sikayet']) ? $sonuc['sikayet'] : '';
             $mail['cari'] = \App\Cari::where('id', $sonuc['cari_id'])->first(['adi', 'yetkili']);
             $mail['cihaz'] = array();
+
             if (!empty($sonuc['cihaz_id'])) {
                 $mail['cihaz'] = \App\Cihaz::find($sonuc['cihaz_id'])->first();
             }
@@ -82,8 +81,7 @@ class Servis extends Controller
             if ($sendto['bildirimToken']) {
                 $this->sendNot($sendto['bildirimToken'], $servis->id, $mail['cari']['adi'] . ' ' . $mail['aciklama']);
             }
-          //  $sendto->email = 'ahmetorhans@gmail.com';
-            
+
             Mail::send('servisMail', $mail, function ($message) use ($sendto) {
                 $message->to($sendto['email'], '')->subject
                     ('Servis Talebi');
@@ -136,6 +134,32 @@ class Servis extends Controller
             $islem->aciklama = 'Sistem tarafından eklendi';
             $islem->user = $user->name;
             $islem->save();
+
+            //mail at
+
+            $cari = \App\Cari::where('id', $input['cari_id'])->first();
+            if (!empty($cari->eposta)) {
+                $mail['aciklama'] = isset($input['aciklama']) ? $input['aciklama'] : '';
+                $mail['sikayet'] = isset($input['sikayet']) ? $input['sikayet'] : '';
+                $mail['islemAdi'] =  isset($adi->label) ? $adi->label : '';
+                $mail['cari'] = $cari;//\App\Cari::where('id', $input['cari_id'])->first(['adi', 'yetkili']);
+                $mail['cihaz'] = array();
+
+                if (!empty($input['cihaz_id'])) {
+                    $mail['cihaz'] = \App\Cihaz::find($input['cihaz_id'])->first();
+                }
+
+                $sendto = \App\User::where('role', 'super')->first();
+             
+
+                Mail::send('servisMusteri', $mail, function ($message) use ($sendto,$cari) {
+                    $message->to($cari['eposta'], '')->subject
+                        ('Servis İşlemi');
+                    $message->from('send@wmatik.com', 'Servis Takip');
+                });
+            }
+
+            //mail at--
         }
         $servis->fill($input)->save();
 
@@ -158,7 +182,7 @@ class Servis extends Controller
                 ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
                 ->where('caris.user_id', Request::get('gUser')->id)
                 ->orderBy('id', 'DESC')
-                ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id']);
+                ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id', 'cihazs.lokasyon', 'cihazs.garantiTarih']);
         } else {
             if (Guard::yetki('servis')->giris !== '1') {
                 return response()->json(array('status' => false, 'guard' => false, 'msg' => 'Erişim yok!'));
@@ -168,7 +192,7 @@ class Servis extends Controller
                 ->leftJoin('caris', 'servis.cari_id', '=', 'caris.id')
                 ->leftJoin('durum', 'servis.islemDurumu', '=', 'durum.value')
                 ->orderBy('id', 'DESC')
-                ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id']);
+                ->get(['servis.id', 'caris.adi AS cariAdi', 'caris.telefon', 'cihazs.adi', 'cihazs.model', 'cihazs.serino', 'cihazs.marka', 'servis.aciklama', 'servis.islemDurumu', 'durum.label as islemDurumLabel', 'durum.icon', 'servis.tarih', 'caris.id as cari_id', 'cihazs.lokasyon', 'cihazs.garantiTarih']);
         }
 
         return response()->json($servisler);
@@ -309,19 +333,18 @@ class Servis extends Controller
             return response()->json(array('status' => false, 'msg' => $e));
         }
 
-        
         $islem = new \App\Islem;
         $islem->tarih = date('Y-m-d');
         $access_token = Request::header('Authorization');
         $user = JWTAuth::toUser(substr($access_token, 7));
         $islem->user = $user->name;
-        if (Request::input('cameraPhoto')){
-            $url = "cam-".time().".jpg";
-            $path = public_path('/app/files/'. $url);
+        if (Request::input('cameraPhoto')) {
+            $url = "cam-" . time() . ".jpg";
+            $path = public_path('/app/files/' . $url);
             Image::make(file_get_contents(Request::input('cameraPhoto')))->resize(1000, null, function ($constraint) {
                 $constraint->aspectRatio();
-            })->save($path,75);   
-           $islem->photo=$url;
+            })->save($path, 75);
+            $islem->photo = $url;
         }
         $islem->fill($sonuc)->save();
 
@@ -337,7 +360,7 @@ class Servis extends Controller
             'body' => $mesaj,
             'title' => 'Servis Talebi',
             'icon' => 'icon',
-            'sound' => 'mySound', 
+            'sound' => 'mySound',
         );
         $data = array(
             "id" => $servisId,

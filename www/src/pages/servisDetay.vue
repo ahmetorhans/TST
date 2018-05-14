@@ -43,7 +43,7 @@
                 <div class="col-xs-11">
                   <q-field label="Cihaz Seçin" :label-width="3" class="fip">
                     <q-search v-model="currentServis.cihazAdi" placeholder="Cihaz adı, Seri No" ref="cihazAdi">
-                      <q-autocomplete @search="cihazAra" @selected="cihazAraSelected" />
+                      <q-autocomplete max-results='999' @search="cihazAra" @selected="cihazAraSelected" />
                     </q-search>
                     <span class="errMsg" v-if="errors.cihaz_id">{{ errors.cihaz_id }}</span>
                   </q-field>
@@ -92,6 +92,9 @@
                   <q-field label="Açıklama" :label-width="3" class="fip">
                     <q-input type="textarea" v-model="currentServis.aciklama" />
                   </q-field>
+                  <q-field label="Tarih" :label-width="6" class="fip">
+                    <q-datetime v-model="currentServis.tarih" type="date" />
+                  </q-field>
                   <q-field class="fip">
                     <q-btn color="secondary" @click="submit" v-if="kaydetBtn">Kaydet</q-btn>
                     <q-btn align="right" v-if="guard.sil=='1'" color="negative" @click="sil(currentServis.id)" icon="delete"></q-btn>
@@ -132,7 +135,7 @@
                   <div class="col-md-2 listCol">{{formatDate(item.tarih)}} </div>
                   <div class="col-md-2 listCol">{{item.user}} </div>
                   <div class="col-md-7 listCol">{{item.aciklama}} </div>
-                 
+
                   <div v-if="item.photo" class="col-md-1 listCol">
                     <a :href="fileUrl+'/'+item.photo" target="_blank">
                       <q-icon name="assignment" size="20px" />
@@ -372,7 +375,7 @@ const module = {
 
     },
 
-    
+
     formatDate (date) {
       if (!date)
         return

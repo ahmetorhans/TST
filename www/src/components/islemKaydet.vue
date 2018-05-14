@@ -9,11 +9,14 @@
       <q-field label="Açıklama" :label-width="3" class="fip">
         <q-input type="textarea" v-model="currentIslem.aciklama" />
       </q-field>
+      <q-field label="Tarih" :label-width="6" class="fip">
+        <q-datetime v-model="currentIslem.tarih" type="date" />
+      </q-field>
 
       <q-field label="Fotoğraf" :label-width="3" class="fip">
         <q-uploader :url="url" auto-expand @uploaded="postUpload" :headers="headers" ref="uploader" />
         <div v-if="$q.platform.is.cordova">
-          <q-btn name="Kamera" @click.native="getPicture()" label="camera" icon="photo_camera"/>
+          <q-btn name="Kamera" @click.native="getPicture()" label="camera" icon="photo_camera" />
           <img :src="imageSrc" style="width:85%">
         </div>
       </q-field>

@@ -151,7 +151,7 @@ class Cari extends Controller
     {
         $cari = \App\Cari::
             leftJoin('users', 'caris.user_id', '=', 'users.id')
-            ->orderBy('caris.id', 'DESC')
+            ->orderBy('caris.adi', 'ASC')
             ->get(['caris.id', 'adi',  'yetkili','adres','telefon']);
 
         return response()->json($cari);

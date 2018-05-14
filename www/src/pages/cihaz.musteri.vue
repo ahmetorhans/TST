@@ -132,7 +132,7 @@
                   <div class="col-md-1 listCol desktop-only">{{item.id}} </div>
                   <div class="col-md-4 listCol">{{item.marka}} {{item.model}} </div>
                   <div class="col-md-2 listCol">{{item.serino}} </div>
-                  <div class="col-md-4 listCol">{{item.aciklama}} </div>
+                  <div class="col-md-4 listCol">{{item.aciklama}} <span v-if='item.lokasyon'>[Lokasyon]  {{item.lokasyon}}</span></div>
                   <div class="col-md-1 listCol"><span v-if="item.musteriKaydi=='1'"><q-icon name="account_box" size='20px' /></span> </div>
                 </div>
               </q-item-tile>
@@ -440,12 +440,12 @@ const module = {
       return this.cihazlar.filter(p => {
         p.serino === null ? (p.serino = "") : p.serino;
         p.barkod === null ? (p.barkod = "") : p.barkod;
-        p.cariAdi === null ? (p.cariAdi = "") : p.cariAdi;
+        p.lokasyon === null ? (p.lokasyon = "") : p.lokasyon;
 
         return (
           p.serino.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 ||
           p.barkod.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1 ||
-          p.cariAdi.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1
+          p.lokasyon.toLocaleLowerCase("tr-TR").indexOf(searchText) > -1
         );
       });
     }
