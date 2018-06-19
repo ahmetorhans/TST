@@ -75,7 +75,7 @@ class Servis extends Controller
             if (!empty($sonuc['cihaz_id'])) {
                //değişti.
                 $mail['cihaz'] = \App\Cihaz::where('id',$input['cihaz_id'])->first();
-                //find to where
+                //find to where..
             }
 
             $sendto = \App\User::where('role', 'super')->first();
