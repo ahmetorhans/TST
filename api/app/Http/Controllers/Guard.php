@@ -46,6 +46,7 @@ class Guard extends Controller
     {
 
         $user = Request::get('gUser');
+        
         if ($user->musteri === '1') {
             return 'musteri';
         } else {

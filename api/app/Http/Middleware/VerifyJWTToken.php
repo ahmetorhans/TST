@@ -26,12 +26,15 @@ class VerifyJWTToken
  
             //Token değeri hatalıysa ..
             if($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return response()->json(['token_expired'], $e->getStatusCode());
+                return response()->json(['token_expired'], 401);
             }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return response()->json(['token_invalid'], $e->getStatusCode());
+                return response()->json(['token_invalid'], 401);
             }else{
                 return response()->json(['status'=>false, 'msg'=>'Token Gerekli'],401);
             }
+        }
+        if (empty($user->id)){
+            return response()->json(['status'=>false, 'msg'=>'Hatalı Kullanıcı'],401);
         }
         $request->attributes->set('gUser', $user);
 
